@@ -1,4 +1,8 @@
-BMNBot-Plugins
+BMNBot Plugins
 ==============
-
-This is the repository to put plugins for BMNBot into. Remember BMNBot is Limnoria.
+<h4>TravisCI Automated Builds</h4>
+[![Build Status](https://travis-ci.org/Brilliant-Minds/BMNBot-Plugins.svg?branch=master)](https://travis-ci.org/Brilliant-Minds/BMNBot-Plugins)
+<hr/>
+The plugins repository for BMNBot. 
+Every member of the group is free to join our GitHub organization at https://github.com/Brilliant-Minds and help out with code, artwork, suggestions and generally everything helpful.
+Please remember that BMNBot is a Limnoria bot.

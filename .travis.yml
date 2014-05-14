@@ -1,0 +1,15 @@
+language: python
+python:
+  - "2.6"
+  - "2.7"
+  - "3.2"
+  - "3.3"
+  - "3.4"
+  - "pypy"
+# command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
+install:
+  - pip install -r requirements.txt
+# command to run tests, e.g. python setup.py test
+script:
+  - echo $TRAVIS_PYTHON_VERSION
+  - supybot-test --plugins-dir=. --no-network
