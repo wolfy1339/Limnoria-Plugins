@@ -44,10 +44,10 @@ Powder = conf.registerPlugin('Powder')
 conf.registerGlobalValue(Powder, 'public',
     registry.Boolean(True, """Determines whether this plugin is publicly
 visible."""))
-conf.registerGlobalValue(Powder, 'snarf',
+conf.registerGlobalValue(Powder, 'powderSnarfer',
     registry.Boolean(True, """Determines if this plugin will snarf ~<saveid>,
 with the save's name and information"""))
-conf.registerChannelValue(Powder, 'snarf',
+conf.registerChannelValue(Powder, 'powderSnarfer',
     registry.Boolean(True, """Determines if this plugin will snarf ~<saveid>, 
 with the save's name and information"""))
 
