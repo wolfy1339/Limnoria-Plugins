@@ -41,9 +41,14 @@ def configure(advanced):
 
 
 Powder = conf.registerPlugin('Powder')
-# This is where your configuration variables (if any) should go.  For example:
-# conf.registerGlobalValue(Powder, 'someConfigVariableName',
-#     registry.Boolean(False, """Help for someConfigVariableName."""))
-
+conf.registerGlobalValue(Powder, 'public',
+    registry.Boolean(True, """Determines whether this plugin is publicly
+visible."""))
+conf.registerGlobalValue(Powder, 'powderSnarfer',
+    registry.Boolean(True, """Determines if this plugin will snarf ~<saveid>,
+with the save's name and information"""))
+conf.registerChannelValue(Powder, 'powderSnarfer',
+    registry.Boolean(True, """Determines if this plugin will snarf ~<saveid>, 
+with the save's name and information"""))
 
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:

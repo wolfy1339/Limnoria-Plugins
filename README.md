@@ -1,7 +1,8 @@
 BMNBot Plugins
 ==============
 <h4>TravisCI Automated Builds</h4>
-[![Build Status](https://travis-ci.org/Brilliant-Minds/BMNBot-Plugins.svg?branch=master)](https://travis-ci.org/Brilliant-Minds/BMNBot-Plugins)
+
+[![Build Status](https://travis-ci.org/Brilliant-Minds/BMNBot-Plugins.png?branch=master)](https://travis-ci.org/Brilliant-Minds/BMNBot-Plugins)
 <hr/>
 The plugins repository for BMNBot. 
 Every member of the group is free to join our GitHub organization at https://github.com/Brilliant-Minds and help out with code, artwork, suggestions and generally everything helpful.

@@ -51,7 +51,7 @@ class Powder(callbacks.PluginRegexp):
 		if(not(branch)):
 			branch="master";
 		if(not(project)):
-			project="Powder-Sim2"
+			project="Brilliant-Minds.github.io"
 		user=user.lower()
 		branch=branch.lower()
 		if(user=="wolfy1339" or user=="wolfybox" or user=="wolfy[A]"):
@@ -63,7 +63,7 @@ class Powder(callbacks.PluginRegexp):
 		except:
 			try:
 				branch = project
-				project = "BigWolfy1339"
+				project = "BMNBot-Plugins"
 				giturl = "https://api.github.com/repos/{}/{}/branches/{}".format(user,project,branch)
 				data = json.loads(utils.web.getUrl(giturl))
 			except:

@@ -44,21 +44,21 @@ except:
 
 class Rpg(callbacks.Plugin):
   '''A text based RPG for IRC channels. Requires the user to be registered 
-  with supybot to use it. all commands are prefixed with rpg. Command list:
-  rpgmove rpgstats rpgrun rpgnew rpgloc rpgviewarea'''
+  with supybot to use it. Command list:
+  move stats run new loc viewarea'''
   threaded = True
 
   class rpg(callbacks.Commands):
 
-    gameChannel='##TPTRPG'
+    gameChannel='#BMN'
     playerData=mapData=mapInfo=monsterData=itemData={}
-    consolechannel = '##sgoutput'
-    filepath = '/home/antb/StewieGriffin/plugins/Rpg/'
+    consolechannel = '##wolfy-console'
+    filepath = '/home/wolfy1339/BMNBot/plugins/Rpg/'
 
 #########################
 ###   Game Commands   ###
 #########################
-    def rpgReloadData(self,irc,msg,args):
+    def ReloadData(self,irc,msg,args):
         if not ircdb.users.getUser(msg.prefix)._checkCapability('admin'):
             irc.error('Only people with \'Admin\' can do that.')
             return
@@ -72,7 +72,7 @@ class Rpg(callbacks.Plugin):
             irc.replySuccess()
     reloaddata = wrap(rpgReloadData)
 
-    def rpgGenMap(self,irc,msg,args,width,height):
+    def GenMap(self,irc,msg,args,width,height):
         if not ircdb.users.getUser(msg.prefix)._checkCapability('owner'):
             irc.error('Only people with \'Admin\' can do that.')
             return
@@ -145,7 +145,7 @@ class Rpg(callbacks.Plugin):
             
     genmap = wrap(rpgGenMap,[optional('somethingWithoutSpaces'),optional('somethingWithoutSpaces')])
 
-    def rpgStats(self,irc,msg,args):
+    def Stats(self,irc,msg,args):
         player = self._checkPlayer(irc,msg)
         playerData = self.playerData[player]
 
@@ -177,7 +177,7 @@ rating is %i. You have died %i times.\
                 )
     stats = wrap(rpgStats)
 
-    def rpgNew(self,irc,msg,args):
+    def New(self,irc,msg,args):
         player = self._checkPlayer(irc,msg,1)
         playerData = self.playerData
 
@@ -204,7 +204,7 @@ rating is %i. You have died %i times.\
         self.rpgStats(irc,msg,args)
     new = wrap(rpgNew)
 
-    def rpgLocation(self,irc,msg,args):
+    def Location(self,irc,msg,args):
         player = self._checkPlayer(irc,msg)
         location = self.playerData[player]['Loc']
         mapInfo = self.mapInfo
@@ -220,7 +220,7 @@ rating is %i. You have died %i times.\
         irc.reply('You are located at (%i,%i). Home is at (%i,%i)'%(x,y,self.mapInfo['homeX'],self.mapInfo['homeY']))
     loc = wrap(rpgLocation)
 
-    def rpgViewArea(self,irc,msg,args):
+    def ViewArea(self,irc,msg,args):
         player = self._checkPlayer(irc,msg)
         location = self.playerData[player]['Loc']
         mapData = self.mapData
@@ -254,7 +254,7 @@ rating is %i. You have died %i times.\
                  )
     viewarea=wrap(rpgViewArea)
 
-    def rpgforcebattle(self,irc,msg,args):
+    def forcebattle(self,irc,msg,args):
         player=self._checkPlayer(irc,msg)
         if self.playerData[player]['force']:
             self.playerData[player]['force']=False
@@ -264,7 +264,7 @@ rating is %i. You have died %i times.\
             irc.reply('%s will enter a monster battle on their next turn.'%player.capitalize(),prefixNick=False)
     forcebattle=wrap(rpgforcebattle)
 
-    def rpgmove(self,irc,msg,args,direction,number):
+    def move(self,irc,msg,args,direction,number):
         player = self._checkPlayer(irc,msg)
         playerData = self.playerData
         mapData = self.mapData
