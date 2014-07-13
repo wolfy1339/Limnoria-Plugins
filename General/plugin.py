@@ -28,15 +28,13 @@ import supybot.schedule as schedule
 class General(callbacks.PluginRegexp):
 	"""Some general purpose plugins."""
 	threaded=True
-#	All regexps
-#	regexps=['capsKick','selfCorrect','userCorrect','saveLast','greeter','awayMsgKicker','ytSnarfer','pasteSnarfer']
 
 #Remove from this array to disable any regexps
 	regexps=['saveLast','greeter','awayMsgKicker','ytSnarfer','pasteSnarfer']
 
 	#Set to false to disable.
 	consolechannel = False
-	ownerNick = "jacksonmj"
+	ownerNick = "wolfy1339"
 	buffer={}
 	buffsize = 10
 	alpha=[]
@@ -61,7 +59,7 @@ class General(callbacks.PluginRegexp):
 			bm = bm.replace(".","?")
 			bm = bm.replace("-","?")
 			irc.reply("*!*@*"+bm+"*")
-			if(self.consolechannel): irc.queueMsg(ircmsgs.privmsg(self.consolechannel, "BANMASK: *!*@*"+bm+"* returned for "+msg.nick))
+			#if(self.consolechannel): irc.queueMsg(ircmsgs.privmsg(self.consolechannel, "BANMASK: *!*@*"+bm+"* returned for "+msg.nick))
 		except:
 			hostmask = hostmask.split("@")[1]
 			count=0;
@@ -176,30 +174,10 @@ class General(callbacks.PluginRegexp):
 		return None
 	geoip = wrap(geoip, ['text'])
 
-	def report(self,irc,msg,args,user,reason):
-		"""<User> <reason>
-
-		Reports a user to the owner to be acted on when they come back from afk."""
-		t = time.localtime()
-
-		if int(t[2]) < 10: date = '0{0}'.format(t[2])
-		else: date = str(t[2])
-
-		if int(t[1]) < 10: month = '0{0}'.format(t[1])
-		else: month = str(t[1])
-
-		if int(t[3]) < 10: h = '0{0}'.format(t[3])
-		else: h = str(t[3])
-
-		logFile = '#powder.{0}-{1}-{2}.log'.format(date,month,t[0])
-		irc.queueMsg(ircmsgs.privmsg('Memoserv','SEND {7} User {0} has reported {1} in {6} for {2}. Log file is {3} and log time will be around {4}{5}'.format(msg.nick,user,reason,logFile,h,t[4],msg.args[0],self.ownerNick)))
-		irc.replySuccess('Report sent.')
-	report = wrap(report,['nick','text'])
-
 	def bug(self,irc,msg,args,cmd,txt):
 		"""<plugin> [details of bug]
 
-		Use this command when Stewie has a bug. It places a note in the logs and sends the owner a message."""
+		Use this command when the bot has a bug. It places a note in the logs and sends the owner a message."""
 		self.log.error("****Error in {} reported by {}: {}****".format(cmd,msg.nick,txt))
 		irc.queueMsg(ircmsgs.privmsg('Memoserv','SEND {} Bug found in {} by {} ({}).'.format(self.ownerNick,cmd,msg.nick,txt)))
 		irc.replySuccess("Bug reported.")
@@ -317,14 +295,14 @@ class General(callbacks.PluginRegexp):
 		else:
 			hail = match.group(0).split(" ")[0]
 		self.log.info("Responding to %s with %s"%(msg.nick, hail))
-		if(self.consolechannel): irc.queueMsg(ircmsgs.privmsg(self.consolechannel, "GREETER: Responding to %s with %s"%(msg.nick,hail)))
+		#if(self.consolechannel): irc.queueMsg(ircmsgs.privmsg(self.consolechannel, "GREETER: Responding to %s with %s"%(msg.nick,hail)))
 		irc.reply("%s, %s"%(hail,msg.nick), prefixNick=False)
 	greeter = urlSnarfer(greeter)
 
 	def awayMsgKicker(self, irc, msg, match):
 		r"(is now (set as)? away [-:(] Reason |is no longer away : Gone for|is away:)"
 		self.log.info("KICKING %s for away announce"%msg.nick)
-		if(self.consolechannel):irc.queueMsg(ircmsgs.privmsg(self.consolechannel, "KICK: %s for away announcement (automatic)"%msg.nick))
+		#if(self.consolechannel):irc.queueMsg(ircmsgs.privmsg(self.consolechannel, "KICK: %s for away announcement (automatic)"%msg.nick))
 		self._sendMsg(irc, ircmsgs.kick(msg.args[0], msg.nick, "Autokick: Spam (Away/Back Announce)"))
 	awayMsgKicker = urlSnarfer(awayMsgKicker)
 
@@ -361,7 +339,7 @@ class General(callbacks.PluginRegexp):
 
 		irc.reply('Youtube video is "%s"'%data, prefixNick=False)
 		self.log.info("ytSnarfer - Done.")
-		if(self.consolechannel):irc.queueMsg(ircmsgs.privmsg(self.consolechannel, "%s is %s"%(url,data)))
+		#if(self.consolechannel):irc.queueMsg(ircmsgs.privmsg(self.consolechannel, "%s is %s"%(url,data)))
 		return None
 	ytSnarfer = urlSnarfer(ytSnarfer)
 
@@ -450,7 +428,8 @@ class General(callbacks.PluginRegexp):
 		data=newData
 
 		channel = msg.args[0]
-
+		if channel = "##powder-bots":
+			return
 		for each in self.buffer[channel]:
 		   if msg.nick in each[0]:
 			   output = each[1]
@@ -487,7 +466,8 @@ class General(callbacks.PluginRegexp):
 		data=newData
 
 		channel = msg.args[0]
-
+		if channel = "##powder-bots"
+			return
 		for each in self.buffer[channel]:
 		   print user.lower(),each[0].lower(),user.lower() is each[0].lower()
 		   if user.lower() in each[0].lower():
