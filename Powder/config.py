@@ -41,14 +41,24 @@ def configure(advanced):
 
 
 Powder = conf.registerPlugin('Powder')
+
 conf.registerGlobalValue(Powder, 'public',
     registry.Boolean(True, """Determines whether this plugin is publicly
 visible."""))
+
 conf.registerGlobalValue(Powder, 'powderSnarfer',
     registry.Boolean(True, """Determines if this plugin will snarf ~<saveid>,
 with the save's name and information"""))
 conf.registerChannelValue(Powder, 'powderSnarfer',
     registry.Boolean(True, """Determines if this plugin will snarf ~<saveid>, 
 with the save's name and information"""))
+
+conf.registerGlobalValue(Powder, 'forumSnarfer',
+    registry.Boolean(True, """Determines if this plugin will snarf forum links,
+with the thread's name and information"""))
+conf.registerChannelValue(Powder, 'powderSnarfer',
+    registry.Boolean(True, """Determines if this plugin will snarf forum links,
+with the thread's name and information"""))
+
 
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:
