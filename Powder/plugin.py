@@ -48,11 +48,11 @@ class Powder(callbacks.PluginRegexp):
 	def git(self, irc, msg, args, user, project, branch):
 		"""<username> [project] [branch]
 
-		Returns information about a user GitHub Repo. Project and branch arguments are optional. Defaults to the-powder-toy/master if no other arguments are given. Arguments are CaSe-SeNsItIvE"""
+		Returns information about a user's GitHub Repo. Project and branch arguments are optional. Arguments are CaSe-SeNsItIvE"""
 
-		if(not(branch)):
+		if not branch:
 			branch="master";
-		if(not(project)):
+		if not project:
 			project="Brilliant-Minds.github.io"
 		user=user.lower()
 		branch=branch.lower()
@@ -70,7 +70,7 @@ class Powder(callbacks.PluginRegexp):
 				data = json.loads(utils.web.getUrl(giturl))
 			except:
 				irc.error("HTTP 404. Please check and try again.", prefixNick=False)
-				if(self.consolechannel): irc.queueMsg(ircmsgs.privmsg(self.consolechannel, "GIT: Returned 404 on %s:%s"%(user,branch)))
+				self.log.error("GIT: Returned 404 on %s:%s"%(user,branch))
 				return
 		data = data['commit']['commit']
 
@@ -93,17 +93,20 @@ class Powder(callbacks.PluginRegexp):
 	browse = wrap(browse,['somethingWithoutSpaces',optional('text')])
 
 	def powderSnarfer(self, irc, msg, match):
-		r"http://powdertoy.co.uk/Browse/View.html\?ID=([0-9]+)|^[~]([0-9]+)|http://tpt.io/~([0-9]+)|http://powdertoy.co.uk/~([0-9]+)"
-		ID = match.group(1) or match.group(2) or match.group(3) or match.group(4) 
+		if self.registryValue('powderSnarfer') == "False":
+			return
+		else
+			r"http://powdertoy.co.uk/Browse/View.html\?ID=([0-9]+)|^[~]([0-9]+)|http://tpt.io/~([0-9]+)|http://powdertoy.co.uk/~([0-9]+)"
+			ID = match.group(1) or match.group(2) or match.group(3) or match.group(4) 
 
-		if msg.args[1].startswith("Save "+ID+" is"):
-			return # Don't respond to save info from other bots with this plugin
+			if msg.args[1].startswith("Save "+ID+" is"):
+				return # Don't respond to save info from other bots with this plugin
 
-		self.log.info("powderSnarfer - save URL Found "+match.group(0))
-		if(match.group(0)[0]=="~"):
-			self._getSaveInfo(irc, ID, 0)
-		else:
-			self._getSaveInfo(irc, ID, 1)
+			self.log.info("powderSnarfer - save URL Found "+match.group(0))
+			if(match.group(0)[0]=="~"):
+				self._getSaveInfo(irc, ID, 0)
+			else:
+				self._getSaveInfo(irc, ID, 1)
 			
 	powderSnarfer = urlSnarfer(powderSnarfer)
 
@@ -139,16 +142,19 @@ class Powder(callbacks.PluginRegexp):
 	frontpage = wrap(frontpage)
 
 	def forumSnarfer(self,irc,msg,match):
-		r"http://powdertoy[.]co[.]uk/Discussions/Thread/View[.]html[?]Thread=([0-9]+)|http://tpt.io/:([0-9]+)"
-		threadNum = match.group(1) or match.group(2)
+		if self.registryValue('forumSnarfer') == "False":
+			return
+		else
+			r"http://powdertoy[.]co[.]uk/Discussions/Thread/View[.]html[?]Thread=([0-9]+)|http://tpt.io/:([0-9]+)"
+			threadNum = match.group(1) or match.group(2)
 
-		data = json.loads(utils.web.getUrl("http://powdertoy.co.uk/Discussions/Thread/View.json?Thread=%s"%(threadNum)))
-		cg = data["Info"]["Category"]
-		tp = data["Info"]["Topic"]
+			data = json.loads(utils.web.getUrl("http://powdertoy.co.uk/Discussions/Thread/View.json?Thread=%s"%(threadNum)))
+			cg = data["Info"]["Category"]
+			tp = data["Info"]["Topic"]
 
-		irc.reply("Forum post is \"%s\" in the %s section, posted by %s and has %s replies. Last post was by %s at %s"%
-				(tp["Title"],cg["Name"],tp["Author"],tp["PostCount"]-1,tp["LastPoster"],tp["Date"]),prefixNick=False)
-		self.log.info("FORUMSNARF: Thread %s found. %s in the %s section"%(threadNum,tp["Title"],cg["Name"]))
+			irc.reply("Forum post is \"%s\" in the %s section, posted by %s and has %s replies. Last post was by %s at %s"%
+					(tp["Title"],cg["Name"],tp["Author"],tp["PostCount"]-1,tp["LastPoster"],tp["Date"]),prefixNick=False)
+			self.log.info("FORUMSNARF: Thread %s found. %s in the %s section"%(threadNum,tp["Title"],cg["Name"]))
 	forumSnarfer = urlSnarfer(forumSnarfer)
 
 	@internationalizeDocstring
