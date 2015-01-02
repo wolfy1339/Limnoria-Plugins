@@ -43,8 +43,7 @@ class Powder(callbacks.PluginRegexp):
 	"""Contains all sorts of random stuff."""
 	threaded = True
 	regexps = ['powderSnarfer','forumSnarfer']
-	consolechannel = False
-	
+
 	@internationalizeDocstring
 	def git(self, irc, msg, args, user, project, branch):
 		"""<username> [project] [branch]
@@ -57,7 +56,7 @@ class Powder(callbacks.PluginRegexp):
 			project="Brilliant-Minds.github.io"
 		user=user.lower()
 		branch=branch.lower()
-		if(user=="wolfy1339" or user=="wolfybox" or user=="wolfy[A]"):
+		if user=="wolfy1339" or user=="wolfybox" or user=="wolfy[A]":
 			user="wolfy1339"
 		
 		giturl = "https://api.github.com/repos/{}/{}/branches/{}".format(user,project,branch)
@@ -79,7 +78,7 @@ class Powder(callbacks.PluginRegexp):
 		data["message"] = data["message"].replace("\n"," ") 
 		data["message"] = data["message"].replace("	"," ")
 
-		if(self.consolechannel): irc.queueMsg(ircmsgs.privmsg(self.consolechannel, "GIT: user:%s project:%s branch:%s called by %s sucessfully."%(user,project,branch,msg.nick)))
+		self.log.info("GIT: user:%s project:%s branch:%s called by %s sucessfully."%(user,project,branch,msg.nick))
 		irc.reply("Last commit to %s's %s repo, %s branch, was by %s on %s at %s. Commit message was \"%s\" - https://github.com/%s/%s/tree/%s"%(user,project,branch,data["committer"]["name"],data["committer"]["date"][0],data["committer"]["date"][1],data["message"],user,project,branch), prefixNick=False)
 
 
@@ -110,14 +109,13 @@ class Powder(callbacks.PluginRegexp):
 
 	def _getSaveInfo(self, irc, ID, urlGiven):
 		data = json.loads(utils.web.getUrl("http://powdertoy.co.uk/Browse/View.json?ID="+ID))
-		if(data["Username"]=="FourOhFour"):
+		if data["Username"]=="FourOhFour":
 			saveMsg = "Save "+ID+" doesn't exist."
 		else:
 			saveMsg = "Save "+ID+" is "+data["Name"].replace('&#039;','\'').replace('&gt;','>')+" by "+data["Username"]+". Score: "+str(data["Score"])+"."
-			if(not urlGiven):
+			if not urlGiven:
 				saveMsg+=" http://powdertoy.co.uk/~"+ID
 		irc.reply(saveMsg,prefixNick=False)
-		if(self.consolechannel): irc.queueMsg(ircmsgs.privmsg(self.consolechannel, "SAVE: %s"%saveMsg))
 
 	@internationalizeDocstring
 	def frontpage(self,irc,msg,args):
@@ -143,7 +141,6 @@ class Powder(callbacks.PluginRegexp):
 	def forumSnarfer(self,irc,msg,match):
 		r"http://powdertoy[.]co[.]uk/Discussions/Thread/View[.]html[?]Thread=([0-9]+)|http://tpt.io/:([0-9]+)"
 		threadNum = match.group(1) or match.group(2)
-		self.log.info("Forum thread found.")
 
 		data = json.loads(utils.web.getUrl("http://powdertoy.co.uk/Discussions/Thread/View.json?Thread=%s"%(threadNum)))
 		cg = data["Info"]["Category"]
@@ -151,7 +148,7 @@ class Powder(callbacks.PluginRegexp):
 
 		irc.reply("Forum post is \"%s\" in the %s section, posted by %s and has %s replies. Last post was by %s at %s"%
 				(tp["Title"],cg["Name"],tp["Author"],tp["PostCount"]-1,tp["LastPoster"],tp["Date"]),prefixNick=False)
-		if(self.consolechannel): irc.queueMsg(ircmsgs.privmsg(self.consolechannel, "FORUMSNARF: Thread %s found. %s in the %s section"%(threadNum,tp["Title"],cg["Name"])))
+		self.log.info("FORUMSNARF: Thread %s found. %s in the %s section"%(threadNum,tp["Title"],cg["Name"]))
 	forumSnarfer = urlSnarfer(forumSnarfer)
 
 	@internationalizeDocstring
