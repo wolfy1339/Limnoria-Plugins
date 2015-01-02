@@ -94,7 +94,7 @@ class Powder(callbacks.PluginRegexp):
 	def powderSnarfer(self, irc, msg, match):
 		if self.registryValue('powderSnarfer') == "False":
 			return
-		else
+		else:
 			r"http://powdertoy.co.uk/Browse/View.html\?ID=([0-9]+)|^[~]([0-9]+)|http://tpt.io/~([0-9]+)|http://powdertoy.co.uk/~([0-9]+)"
 			ID = match.group(1) or match.group(2) or match.group(3) or match.group(4) 
 
@@ -143,7 +143,7 @@ class Powder(callbacks.PluginRegexp):
 	def forumSnarfer(self,irc,msg,match):
 		if self.registryValue('forumSnarfer') == "False":
 			return
-		else
+		else:
 			r"http://powdertoy[.]co[.]uk/Discussions/Thread/View[.]html[?]Thread=([0-9]+)|http://tpt.io/:([0-9]+)"
 			threadNum = match.group(1) or match.group(2)
 
