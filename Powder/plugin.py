@@ -1,5 +1,6 @@
 ###
 # Copyright (c) 2011, AntB
+#		2015, wolfy1339
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,6 +29,7 @@
 
 ###
 
+import supybot.conf as conf
 import supybot.utils as utils
 from supybot.commands import *
 import supybot.plugins as plugins
@@ -43,6 +45,7 @@ class Powder(callbacks.PluginRegexp):
 	regexps = ['powderSnarfer','forumSnarfer']
 	consolechannel = False
 	
+	@internationalizeDocstring
 	def git(self, irc, msg, args, user, project, branch):
 		"""<username> [project] [branch]
 
@@ -82,6 +85,7 @@ class Powder(callbacks.PluginRegexp):
 
 	git = wrap(git,['somethingWithoutSpaces',optional('somethingWithoutSpaces'),optional('somethingwithoutspaces')])
 
+	@internationalizeDocstring
 	def browse(self, irc, msg, args, ID, blurb):
 		"""<SaveID|URL>
 
@@ -115,6 +119,7 @@ class Powder(callbacks.PluginRegexp):
 		irc.reply(saveMsg,prefixNick=False)
 		if(self.consolechannel): irc.queueMsg(ircmsgs.privmsg(self.consolechannel, "SAVE: %s"%saveMsg))
 
+	@internationalizeDocstring
 	def frontpage(self,irc,msg,args):
 		"""
 
@@ -149,6 +154,7 @@ class Powder(callbacks.PluginRegexp):
 		if(self.consolechannel): irc.queueMsg(ircmsgs.privmsg(self.consolechannel, "FORUMSNARF: Thread %s found. %s in the %s section"%(threadNum,tp["Title"],cg["Name"])))
 	forumSnarfer = urlSnarfer(forumSnarfer)
 
+	@internationalizeDocstring
 	def profile(self, irc, msg, args, user):
 		"""<username|ID>
 
@@ -178,6 +184,7 @@ class Powder(callbacks.PluginRegexp):
 	profile = wrap(profile,['something'])
 
 
+	@internationalizeDocstring
 	def network(self, irc, msg, args):
 		"""
 		
@@ -186,6 +193,7 @@ class Powder(callbacks.PluginRegexp):
 		irc.reply("https://github.com/simtr/The-Powder-Toy/network");
 	network = wrap(network)
 
+	@internationalizeDocstring
 	def randomsave(self,irc,msg,args):
 		"""
 
@@ -202,6 +210,7 @@ class Powder(callbacks.PluginRegexp):
 		self._getSaveInfo(irc,saveID,0) 
 	randomsave = wrap(randomsave)
 
+	@internationalizeDocstring
 	def comic(self,irc,msg,args):
 		"""
 		
