@@ -56,9 +56,8 @@ with the save's name and information"""))
 conf.registerGlobalValue(Powder, 'forumSnarfer',
     registry.Boolean(True, """Determines if this plugin will snarf forum links,
 with the thread's name and information"""))
-conf.registerChannelValue(Powder, 'powderSnarfer',
+conf.registerChannelValue(Powder, 'forumSnarfer',
     registry.Boolean(True, """Determines if this plugin will snarf forum links,
 with the thread's name and information"""))
-
 
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:

@@ -1,5 +1,6 @@
 ###
 # Copyright (c) 2011, AntB
+# Copyright (c) 2015, wolfy1339
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -41,13 +42,12 @@ import json,random,urllib,re
 class Powder(callbacks.PluginRegexp):
 	"""Contains all sorts of random stuff."""
 	threaded = True
-	regexps = ['powderSnarfer','forumSnarfer']
+	unaddressedRegexps = ['powderSnarfer','forumSnarfer']
 
-	@internationalizeDocstring
 	def git(self, irc, msg, args, user, project, branch):
 		"""<username> [project] [branch]
 
-		Returns information about a user's GitHub Repo. Project and branch arguments are optional. Arguments are CaSe-SeNsItIvE"""
+		Returns information about a user GitHub Repo. Project and branch arguments are optional. Defaults to Brilliant-Minds.github.io/master if no arguments are given. Arguments are CaSe-SeNsItIvE"""
 
 		if not branch:
 			branch="master";
@@ -55,17 +55,18 @@ class Powder(callbacks.PluginRegexp):
 			project="Brilliant-Minds.github.io"
 		user=user.lower()
 		branch=branch.lower()
-		if user=="wolfy1339" or user=="wolfybox" or user=="wolfy[A]":
-			user="wolfy1339"
-		
-		giturl = "https://api.github.com/repos/{}/{}/branches/{}".format(user,project,branch)
+		if user=="simon" or user=="isimon" or user=="ximon":
+			user="simtr"
+		if user=="doxin":
+			user="dikzak"
+		giturl = "https://api.github.com/repos/{0}/{1}/branches/{2}".format(user,project,branch)
 		try:
 			data = json.loads(utils.web.getUrl(giturl))
 		except:
 			try:
 				branch = project
 				project = "BMNBot-Plugins"
-				giturl = "https://api.github.com/repos/{}/{}/branches/{}".format(user,project,branch)
+				giturl = "https://api.github.com/repos/{0}/{1}/branches/{2}".format(user,project,branch)
 				data = json.loads(utils.web.getUrl(giturl))
 			except:
 				irc.error("HTTP 404. Please check and try again.", prefixNick=False)
@@ -83,43 +84,42 @@ class Powder(callbacks.PluginRegexp):
 
 	git = wrap(git,['somethingWithoutSpaces',optional('somethingWithoutSpaces'),optional('somethingwithoutspaces')])
 
-	@internationalizeDocstring
 	def browse(self, irc, msg, args, ID, blurb):
-		"""<SaveID|URL>
+		"""<SaveID>
 
 			Returns information about a save."""
 		self._getSaveInfo(irc, ID, 0)
 	browse = wrap(browse,['somethingWithoutSpaces',optional('text')])
 
 	def powderSnarfer(self, irc, msg, match):
-		if self.registryValue('powderSnarfer') == "False":
-			return
+		r"http://powdertoy.co.uk/Browse/View.html\?ID=([0-9]+)|^[~]([0-9]+)|http://tpt.io/~([0-9]+)|http://powdertoy.co.uk/~([0-9]+)"
+		ID = match.group(1) or match.group(2) or match.group(3) or match.group(4) 
+
+		if msg.args[1].startswith("Save "+ID+" is"):
+			return # Don't respond to save info from other bots with this plugin
+
+		self.log.info("powderSnarfer - save URL Found "+match.group(0))
+		if match.group(0)[0]=="~":
+			self._getSaveInfo(irc, ID, 0)
 		else:
-			r"http://powdertoy.co.uk/Browse/View.html\?ID=([0-9]+)|^[~]([0-9]+)|http://tpt.io/~([0-9]+)|http://powdertoy.co.uk/~([0-9]+)"
-			ID = match.group(1) or match.group(2) or match.group(3) or match.group(4) 
+			self._getSaveInfo(irc, ID, 1)
 
-			if msg.args[1].startswith("Save "+ID+" is"):
-				return # Don't respond to save info from other bots with this plugin
-
-			self.log.info("powderSnarfer - save URL Found "+match.group(0))
-			if(match.group(0)[0]=="~"):
-				self._getSaveInfo(irc, ID, 0)
-			else:
-				self._getSaveInfo(irc, ID, 1)
-			
 	powderSnarfer = urlSnarfer(powderSnarfer)
 
 	def _getSaveInfo(self, irc, ID, urlGiven):
+		ID = str(int(ID))
 		data = json.loads(utils.web.getUrl("http://powdertoy.co.uk/Browse/View.json?ID="+ID))
 		if data["Username"]=="FourOhFour":
 			saveMsg = "Save "+ID+" doesn't exist."
 		else:
 			saveMsg = "Save "+ID+" is "+data["Name"].replace('&#039;','\'').replace('&gt;','>')+" by "+data["Username"]+". Score: "+str(data["Score"])+"."
 			if not urlGiven:
-				saveMsg+=" http://powdertoy.co.uk/~"+ID
-		irc.reply(saveMsg,prefixNick=False)
+				saveMsg+=" http://tpt.io/~"+ID
+		if self.registryValue('powderSnarfer') == "False":
+			return
+		else:
+			irc.reply(saveMsg,prefixNick=False)
 
-	@internationalizeDocstring
 	def frontpage(self,irc,msg,args):
 		"""
 
@@ -137,26 +137,24 @@ class Powder(callbacks.PluginRegexp):
 				continue
 			outMsg='{0} -- '.format(outMsg)
 
-	#	irc.queueMsg(ircmsgs.privmsg(msg.nick,outMsg))
 	frontpage = wrap(frontpage)
 
 	def forumSnarfer(self,irc,msg,match):
+		r"http://powdertoy[.]co[.]uk/Discussions/Thread/View[.]html[?]Thread=([0-9]+)|http://tpt.io/:([0-9]+)"
+		threadNum = match.group(1) or match.group(2)
+
+		data = json.loads(utils.web.getUrl("http://powdertoy.co.uk/Discussions/Thread/View.json?Thread=%s"%(threadNum)))
+		cg = data["Info"]["Category"]
+		tp = data["Info"]["Topic"]
+
 		if self.registryValue('forumSnarfer') == "False":
 			return
 		else:
-			r"http://powdertoy[.]co[.]uk/Discussions/Thread/View[.]html[?]Thread=([0-9]+)|http://tpt.io/:([0-9]+)"
-			threadNum = match.group(1) or match.group(2)
-
-			data = json.loads(utils.web.getUrl("http://powdertoy.co.uk/Discussions/Thread/View.json?Thread=%s"%(threadNum)))
-			cg = data["Info"]["Category"]
-			tp = data["Info"]["Topic"]
-
 			irc.reply("Forum post is \"%s\" in the %s section, posted by %s and has %s replies. Last post was by %s at %s"%
-					(tp["Title"],cg["Name"],tp["Author"],tp["PostCount"]-1,tp["LastPoster"],tp["Date"]),prefixNick=False)
-			self.log.info("FORUMSNARF: Thread %s found. %s in the %s section"%(threadNum,tp["Title"],cg["Name"]))
+				(tp["Title"],cg["Name"],tp["Author"],tp["PostCount"]-1,tp["LastPoster"],tp["Date"]),prefixNick=False)
+		self.log.info("FORUMSNARF: Thread %s found. %s in the %s section"%(threadNum,tp["Title"],cg["Name"]))
 	forumSnarfer = urlSnarfer(forumSnarfer)
 
-	@internationalizeDocstring
 	def profile(self, irc, msg, args, user):
 		"""<username|ID>
 
@@ -186,7 +184,6 @@ class Powder(callbacks.PluginRegexp):
 	profile = wrap(profile,['something'])
 
 
-	@internationalizeDocstring
 	def network(self, irc, msg, args):
 		"""
 		
@@ -195,38 +192,38 @@ class Powder(callbacks.PluginRegexp):
 		irc.reply("https://github.com/simtr/The-Powder-Toy/network");
 	network = wrap(network)
 
-	@internationalizeDocstring
 	def randomsave(self,irc,msg,args):
 		"""
 
 		Returns a random save from powdertoy.co.uk"""
-		random.seed()
-		random.seed(random.random())
 		found = False
 		while found is False:
-			saveID = str(int(random.random()*1000000))
+			saveID = str(json.loads(utils.web.getUrl("http://powdertoythings.co.uk/Powder/Saves/Random.json?Count=1"))['Saves'][0]['ID'])
 			page = json.loads(utils.web.getUrl("http://powdertoy.co.uk/Browse/View.json?ID="+saveID))
-			if(page["Username"]!="FourOhFour"):
+			if page["Username"]!="FourOhFour":
 				found = True
 
 		self._getSaveInfo(irc,saveID,0) 
 	randomsave = wrap(randomsave)
 
-	@internationalizeDocstring
 	def comic(self,irc,msg,args):
 		"""
 		
 		Returns latest comic number and name."""
 		try:
-			data = utils.web.getUrl("http://cate.superdoxin.com/")
+			try:
+				data = utils.web.getUrl("http://cate.superdoxin.com/")
+			except:
+				irc.error("Could not access comics website")
+				return
 			match = None
-			for match in re.finditer(r" href=\"(([0-9]+)([^\"]+))\"", data):
+			for match in re.finditer(r" href=\"http://superdoxin.com/static/cate/files/(([0-9]+)([^\"]+))\"", data):
 				pass
 			filename = match.group(1)
 			num = match.group(2)
 			name = match.group(3)
 			
-			irc.reply("Latest comic id is {} and is titled {} - http://cate.superdoxin.com/{}".format(num,name,filename))
+			irc.reply("Latest comic id is {0} and is titled {1} - http://www.superdoxin.com/static/cate/files/{2}".format(num,name,filename))
 		except:
 			irc.error("Comic checker is broken, use $bug comic")
 	comic = wrap(comic)
