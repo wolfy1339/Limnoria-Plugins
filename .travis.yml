@@ -12,4 +12,5 @@ install:
 # command to run tests, e.g. python setup.py test
 script:
   - echo $TRAVIS_PYTHON_VERSION
+  - rm -rf Administration
   - supybot-test --plugins-dir=. --no-network
