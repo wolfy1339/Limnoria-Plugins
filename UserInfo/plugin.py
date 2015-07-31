@@ -1,5 +1,5 @@
 ###
-# Copyright (c) 2014, wolfy1339
+# Copyright (c) 2014-2015, wolfy1339
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -43,32 +43,55 @@ except ImportError:
 class UserInfo(callbacks.Plugin):
     """A plugin that fetches member information from the website"""
     threaded = True
-	def browse(self, irc, msg, args, ID, blurb):
+	def browse(self, irc, msg, args, user, blurb):
 		"""<memberName>
 		Returns user information from their record"""
-		self._getMemberInfo(irc, ID, 0)
+		self._getMemberInfo(irc, user, 0)
 	browse = wrap(browse,['somethingWithoutSpaces',optional('text')])
-	def userSnarfer(self, irc, ID, urlGiven):
+	def _getMemberInfo(self, irc, user, urlGiven):
 		"""<username>
 		returns a link to a users profile and some information"""
 		try:
-			userPage = utils.web.getUrl("http://brilliant-minds.tk/members.html?"+user)
+			if not urlGiven:
+				userPage = utils.web.getUrl("http://brilliant-minds.tk/members.html?"+user)
+			else:
+				userPage = utils.web.getUrl(urlGiven)
 			userName = userPage.split("<h4>")[1].split("</h4>")[0]
 			userData = json.loads(utils.web.getUrl("http://brilliant-minds.tk/members/"+user+".json"))
-			uDu = userData['User']
-			irc.reply("http://brilliant-minds.tk/members.html?{1} | Awards {3})
-			except Exception, e:
-				try"
-					userPage = utils.web.getUrl("http://brilliant-minds.tk/members.html?"+user)
+			Awards = userData['awards']
+			Rank = userData['rank']
+			Status = ''
+			if userData['voucher']:
+				Status += "This member has a voucher"
+				if userData['safe'] == 1:
+					Status += " and is safe for the next IMC/IRC"
+				elif userData['safe'] == 2:
+					Status += " and is autosafe";
+			else:
+				if userData['safe'] == 1:
+					Status += "This member is safe for the next IMC/IRC";
+				elif userData['safe'] == 2:
+					Status += "This member is absolutely necessary to keep the group going and thus is autosafe";
+			if self.registryValue('MemberSnarfer') == False:
+				return
+			else:
+				irc.reply("{0} {1} | {2} | http://brilliant-minds.tk/members.html?"+userName+" | Awards {3}".format(Rank,userName,Safe,Awards))
+		except Exception, e:
+			try:
+				userPage = utils.web.getUrl("http://brilliant-minds.tk/members.html?"+user)
 				userName = userPage.split("<h4>")[1].split("</h4>")[0]
 				userData = json.loads(utils.web.getUrl("http://brilliant-minds.tk/members/"+user+".json"))
-				uDu = userData['User']
-				irc.reply("http://brilliant-minds.tk/members.html?{1} | Awards {3})
-				except Exception, e:
-					irc.reply("User doesn't have any record in my database, sorry. {}".format(e))\
-			finally:
-				return None
-		userSnarfer = wrap(profile,['something']
+				Awards = userData['awards']
+				Rank = userData['rank']
+				if self.registryValue('MemberSnarfer') == False:
+					return
+				else:
+					irc.reply("{0} {1} http://brilliant-minds.tk/members.html?{0} | Awards {2}".format(Rank,user,Awards))
+			except Exception, e:
+				irc.reply("User {0} doesn't have any record in my database, sorry.".format(user))
+		finally:
+			return None
+	userSnarfer = wrap(profile,['something']
 
 Class = UserInfo
 

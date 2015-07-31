@@ -48,10 +48,10 @@ visible."""))
 
 conf.registerGlobalValue(Powder, 'powderSnarfer',
     registry.Boolean(True, """Determines if this plugin will snarf ~<saveid>,
-with the save's name and information"""))
+with the saves name and information"""))
 conf.registerChannelValue(Powder, 'powderSnarfer',
     registry.Boolean(True, """Determines if this plugin will snarf ~<saveid>, 
-with the save's name and information"""))
+with the saves name and information"""))
 
 conf.registerGlobalValue(Powder, 'forumSnarfer',
     registry.Boolean(True, """Determines if this plugin will snarf forum links,

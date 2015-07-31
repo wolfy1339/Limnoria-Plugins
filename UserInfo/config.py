@@ -48,9 +48,16 @@ def configure(advanced):
 
 
 UserInfo = conf.registerPlugin('UserInfo')
-# This is where your configuration variables (if any) should go.  For example:
-# conf.registerGlobalValue(UserInfo, 'someConfigVariableName',
-#     registry.Boolean(False, _("""Help for someConfigVariableName.""")))
 
+conf.registerGlobalValue(UserInfo, 'public',
+    registry.Boolean(True, """Determines whether this plugin is publicly
+visible."""))
+
+conf.registerGlobalValue(UserInfo, 'MemberSnarfer',
+    registry.Boolean(True, """Determines if this plugin will snarf ~<saveid>,
+with the user's name and information"""))
+conf.registerChannelValue(UserInfo, 'MemberSnarfer',
+    registry.Boolean(True, """Determines if this plugin will snarf ~<saveid>, 
+with the user's name and information"""))
 
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:
