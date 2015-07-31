@@ -43,28 +43,40 @@ except ImportError:
 class UserInfo(callbacks.Plugin):
 	"""A plugin that fetches member information from the BMN website"""
 	threaded = True
-	def profile(self, irc, msg, args, user, blurb):
+	def profile(self, irc, msg, args, user):
 		"""<memberName>
 
 		Returns user information from their record"""
-		self._getMemberInfo(irc, user, 0)
-	profile = wrap(profile,['somethingWithoutSpaces',optional('text')])
+		# self._getMemberInfo(irc, user, 0)
+	# profile = wrap(profile,['somethingWithoutSpaces',optional('text')])
 
-	def _getMemberInfo(self, irc, user):
-		"""<username>
+	# def _getMemberInfo(self, irc, user):
+		# """<username>
 
-		returns a link to a user's profile and some information"""
+		# returns a link to a user's profile and some information"""
 		try:
-			if not user.startswith("http"):
-				userPage = utils.web.getUrl("http://brilliant-minds.tk/members.html?"+user)
+			if not user.startswith("http://"):
+				userPage = utils.web.getUrl("http://brilliant-minds.tk/members.html?{0}".format(user))
+				userName = user
 			else:
+				if user.startswith("https://"):
+					user = "http" + user.split("https")[0]
 				userPage = utils.web.getUrl(user)
-			userName = userPage.split("<h4>")[1].split("</h4>")[0]
-			userData = json.loads(utils.web.getUrl("http://brilliant-minds.tk/members/"+user+".json"))
-			Award = userData["awards"][1]
-			Awards = ", ".join((str(award) for award in Award))
+				userName = user.split("http://brilliant-minds.tk/members.html?")[0]
+
+			userData = json.loads(utils.web.getUrl("http://brilliant-minds.tk/members/{0}.json".format(userName)))
+			Awards = []
 			Rank = userData["rank"]
 			Status = ""
+			Links = []
+			if userData["awards"]:
+				for key, value in jsonObject["awards"].items():
+					Awards.append("{name}: {value}".format(name=key, value=str(value)))
+			if userData["links"]:
+				for key, value in jsonObject["links"]:
+					Links.append("{name}: {link}".format(name=key, value=link))
+			Links = ", ".join(Links)
+			Awards = ", ".join(Awards)
 			if userData["voucher"]:
 				Status += "This member has a voucher"
 				if userData["safe"] == 1:
@@ -79,8 +91,8 @@ class UserInfo(callbacks.Plugin):
 			if self.registryValue("MemberSnarfer") == False:
 				return
 			else:
-				irc.reply("{0} {1} | {2} | http://brilliant-minds.tk/members.html?"+userName+" | Awards {3}".format(Rank,userName,Safe,Awards))
-		# except Exception, e:
+				irc.reply("{0} {1} | {2} | http://brilliant-minds.tk/members.html?"+userName+" | Awards {3} | {4}".format(Rank,userName,Safe,Awards,Links))
+		# except Exception:
 			# try:
 				# userPage = utils.web.getUrl("http://brilliant-minds.tk/members.html?"+user)
 				# userName = userPage.split("<h4>")[1].split("</h4>")[0]
