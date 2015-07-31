@@ -35,63 +35,67 @@ import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 import json,random,urllib,re
 try:
-    from supybot.i18n import PluginInternationalization
-    _ = PluginInternationalization('UserInfo')
+	from supybot.i18n import PluginInternationalization
+	_ = PluginInternationalization('UserInfo')
 except ImportError:
-    _ = lambda x:x
+	_ = lambda x:x
 
 class UserInfo(callbacks.Plugin):
-    """A plugin that fetches member information from the website"""
-    threaded = True
-	def browse(self, irc, msg, args, user, blurb):
+	"""A plugin that fetches member information from the BMN website"""
+	threaded = True
+	def profile(self, irc, msg, args, user, blurb):
 		"""<memberName>
+
 		Returns user information from their record"""
 		self._getMemberInfo(irc, user, 0)
-	browse = wrap(browse,['somethingWithoutSpaces',optional('text')])
-	def _getMemberInfo(self, irc, user, urlGiven):
+	profile = wrap(profile,['somethingWithoutSpaces',optional('text')])
+
+	def _getMemberInfo(self, irc, user):
 		"""<username>
-		returns a link to a users profile and some information"""
+
+		returns a link to a user's profile and some information"""
 		try:
-			if not urlGiven:
+			if not user.startswith("http"):
 				userPage = utils.web.getUrl("http://brilliant-minds.tk/members.html?"+user)
 			else:
-				userPage = utils.web.getUrl(urlGiven)
+				userPage = utils.web.getUrl(user)
 			userName = userPage.split("<h4>")[1].split("</h4>")[0]
 			userData = json.loads(utils.web.getUrl("http://brilliant-minds.tk/members/"+user+".json"))
-			Awards = userData['awards']
-			Rank = userData['rank']
-			Status = ''
-			if userData['voucher']:
+			Award = userData["awards"][1]
+			Awards = ", ".join((str(award) for award in Award))
+			Rank = userData["rank"]
+			Status = ""
+			if userData["voucher"]:
 				Status += "This member has a voucher"
-				if userData['safe'] == 1:
+				if userData["safe"] == 1:
 					Status += " and is safe for the next IMC/IRC"
-				elif userData['safe'] == 2:
+				elif userData["safe"] == 2:
 					Status += " and is autosafe";
 			else:
-				if userData['safe'] == 1:
+				if userData["safe"] == 1:
 					Status += "This member is safe for the next IMC/IRC";
-				elif userData['safe'] == 2:
-					Status += "This member is absolutely necessary to keep the group going and thus is autosafe";
-			if self.registryValue('MemberSnarfer') == False:
+				elif userData["safe"] == 2:
+					Status += "This member is absolutely necessary to keep the group going and thus is autosafe"
+			if self.registryValue("MemberSnarfer") == False:
 				return
 			else:
 				irc.reply("{0} {1} | {2} | http://brilliant-minds.tk/members.html?"+userName+" | Awards {3}".format(Rank,userName,Safe,Awards))
+		# except Exception, e:
+			# try:
+				# userPage = utils.web.getUrl("http://brilliant-minds.tk/members.html?"+user)
+				# userName = userPage.split("<h4>")[1].split("</h4>")[0]
+				# userData = json.loads(utils.web.getUrl("http://brilliant-minds.tk/members/"+user+".json"))
+				# Awards = userData["awards"]
+				# Rank = userData["rank"]
+				# if self.registryValue("MemberSnarfer") == False:
+					# return
+				# else:
+					# irc.reply("{0} {1} http://brilliant-minds.tk/members.html?{0} | Awards {2}".format(Rank,user,Awards))
 		except Exception, e:
-			try:
-				userPage = utils.web.getUrl("http://brilliant-minds.tk/members.html?"+user)
-				userName = userPage.split("<h4>")[1].split("</h4>")[0]
-				userData = json.loads(utils.web.getUrl("http://brilliant-minds.tk/members/"+user+".json"))
-				Awards = userData['awards']
-				Rank = userData['rank']
-				if self.registryValue('MemberSnarfer') == False:
-					return
-				else:
-					irc.reply("{0} {1} http://brilliant-minds.tk/members.html?{0} | Awards {2}".format(Rank,user,Awards))
-			except Exception, e:
-				irc.reply("User {0} doesn't have any record in my database, sorry.".format(user))
+			irc.reply("User {0} doesn't have any record in my database, sorry.".format(user))
 		finally:
 			return None
-	userSnarfer = wrap(profile,['something']
+	userSnarfer = wrap(profile,["something"])
 
 Class = UserInfo
 

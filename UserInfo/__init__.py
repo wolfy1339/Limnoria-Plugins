@@ -1,5 +1,5 @@
 ###
-# Copyright (c) 2014, Thomas Scott
+# Copyright (c) 2014-2015, wolfy1339
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -29,8 +29,8 @@
 ###
 
 """
-Add a description of the plugin (to be presented to the user inside the wizard)
-here.  This should describe *what* the plugin does.
+A plugin that fetches member information from the BMN website.
+It returns user information from their record and a link to their record
 """
 
 import supybot
