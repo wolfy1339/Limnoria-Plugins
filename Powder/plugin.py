@@ -99,10 +99,13 @@ class Powder(callbacks.PluginRegexp):
 			return # Don't respond to save info from other bots with this plugin
 
 		self.log.info("powderSnarfer - save URL Found "+match.group(0))
-		if match.group(0)[0]=="~":
-			self._getSaveInfo(irc, ID, 0)
+		if self.registryValue('powderSnarfer') == "False":
+			return
 		else:
-			self._getSaveInfo(irc, ID, 1)
+			if match.group(0)[0]=="~":
+				self._getSaveInfo(irc, ID, 0)
+			else:
+				self._getSaveInfo(irc, ID, 1)
 
 	powderSnarfer = urlSnarfer(powderSnarfer)
 
@@ -115,10 +118,7 @@ class Powder(callbacks.PluginRegexp):
 			saveMsg = "Save "+ID+" is "+data["Name"].replace('&#039;','\'').replace('&gt;','>')+" by "+data["Username"]+". Score: "+str(data["Score"])+"."
 			if not urlGiven:
 				saveMsg+=" http://tpt.io/~"+ID
-		if self.registryValue('powderSnarfer') == "False":
-			return
-		else:
-			irc.reply(saveMsg,prefixNick=False)
+		irc.reply(saveMsg,prefixNick=False)
 
 	def frontpage(self,irc,msg,args):
 		"""
@@ -139,10 +139,20 @@ class Powder(callbacks.PluginRegexp):
 
 	frontpage = wrap(frontpage)
 
-	def forumSnarfer(self,irc,msg,match):
+	def forum(self, irc, msg, num):
+		"""
+
+		Returns information on a forum post."""
+		self._getPostDetails(irc, msg, num)
+	forum = wrap(forum, ['something'])
+
+	def forumSnarfer(self, irc, msg, match):
 		r"http://powdertoy[.]co[.]uk/Discussions/Thread/View[.]html[?]Thread=([0-9]+)|http://tpt.io/:([0-9]+)"
 		threadNum = match.group(1) or match.group(2)
+		self._getPostDetails(irc, msg, threadNum)
+	forumSnarfer = urlSnarfer(forumSnarfer)
 
+	def _getPostDetails(self, irc, msg, threadNum):
 		data = json.loads(utils.web.getUrl("http://powdertoy.co.uk/Discussions/Thread/View.json?Thread=%s"%(threadNum)))
 		cg = data["Info"]["Category"]
 		tp = data["Info"]["Topic"]
@@ -153,7 +163,6 @@ class Powder(callbacks.PluginRegexp):
 			irc.reply("Forum post is \"%s\" in the %s section, posted by %s and has %s replies. Last post was by %s at %s"%
 				(tp["Title"],cg["Name"],tp["Author"],tp["PostCount"]-1,tp["LastPoster"],tp["Date"]),prefixNick=False)
 		self.log.info("FORUMSNARF: Thread %s found. %s in the %s section"%(threadNum,tp["Title"],cg["Name"]))
-	forumSnarfer = urlSnarfer(forumSnarfer)
 
 	def profile(self, irc, msg, args, user):
 		"""<username|ID>
@@ -167,7 +176,7 @@ class Powder(callbacks.PluginRegexp):
 			uDu = userData['User']
 			irc.reply('http://powdertoy.co.uk/@{0} | ID {1} | Has {2} saves - Average score {3} - Highest score {4} | Posted {5} topics -  {6} posts - Has {7} reputation.'.format(user,userID,uDu['Saves']['Count'],uDu['Saves']['AverageScore'],uDu['Saves']['HighestScore'],uDu['Forum']['Topics'],uDu['Forum']['Replies'],uDu['Forum']['Reputation']), prefixNick=False)
 
-		except Exception, e:
+		except Exception as e:
 			try:
 			  	userPage = utils.web.getUrl("http://powdertoy.co.uk/User.html?ID="+user)
 				userName = userPage.split("<h1 class=\"SubmenuTitle\">")[1].split("</h1>")[0]
@@ -175,8 +184,8 @@ class Powder(callbacks.PluginRegexp):
 				uDu = userData['User']
 				irc.reply('http://powdertoy.co.uk/@{1} | ID {0} | Has {2} saves - Average score {3} - Highest score {4} | Posted {5} topics -  {6} posts - Has {7} reputation.'.format(user,userName,uDu['Saves']['Count'],uDu['Saves']['AverageScore'],uDu['Saves']['HighestScore'],uDu['Forum']['Topics'],uDu['Forum']['Replies'],uDu['Forum']['Reputation']), prefixNick=False)
 
-			except Exception, e:
-				irc.reply("User or ID doesn't exist - or Xeno screwed it again... {}".format(e))
+			except Exception as e:
+				irc.reply("User or ID doesn't exist - or Xeno screwed it again... {0}".format(e))
 				
 		finally:
 			return None
