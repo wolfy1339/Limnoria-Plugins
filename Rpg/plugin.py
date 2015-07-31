@@ -576,7 +576,7 @@ rating is %i. You have died %i times.\
         itemBoost = False
         while itemBoost is False:
             booster = itemData['modifiers'][random.randint(0,len(itemData['modifiers'])-1)]
-            print booster
+            print(booster)
             if genChance < booster:
                 itemBoost = booster;
                 itemToReturn['name']='%s %s'%(booster[0],itemToReturn['name'])

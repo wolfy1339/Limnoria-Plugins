@@ -295,11 +295,11 @@ class Timebomb(callbacks.Plugin):
         if self.registryValue('bombActiveUsers', channel):
             if len(nicks) == 0:
                 nicks = list(irc.state.channels[channel].users)
-                items = self.talktimes.iteritems()
+                items = iter(self.talktimes.iteritems())
                 nicks = []
                 for i in range(0, len(self.talktimes)):
                     try:
-                        item = items.next()
+                        item = next(items)
                         if time.time() - item[1] < self.registryValue('idleTime', channel)*60 and item[0] in irc.state.channels[channel].users and self._canBomb(irc, channel, msg.nick, item[0], False):
                             nicks.append(item[0])
                     except StopIteration:

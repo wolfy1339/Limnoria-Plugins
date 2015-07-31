@@ -322,7 +322,7 @@ class General(callbacks.PluginRegexp):
 			return '\x03%s%s' % (fg, c)
 		else:
 			if bg is None:
-				return '\x03%s%s%s' % (fg, u'\u200b', c) # or \x03%s,16%s or \x03%s,00 or \x03%s\x03 ?
+				return '\x03%s%s%s' % (fg, '\u200b', c) # or \x03%s,16%s or \x03%s,00 or \x03%s\x03 ?
 			else:
 				bg = str(bg).zfill(2)
 				return '\x03%s,%s%s' % (fg, bg, c)
@@ -336,7 +336,7 @@ class General(callbacks.PluginRegexp):
 			else:
 				text = 'POTATOES'
 			colors = utils.iter.cycle([4, 7, 8, 3, 2, 12, 6])
-			L = [self._color(c, fg=colors.next()) for c in unicode(ircutils.stripColor(text), 'utf-8')]
+			L = [self._color(c, fg=colors.next()) for c in str(ircutils.stripColor(text), 'utf-8')]
 			irc.reply(''.join(L).encode('utf-8') + '\x03', prefixNick=False)
 	mooReply = urlSnarfer(mooReply)
 
@@ -556,7 +556,7 @@ class General(callbacks.PluginRegexp):
 		except: self.buffer[channel]=[]
 
 		for each in self.buffer[channel]:
-			print user.lower(),each[0].lower(),user.lower() is each[0].lower()
+			print(user.lower(),each[0].lower(),user.lower() is each[0].lower())
 			if user.lower() in each[0].lower():
 				output = each[1]
 				x=2

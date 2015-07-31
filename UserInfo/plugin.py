@@ -33,7 +33,8 @@ from supybot.commands import *
 import supybot.plugins as plugins
 import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
-import json,random,urllib,re
+import json
+
 try:
 	from supybot.i18n import PluginInternationalization
 	_ = PluginInternationalization('UserInfo')
@@ -43,17 +44,17 @@ except ImportError:
 class UserInfo(callbacks.Plugin):
 	"""A plugin that fetches member information from the BMN website"""
 	threaded = True
-	def profile(self, irc, msg, args, user):
+	def profile(self, irc, user):
 		"""<memberName>
 
 		Returns user information from their record"""
-		# self._getMemberInfo(irc, user, 0)
-	# profile = wrap(profile,['somethingWithoutSpaces',optional('text')])
+		self._getMemberInfo(irc, user)
+	profile = wrap(profile,['somethingWithoutSpaces',optional('text')])
 
-	# def _getMemberInfo(self, irc, user):
-		# """<username>
+	def _getMemberInfo(self, irc, user):
+		"""<username>
 
-		# returns a link to a user's profile and some information"""
+		returns a link to a user's profile and some information"""
 		try:
 			if not user.startswith("http://"):
 				userPage = utils.web.getUrl("http://brilliant-minds.tk/members.html?{0}".format(user))
@@ -62,19 +63,17 @@ class UserInfo(callbacks.Plugin):
 				if user.startswith("https://"):
 					user = "http" + user.split("https")[0]
 				userPage = utils.web.getUrl(user)
-				userName = user.split("http://brilliant-minds.tk/members.html?")[0]
+				userName = user.split("members.html?")[1]
 
 			userData = json.loads(utils.web.getUrl("http://brilliant-minds.tk/members/{0}.json".format(userName)))
 			Awards = []
 			Rank = userData["rank"]
 			Status = ""
 			Links = []
-			if userData["awards"]:
-				for key, value in jsonObject["awards"].items():
-					Awards.append("{name}: {value}".format(name=key, value=str(value)))
-			if userData["links"]:
-				for key, value in jsonObject["links"]:
-					Links.append("{name}: {link}".format(name=key, value=link))
+			for key, value in list(jsonObject["awards"].items()):
+				Awards.append("{name}: {value}".format(name=key, value=str(value)))
+			for key, value in jsonObject["links"]:
+				Links.append("{name}: {link}".format(name=key, value=link))
 			Links = ", ".join(Links)
 			Awards = ", ".join(Awards)
 			if userData["voucher"]:
@@ -92,22 +91,10 @@ class UserInfo(callbacks.Plugin):
 				return
 			else:
 				irc.reply("{0} {1} | {2} | http://brilliant-minds.tk/members.html?"+userName+" | Awards {3} | {4}".format(Rank,userName,Safe,Awards,Links))
-		# except Exception:
-			# try:
-				# userPage = utils.web.getUrl("http://brilliant-minds.tk/members.html?"+user)
-				# userName = userPage.split("<h4>")[1].split("</h4>")[0]
-				# userData = json.loads(utils.web.getUrl("http://brilliant-minds.tk/members/"+user+".json"))
-				# Awards = userData["awards"]
-				# Rank = userData["rank"]
-				# if self.registryValue("MemberSnarfer") == False:
-					# return
-				# else:
-					# irc.reply("{0} {1} http://brilliant-minds.tk/members.html?{0} | Awards {2}".format(Rank,user,Awards))
-		except Exception, e:
-			irc.reply("User {0} doesn't have any record in my database, sorry.".format(user))
+		except Exception as e:
+			irc.reply("User {0} doesn't have any record in my database, sorry.".format(userName))
 		finally:
 			return None
-	userSnarfer = wrap(profile,["something"])
 
 Class = UserInfo
 
