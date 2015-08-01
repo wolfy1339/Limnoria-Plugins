@@ -123,6 +123,9 @@ class General(callbacks.PluginRegexp):
 #	stewie = wrap(stewieQuote)
 
 	def geoip(self,irc,msg,args,ohostmask):
+		"""<IPv4 Address>
+
+		Find where an ip address is in the world"""
 		try:
 			tmphostmask = irc.state.nickToHostmask(ohostmask)
 			if tmphostmask:
