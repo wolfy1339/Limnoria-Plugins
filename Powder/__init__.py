@@ -30,9 +30,9 @@
 
 """
 Provides latest git commit information and download links for The-Powder-Toy.
-Part of the StewieGriffin #powder/#TPTEscape supybot config by jacksonmj
-http://github.com/jacksonmj/StewieGriffin/
-http://github.com/wolfy1339/Powder-Sim2
+Part of the BMNBot #BMN supybot config by woolfy1339
+http://github.com/Brilliant-Minds/BMNBot-Plugins
+http://github.com/Brilliant-Minds/BMN-Powder-Toy
 """
 
 import supybot
@@ -52,14 +52,14 @@ __contributors__ = {}
 # This is a url where the most recent plugin package can be downloaded.
 __url__ = '' # 'http://supybot.com/Members/yourname/Powder/download'
 
-import config
-import plugin
+from . import config
+from . import plugin
 reload(plugin) # In case we're being reloaded.
 # Add more reloads here if you add third-party modules and want them to be
 # reloaded when this plugin is reloaded.  Don't forget to import them as well!
 
 if world.testing:
-    import test
+    from . import test
 
 Class = plugin.Class
 configure = config.configure

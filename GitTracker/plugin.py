@@ -1,6 +1,5 @@
 ###
 # Copyright (c) 2011, Valentin Lorentz (original)
-# Copyright (c) 2013, Thomas Scott (modified to my needs)
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -39,15 +38,16 @@ from supybot.commands import *
 import supybot.plugins as plugins
 import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
+import supybot.httpserver as httpserver
 from supybot.i18n import PluginInternationalization, internationalizeDocstring
 
 _ = PluginInternationalization('GitTracker')
 
-WEB_REPO = 'https://github.com/simtr/The-Powder-Toy'
-PLUGINS_WEB_REPO = 'https://github.com/wolfy1339/BigWolfy1339'
+WEB_REPO = 'https://github.com/Brilliant-Minds/BMN-Powder-Toy'
+PLUGINS_WEB_REPO = 'https://github.com/Brilliant-Minds/BMNBooot-Plugins'
 staticFactoids = {
-        'git':          'git://github.com/wolfy1339/Powder-Sim2.git',
-        'git-pl':       'git://github.com/wolfy1339/BigWolfy1339',
+        'git':          WEB_REPO + '.git',
+        'git-pl':       PLUGINS_WEB_REPO + '.git',
         'gh':           WEB_REPO,
         'gh-pl':        PLUGINS_WEB_REPO,
         'wiki':         WEB_REPO + '/wiki',
@@ -75,16 +75,16 @@ class GitTracker(callbacks.Plugin):
     def issue(self, irc, msg, args, user, title):
         """<title>
 
-        Opens an issue on Powder Sim 2 bugtracker called <title>."""
-        self._issue(irc, msg, args, user, title, 'wolfy1339/Powder-Sim2')
+        Opens an issue on BMN Powder Toy bugtracker called <title>."""
+        self._issue(irc, msg, args, user, title, 'Brilliant-Minds/BMN-Powder-Toy')
     issue = wrap(issue, ['user', 'text'])
 
     def issuepl(self, irc, msg, args, user, title):
         """<title>
 
-        Opens an issue on wolfy1339/BigWolfy1339 bugtracker called <title>.
+        Opens an issue on Brilliant-Minds/BMNBot-Plugins bugtracker called <title>.
         """
-        self._issue(irc, msg, args, user, title, 'wolfy1339/BigWolfy1339')
+        self._issue(irc, msg, args, user, title, 'Brilliant-Minds/BMNBot-Plugins')
     issuepl = wrap(issuepl, ['user', 'text'])
 
     def _issue(self, irc, msg, args, user, title, repoName):
