@@ -35,15 +35,15 @@ class GitTrackTestCase(ChannelPluginTestCase):
 
     def testFactoids(self):
         self.assertResponse('Hi, see the %%git repo!',
-                'git://github.com/wolfy1339/Powder-Sim2.git',
+                'https://github.com/Brilliant-Minds/BMN-Powder-Toy.git',
                 usePrefixChar=False)
         self.assertResponse('foobar: Hi, see the %%git-pl repo!',
-                'foobar: git://github.com/wolfy1339/BigWolfy1339.git',
+                'foobar: https://github.com/Brilliant-Minds/BMNBot-Plugins.git',
                 usePrefixChar=False)
         self.assertNoResponse('This does %%not exist', usePrefixChar=False)
 
         self.assertResponse('Hi, see %%commit#a234b0e at the Git repo.',
-                'https://github.com/wolfy1339/Powder-Sim2/commit/a234b0e',
+                'https://github.com/Brilliant-Minds/BMN-Powder-Toy/commit/93af1e8',
                 usePrefixChar=False)
 
 
