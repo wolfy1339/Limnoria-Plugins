@@ -37,7 +37,10 @@ import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 
 import supybot.ircmsgs as ircmsgs
-import json,random,urllib,re
+import json
+import random
+import urllib.request, urllib.parse, urllib.error
+import re
 
 class Powder(callbacks.PluginRegexp):
 	"""Contains all sorts of random stuff."""
