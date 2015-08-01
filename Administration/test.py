@@ -9,13 +9,13 @@ from supybot.test import *
 
 class AdministrationTestCase(PluginTestCase):
     plugins = ('Administration',)
- def testLoad(self):
+    def testLoad(self):
         self.assertError('load Owner')
         self.assertError('load owner')
         self.assertNotError('load Channel')
         self.assertNotError('list Owner')
 
-def testReload(self):
+    def testReload(self):
         self.assertError('reload Channel')
         self.assertNotError('load Channel')
         self.assertNotError('reload Channel')
@@ -50,6 +50,8 @@ def testReload(self):
         self.assertRegexp('help testcommand', 'Tell the bot to join')
         self.assertRegexp('join', 'not a valid command')
         self.assertHelp('testcommand')
+        self.assertNotError('unrename Admin')
+        self.assertNotRegexp('list Admin', 'testcommand')
 
     @skip('Nested commands cannot be renamed yet.')
     def testRenameNested(self):
