@@ -295,7 +295,7 @@ class Timebomb(callbacks.Plugin):
         if self.registryValue('bombActiveUsers', channel):
             if len(nicks) == 0:
                 nicks = list(irc.state.channels[channel].users)
-                items = iter(self.talktimes.iteritems())
+                items = iter(self.talktimes.items())
                 nicks = []
                 for i in range(0, len(self.talktimes)):
                     try:
@@ -433,7 +433,7 @@ class Timebomb(callbacks.Plugin):
         except KeyError:
             if self.registryValue('debug'):
                 irc.reply('I tried to detonate a bomb in "%s"' % channel)
-                irc.reply('List of bombs: %s' % self.bombs.keys())
+                irc.reply('List of bombs: %s' % list(self.bombs.keys()))
         irc.noReply()
     detonate = wrap(detonate, [('checkChannelCapability', 'op')])
 
