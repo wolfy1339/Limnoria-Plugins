@@ -1,34 +1,21 @@
 ###
-# Copyright (c) 2013, wolfy1339
+# Copyright (c) 2013-2015, wolfy1339
 # All rights reserved.
 #
 #
 ###
-import gc
-import os
-import sys
-import time
-import socket
-import linecache
 
-import re
+import gc
+import sys
 
 import supybot.log as log
 import supybot.conf as conf
-import supybot.i18n as i18n
 import supybot.utils as utils
-import supybot.world as world
-import supybot.ircdb as ircdb
 from supybot.commands import *
-import supybot.irclib as irclib
 import supybot.plugin as plugin
 import supybot.plugins as plugins
-import supybot.drivers as drivers
-import supybot.ircmsgs as ircmsgs
 import supybot.ircutils as ircutils
 import supybot.registry as registry
-import supybot.callbacks as callbacks
-import supybot.utils as utils
 import supybot.callbacks as callbacks
 try:
     from supybot.i18n import PluginInternationalization
@@ -39,12 +26,11 @@ except:
     _ = lambda x:x
 
 class Administration(callbacks.Plugin):
-    """Add the help for "@plugin help Administration" here
-    This should describe *how* to use this plugin."""
+    """Clone of the stock Owner plugin on Limnoria that works for Admin level too"""
     threaded = True
-def load(self, irc, msg, args, optlist, name):
-        """[--deprecated] <plugin>
 
+    def load(self, irc, msg, args, optlist, name):
+        """[--deprecated] <plugin>
         Loads the plugin <plugin> from any of the directories in
         conf.supybot.directories.plugins; usually this includes the main
         installed directory and 'plugins' in the current directory.
@@ -65,9 +51,12 @@ def load(self, irc, msg, args, optlist, name):
             irc.error('%s is deprecated.  Use --deprecated '
                       'to force it to load.' % name.capitalize())
             return
-        except ImportError, e:
-            if str(e).endswith(' ' + name):
+        except ImportError as e:
+            if str(e).endswith(name):
                 irc.error('No plugin named %s exists.' % utils.str.dqrepr(name))
+            elif "No module named 'config'" in str(e):
+                 irc.error('This plugin may be incompatible with your current Python '
+                           'version. Try running 2to3 on it.')
             else:
                 irc.error(str(e))
             return
@@ -75,14 +64,16 @@ def load(self, irc, msg, args, optlist, name):
         name = cb.name() # Let's normalize this.
         conf.registerPlugin(name, True)
         irc.replySuccess()
-        load = wrap(load, [getopts({'deprecated': ''}), 'something'])
+    load = wrap(load, [getopts({'deprecated': ''}), 'something'])
 
-def reload(self, irc, msg, args, name):
+    def reload(self, irc, msg, args, name):
         """<plugin>
-
         Unloads and subsequently reloads the plugin by name; use the 'list'
         command to see a list of the currently loaded plugins.
         """
+        if ircutils.strEqual(name, self.name()):
+            irc.error('You can\'t reload the %s plugin.' % name)
+            return
         callbacks = irc.removeCallback(name)
         if callbacks:
             module = sys.modules[callbacks[0].__module__]
@@ -103,14 +94,13 @@ def reload(self, irc, msg, args, name):
             except ImportError:
                 for callback in callbacks:
                     irc.addCallback(callback)
-                irc.error('No plugin %s exists.' % name)
+                irc.error('No plugin named %s exists.' % name)
         else:
             irc.error('There was no plugin %s.' % name)
     reload = wrap(reload, ['something'])
 
     def unload(self, irc, msg, args, name):
         """<plugin>
-
         Unloads the callback by name; use the 'list' command to see a list
         of the currently loaded plugins.  Obviously, the Owner plugin can't
         be unloaded.
@@ -132,7 +122,7 @@ def reload(self, irc, msg, args, name):
             irc.error('There was no plugin %s.' % name)
     unload = wrap(unload, ['something'])
 
-def _loadPlugins(self, irc):
+    def _loadPlugins(self, irc):
         self.log.info('Loading plugins (connecting to %s).', irc.network)
         alwaysLoadImportant = conf.supybot.plugins.alwaysLoadImportant()
         important = conf.supybot.commands.defaultPlugins.importantPlugins()
@@ -156,29 +146,39 @@ def _loadPlugins(self, irc):
                             m = plugin.loadPluginModule(name,
                                                         ignoreDeprecation=True)
                             plugin.loadPluginClass(irc, m)
-                        except callbacks.Error, e:
+                        except callbacks.Error as e:
                             # This is just an error message.
                             log.warning(str(e))
-                        except (plugins.NoSuitableDatabase, ImportError), e:
-                            s = 'Failed to load %s: %s' % (name, e)
-                            if not s.endswith('.'):
-                                s += '.'
+                        except plugins.NoSuitableDatabase as e:
+                            s = 'Failed to load %s: no suitable database(%s).' % (name, e)
                             log.warning(s)
-                        except Exception, e:
+                        except ImportError as e:
+                            e = str(e)
+                            if e.endswith(name):
+                                s = 'Failed to load {0}: No plugin named {0} exists.'.format(
+                                    utils.str.dqrepr(name))
+                            elif "No module named 'config'" in e:
+                                s = ("Failed to load %s: This plugin may be incompatible "
+                                "with your current Python version. If this error is appearing "
+                                "with stock Supybot plugins, remove the stock plugins directory "
+                                "(usually ~/Limnoria/plugins) from 'config directories.plugins'." % name)
+                            else:
+                                s = 'Failed to load %s: import error (%s).' % (name, e)
+                            log.warning(s)
+                        except Exception as e:
                             log.exception('Failed to load %s:', name)
                 else:
                     # Let's import the module so configuration is preserved.
                     try:
                         _ = plugin.loadPluginModule(name)
-                    except Exception, e:
+                    except Exception as e:
                         log.debug('Attempted to load %s to preserve its '
                                   'configuration, but load failed: %s',
                                   name, e)
         world.starting = False
 
-def disable(self, irc, msg, args, plugin, command):
+    def disable(self, irc, msg, args, plugin, command):
         """[<plugin>] <command>
-
         Disables the command <command> for all users (including the owners).
         If <plugin> is given, only disables the <command> from <plugin>.  If
         you want to disable a command for most users but not for yourself, set
@@ -205,7 +205,6 @@ def disable(self, irc, msg, args, plugin, command):
 
     def enable(self, irc, msg, args, plugin, command):
         """[<plugin>] <command>
-
         Enables the command <command> for all users.  If <plugin>
         if given, only enables the <command> from <plugin>.  This command is
         the inverse of disable.
@@ -222,26 +221,24 @@ def disable(self, irc, msg, args, plugin, command):
             irc.error('That command wasn\'t disabled.')
     enable = wrap(enable, [optional('plugin'), 'commandName'])
 
-    def rename(self, irc, msg, args, plugin, command, newName):
+    def rename(self, irc, msg, args, command_plugin, command, newName):
         """<plugin> <command> <new name>
-
         Renames <command> in <plugin> to the <new name>.
         """
-        if not plugin.isCommand(command):
-            what = 'command in the %s plugin' % plugin.name()
+        if not command_plugin.isCommand(command):
+            what = 'command in the %s plugin' % command_plugin.name()
             irc.errorInvalid(what, command)
-        if hasattr(plugin, newName):
+        if hasattr(command_plugin, newName):
             irc.error('The %s plugin already has an attribute named %s.' %
-                      (plugin, newName))
+                      (command_plugin, newName))
             return
-        registerRename(plugin.name(), command, newName)
-        renameCommand(plugin, command, newName)
+        plugin.registerRename(command_plugin.name(), command, newName)
+        plugin.renameCommand(command_plugin, command, newName)
         irc.replySuccess()
     rename = wrap(rename, ['plugin', 'commandName', 'commandName'])
 
     def unrename(self, irc, msg, args, plugin):
         """<plugin>
-
         Removes all renames in <plugin>.  The plugin will be reloaded after
         this command is run.
         """
@@ -251,7 +248,6 @@ def disable(self, irc, msg, args, plugin, command):
             irc.errorInvalid('plugin', plugin.name())
         self.reload(irc, msg, [plugin.name()]) # This makes the replySuccess.
     unrename = wrap(unrename, ['plugin'])
-
 Class = Administration
 
 
