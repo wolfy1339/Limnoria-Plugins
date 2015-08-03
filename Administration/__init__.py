@@ -1,5 +1,5 @@
 ###
-# Copyright (c) 2013, Thomas Scott
+# Copyright (c) 2013-2015, wolfy1339
 # All rights reserved.
 #
 #
