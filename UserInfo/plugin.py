@@ -56,7 +56,7 @@ class UserInfo(callbacks.Plugin):
 
 		returns a link to a user's profile and some information"""
 		try:
-			if not user.startswith("http://"):
+			if not user.startswith("http://") or not user.startswith("https://"):
 				userPage = utils.web.getUrl("http://brilliant-minds.tk/members.html?{0}".format(user))
 				userName = user
 			else:
@@ -70,12 +70,27 @@ class UserInfo(callbacks.Plugin):
 			Rank = userData["rank"]
 			Status = ""
 			Links = []
+
 			for key, value in list(jsonObject["awards"].items()):
-				Awards.append("{name}: {value}".format(name=key, value=str(value)))
+				if str(value) == 0:
+					Value = "Badge"
+				elif str(value) == 1:
+					Value = "Standard"
+				elif str(value) == 2:
+					Value = "Bronze"
+				elif str(value) == 3:
+					Value = "Silver"
+				elif str(value) == 4:
+					Value = "Gold"
+				elif str(value) == 5:
+					Value = "Diamond"
+				Awards.append("{0}: {1}".format(key, Value))
+
 			for key, value in jsonObject["links"]:
-				Links.append("{name}: {link}".format(name=key, value=link))
+				Links.append("{0}: {1}".format(key, link))
 			Links = ", ".join(Links)
 			Awards = ", ".join(Awards)
+
 			if userData["voucher"]:
 				Status += "This member has a voucher"
 				if userData["safe"] == 1:
@@ -84,13 +99,14 @@ class UserInfo(callbacks.Plugin):
 					Status += " and is autosafe";
 			else:
 				if userData["safe"] == 1:
-					Status += "This member is safe for the next IMC/IRC";
+					Status += "This member is safe for the next IMC/IRC"
 				elif userData["safe"] == 2:
 					Status += "This member is absolutely necessary to keep the group going and thus is autosafe"
+			
 			if self.registryValue("MemberSnarfer") == False:
 				return
 			else:
-				irc.reply("{0} {1} | {2} | http://brilliant-minds.tk/members.html?"+userName+" | Awards {3} | {4}".format(Rank,userName,Safe,Awards,Links))
+				irc.reply("{0} {1} | {2} | http://brilliant-minds.tk/members.html?"+userName+" | Awards {3} | {4}".format(Rank,userName,Safe,Awards,Links), prefixNick=False)
 		except Exception as e:
 			irc.reply("User {0} doesn't have any record in my database, sorry.".format(userName))
 		finally:
