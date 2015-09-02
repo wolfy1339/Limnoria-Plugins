@@ -57,12 +57,10 @@ class UserInfo(callbacks.Plugin):
 		returns a link to a user's profile and some information"""
 		try:
 			if not user.startswith("http://") or not user.startswith("https://"):
-				userPage = utils.web.getUrl("http://brilliant-minds.tk/members.html?{0}".format(user))
 				userName = user
 			else:
 				if user.startswith("https://"):
-					user = "http" + user.split("https")[0]
-				userPage = utils.web.getUrl(user)
+					user = user.split("https://")[0]
 				userName = user.split("members.html?")[1]
 
 			userData = json.loads(utils.web.getUrl("http://brilliant-minds.tk/members/{0}.json".format(userName)))
@@ -92,7 +90,7 @@ class UserInfo(callbacks.Plugin):
 			Awards = ", ".join(Awards)
 
 			if userData["voucher"]:
-				Status += "This member has a voucher"
+				Status = "This member has a voucher"
 				if userData["safe"] == 1:
 					Status += " and is safe for the next IMC/IRC"
 				elif userData["safe"] == 2:
@@ -107,7 +105,7 @@ class UserInfo(callbacks.Plugin):
 				return
 			else:
 				irc.reply("{0} {1} | {2} | http://brilliant-minds.tk/members.html?"+userName+" | Awards {3} | {4}".format(Rank,userName,Safe,Awards,Links), prefixNick=False)
-		except Exception as e:
+		except Exception:
 			irc.reply("User {0} doesn't have any record in my database, sorry.".format(userName))
 		finally:
 			return None
