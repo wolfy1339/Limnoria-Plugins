@@ -33,5 +33,8 @@ from supybot.test import *
 class UserInfoTestCase(PluginTestCase):
     plugins = ('UserInfo',)
 
+    def testUserSnarfer(self):
+        self.asertError('userinfo profile asdf')
+        self.assertNotError('userinfo profile wolfy1339')
 
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:
