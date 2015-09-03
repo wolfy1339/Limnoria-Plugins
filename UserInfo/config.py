@@ -53,9 +53,6 @@ conf.registerGlobalValue(UserInfo, 'public',
     registry.Boolean(True, """Determines whether this plugin is publicly
 visible."""))
 
-conf.registerGlobalValue(UserInfo, 'MemberSnarfer',
-    registry.Boolean(True, """Determines if this plugin will snarf ~<saveid>,
-with the user's name and information"""))
 conf.registerChannelValue(UserInfo, 'MemberSnarfer',
     registry.Boolean(True, """Determines if this plugin will snarf ~<saveid>, 
 with the user's name and information"""))
