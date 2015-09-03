@@ -44,7 +44,7 @@ except ImportError:
 class UserInfo(callbacks.Plugin):
 	"""A plugin that fetches member information from the BMN website"""
 	threaded = True
-	def profile(self, irc, msg, args, channel, user):
+	def profile(self, irc, msg, args, user):
 		"""<memberName>
 
 		Returns user information from their record"""
