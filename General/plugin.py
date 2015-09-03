@@ -424,7 +424,7 @@ class General(callbacks.PluginRegexp):
 
     greeter = urlSnarfer(greeter)
 
-    def awayMsgKicker(self, irc, msg, match): 
+    def awayMsgKicker(self, irc, msg, match):
         r"""(is now (set as )?away [-:(] Reason|is no longer away [:-] Gone for|is away:)"""
 
         self.log.info("KICKING %s for away announce" % msg.nick)
@@ -470,12 +470,12 @@ class General(callbacks.PluginRegexp):
             data = data[:-len(ending)]
         data = data.strip()
 
-        data = data.replace("&quot;","\"").replace("&#39;", "'").replace("&amp;","&")
+        data = data.replace("&quot;", "\"").replace("&#39;", "'").replace("&amp;", "&")
 
         if self.registryValue("youtubeSnarfer") == "False":
             return
         else:
-            irc.reply("Youtube video is "%s"" % data, prefixNick=nickPrefix)
+            irc.reply("Youtube video is '%s'" % data, prefixNick=nickPrefix)
 
     def youtube(self, irc, msg, args, url):
         """<url>
@@ -757,4 +757,3 @@ class General(callbacks.PluginRegexp):
 Class = General
 
 # vim:set shiftwidth=4 softtabstop=4 expandtab textwidth=79:
-
