@@ -51,7 +51,7 @@ class UserInfo(callbacks.Plugin):
 		self._getMemberInfo(irc, user, 0)
 	profile = wrap(profile,['somethingWithoutSpaces'])
 
-	def _getMemberInfo(self, irc, msg, args, user):
+	def _getMemberInfo(self, irc, user):
 		"""<username>
 
 		returns a link to a user's profile and some information"""
