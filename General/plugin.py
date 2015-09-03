@@ -249,7 +249,7 @@ class General(callbacks.PluginRegexp):
     def kicked(self, irc, msg, args, nick):
         """[user]
 
-        Shows how many times [user] has been kicked and by who. If [user] isn"t provided, it returns infomation based on the caller."""
+        Shows how many times [user] has been kicked and by who. If [user] isn't provided, it returns infomation based on the caller."""
 
         if nick is None:
             ref = msg.nick.lower()
@@ -313,7 +313,7 @@ class General(callbacks.PluginRegexp):
             self.annoyUser.pop(self.annoyUser.index(nick.lower()))
             self.log.info("ANNOY -> No longer annoying {0}".format(nick))
         except:
-            irc.error("That user isn"t being annoyed.")
+            irc.error("That user isn't being annoyed.")
             return 0
 
     unannoy = wrap(unannoy, ["op", "nick"])
@@ -334,12 +334,12 @@ class General(callbacks.PluginRegexp):
             irc.reply("isup.me seems down.")
             return
         if "is up." in data:
-            irc.reply("It"s just you.")
+            irc.reply("It's just you.")
         elif "looks down" in data:
-            irc.reply("It"s down.")
-        elif "If you can see this page and still think we\"re down, it\"s just you" \
+            irc.reply("It's down.")
+        elif "If you can see this page and still think we're down, it's just you" \
             in data:
-            irc.reply("It"s just you.")
+            irc.reply("It's just you.")
         else:
             irc.error("Check URL and try again")
 
