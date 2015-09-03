@@ -1,5 +1,6 @@
 ###
 # Copyright (c) 2010, AntB
+# Copyright (c) 2015, wolfy1339
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without

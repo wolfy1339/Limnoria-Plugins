@@ -1,5 +1,6 @@
 ###
 # Copyright (c) 2010, AntB
+# Copyright (c) 2015, wolfy1339
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -32,10 +33,6 @@ import supybot.conf as conf
 import supybot.registry as registry
 
 def configure(advanced):
-    # This will be called by supybot to configure this module.  advanced is
-    # a bool that specifies whether the user identified himself as an advanced
-    # user or not.  You should effect your configuration by manipulating the
-    # registry as appropriate.
     from supybot.questions import expect, anything, something, yn
     conf.registerPlugin('Powder', True)
 
@@ -46,16 +43,10 @@ conf.registerGlobalValue(Powder, 'public',
     registry.Boolean(True, """Determines whether this plugin is publicly
 visible."""))
 
-conf.registerGlobalValue(Powder, 'powderSnarfer',
-    registry.Boolean(True, """Determines if this plugin will snarf ~<saveid>,
-with the saves name and information"""))
 conf.registerChannelValue(Powder, 'powderSnarfer',
     registry.Boolean(True, """Determines if this plugin will snarf ~<saveid>, 
 with the saves name and information"""))
 
-conf.registerGlobalValue(Powder, 'forumSnarfer',
-    registry.Boolean(True, """Determines if this plugin will snarf forum links,
-with the thread's name and information"""))
 conf.registerChannelValue(Powder, 'forumSnarfer',
     registry.Boolean(True, """Determines if this plugin will snarf forum links,
 with the thread's name and information"""))

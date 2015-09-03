@@ -30,8 +30,8 @@
 
 from supybot.test import *
 
-class GitTrackTestCase(ChannelPluginTestCase):
-    plugins = ('GitTrack',)
+class GitTrackerTestCase(ChannelPluginTestCase):
+    plugins = ('GitTracker',)
 
     def testFactoids(self):
         self.assertResponse('Hi, see the %%git repo!',
@@ -47,7 +47,7 @@ class GitTrackTestCase(ChannelPluginTestCase):
                 usePrefixChar=False)
 
 
-        
+
 
         # test is the bot's nick
         self.assertError('test: Hi, see the %%git repo!', usePrefixChar=False)

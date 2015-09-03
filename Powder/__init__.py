@@ -1,5 +1,6 @@
 ###
 # Copyright (c) 2010, AntB
+# Copyright (c) 2015, wolfy1339
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -30,7 +31,7 @@
 
 """
 Provides latest git commit information and download links for The-Powder-Toy.
-Part of the BMNBot #BMN supybot config by woolfy1339
+Part of the BMNBot #BMN supybot config by wolfy1339
 http://github.com/Brilliant-Minds/BMNBot-Plugins
 http://github.com/Brilliant-Minds/BMN-Powder-Toy
 """
