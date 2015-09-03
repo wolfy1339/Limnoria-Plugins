@@ -65,6 +65,13 @@ class UserInfo(callbacks.Plugin):
 
     UserInfoSnarfer = urlSnarfer(UserInfoSnarfer)
 
+    def members(self, irc, msg, args):
+        """
+
+        Returns the current members list"""
+        data = json.loads(utils.web.getUrl("http://brilliant-minds.tk/members.json"))
+    members = wrap(members)
+
 	def _getMemberInfo(self, irc, msg, user):
 		"""<username>
 
@@ -99,7 +106,7 @@ class UserInfo(callbacks.Plugin):
 				Awards.append("{0}: {1}".format(key, Value))
 
 			for key, value in jsonObject["links"]:
-				Links.append("{0}: {1}".format(key, link))
+				Links.append("{0}: {1}".format(key, value))
 			Links = ", ".join(Links)
 			Awards = ", ".join(Awards)
 
@@ -115,7 +122,7 @@ class UserInfo(callbacks.Plugin):
 				elif userData["safe"] == 2:
 					Status += "This member is absolutely necessary to keep the group going and thus is autosafe"
 			
-			irc.reply("Member is: {0} {1} | {2} | http://brilliant-minds.tk/members.html?{3} | Awards {4} | {5}".format(Rank, userName, Safe, userName, Awards, Links), prefixNick=False)
+			irc.reply("Member is: {0} {1} | {2} | http://brilliant-minds.tk/members.html?{3} | Awards {4} | {5}".format(Rank, userName, Safe, userName, each["Awards"], Links), prefixNick=False)
 		    self.log.info("UserInfo: Member {0} found".format(userName))
 		except Exception:
 			irc.reply("User {0} doesn't have any record in my database, sorry.".format(userName))
