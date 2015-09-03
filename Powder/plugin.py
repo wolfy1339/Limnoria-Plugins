@@ -158,7 +158,10 @@ class Powder(callbacks.PluginRegexp):
     def forumSnarfer(self, irc, msg, match):
         r"http://powdertoy[.]co[.]uk/Discussions/Thread/View[.]html[?]Thread=([0-9]+)|http://tpt.io/:([0-9]+)"
         threadNum = match.group(1) or match.group(2)
-        self._getPostDetails(irc, msg, threadNum)
+        if self.registryValue('forumSnarfer') == "False":
+            return
+        else:
+            self._getPostDetails(irc, msg, threadNum)
     forumSnarfer = urlSnarfer(forumSnarfer)
 
     def _getPostDetails(self, irc, msg, threadNum):
@@ -166,11 +169,8 @@ class Powder(callbacks.PluginRegexp):
         cg = data["Info"]["Category"]
         tp = data["Info"]["Topic"]
 
-        if self.registryValue('forumSnarfer') == "False":
-            return
-        else:
-            irc.reply("Forum post is \"%s\" in the %s section, posted by %s and has %s replies. Last post was by %s at %s"%
-                (tp["Title"], cg["Name"], tp["Author"], tp["PostCount"]-1, tp["LastPoster"], tp["Date"]), prefixNick=False)
+        irc.reply("Forum post is \"%s\" in the %s section, posted by %s and has %s replies. Last post was by %s at %s"%
+            (tp["Title"], cg["Name"], tp["Author"], tp["PostCount"]-1, tp["LastPoster"], tp["Date"]), prefixNick=False)
         self.log.info("FORUMSNARF: Thread %s found. %s in the %s section"%(threadNum, tp["Title"], cg["Name"]))
 
     def profile(self, irc, msg, args, user):
