@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 ###
 # Copyright (c) 2011, Anthony Boot
 # Copyright (C) 2015, wolfy1339
