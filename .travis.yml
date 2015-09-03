@@ -15,4 +15,4 @@ script:
   - echo $TRAVIS_PYTHON_VERSION
   - rm -rf Administration
   - rm -rf Rpg
-  - supybot-test --plugins-dir=. --no-network
+  - supybot-test --plugins-dir=.
