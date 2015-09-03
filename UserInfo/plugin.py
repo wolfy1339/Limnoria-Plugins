@@ -51,12 +51,26 @@ class UserInfo(callbacks.Plugin):
 		self._getMemberInfo(irc, msg, user, 0)
 	profile = wrap(profile,['somethingWithoutSpaces'])
 
+    def UserInfoSnarfer(self, irc, msg, match):
+        r"http://brilliant-minds.tk/members.html\?([a-zA-Z0-9_])|@([a-zA-Z0-9_])"
+        Name = match.group(1) or match.group(2)
+
+        if msg.args[1].startswith("Member is:"):
+            return  # Don't respond to member info from other bots with this plugin
+
+        if self.registryValue('MemberSnarfer') == "False":
+            return
+        else:
+            self._getMemberInfo(irc, msg, Name)
+
+    UserInfoSnarfer = urlSnarfer(UserInfoSnarfer)
+
 	def _getMemberInfo(self, irc, msg, user):
 		"""<username>
 
 		returns a link to a user's profile and some information"""
 		try:
-			if not user.startswith("http://") or not user.startswith("https://"):
+			if not user.startswith("http://") and not user.startswith("https://"):
 				userName = user
 			else:
 				if user.startswith("https://"):
@@ -101,12 +115,11 @@ class UserInfo(callbacks.Plugin):
 				elif userData["safe"] == 2:
 					Status += "This member is absolutely necessary to keep the group going and thus is autosafe"
 			
-			if self.registryValue("MemberSnarfer") == False:
-				return
-			else:
-				irc.reply("{0} {1} | {2} | http://brilliant-minds.tk/members.html?"+userName+" | Awards {3} | {4}".format(Rank,userName,Safe,Awards,Links), prefixNick=False)
+			irc.reply("Member is: {0} {1} | {2} | http://brilliant-minds.tk/members.html?{3} | Awards {4} | {5}".format(Rank, userName, Safe, userName, Awards, Links), prefixNick=False)
+		    self.log.info("UserInfo: Member {0} found".format(userName))
 		except Exception:
 			irc.reply("User {0} doesn't have any record in my database, sorry.".format(userName))
+			self.log.error("UserInfo: Member {0} not found".format(userName))
 		finally:
 			return None
 
