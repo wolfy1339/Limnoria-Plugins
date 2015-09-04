@@ -75,11 +75,14 @@ class UserInfo(callbacks.Plugin):
         preofficers = data["preofficers"]
  
         for member, rank in officers:
-
+            Officers = []
+            Officers.append("{0} {1}".format(rank, member))
         for members, rank in enlisted:
-  
-        for members, rqank in preofficers:
-
+            Enlisted = []
+            Enlisted.append("{0} {1}".format(rank, member))
+        for members, rank in preofficers:
+            Preofficers = []
+            Preofficers.append("{0} {1}".format(rank, member))
         if irc.channel != "#BMN":
             irc.queueMsg(ircmsgs.privmsg(msg.nick, "{0}".format(data))
         else:
