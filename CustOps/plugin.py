@@ -33,9 +33,9 @@ class CustOps(callbacks.Plugin):
         Forces a user to part the channel. Essentially a kick without the counter."""
 
         if not reason:
-            reason = '{} says GTFO.'.format(msg.nick)
+            reason = '{0} says GTFO.'.format(msg.nick)
 
-        irc.queueMsg(ircmsgs.IrcMsg('REMOVE {} {} :{}'.format(channel, user, reason)))
+        irc.queueMsg(ircmsgs.IrcMsg('REMOVE {0} {1} :{2}'.format(channel, user, reason)))
 
     ninja = wrap(ninja, ['op', ('haveOp', 'remove a user from the channel'), 'nickInChannel', additional('text')])
 
@@ -47,18 +47,16 @@ class CustOps(callbacks.Plugin):
 
         if channel not in '#powder':
             channel = '#powder'
-        irc.queueMsg(ircmsgs.IrcMsg('MODE #powder +b {}$#powder-social'.format(irc.state.nickToHostmask(user))))
-        irc.queueMsg(ircmsgs.IrcMsg('KICK #powder {} :Take it to #powder-social'.format(user)))
+        irc.queueMsg(ircmsgs.IrcMsg('MODE #powder +b {0}$#powder-social'.format(irc.state.nickToHostmask(user))))
+        irc.queueMsg(ircmsgs.IrcMsg('KICK #powder {0} :Take it to #powder-social'.format(user)))
         irc.queueMsg(ircmsgs.invite(user, '#powder-social'))
-        irc.queueMsg(ircmsgs.IrcMsg('NOTICE {} :{} has requested you take your current conversation to #powder-social.'.format(user, msg.nick)))
+        irc.queueMsg(ircmsgs.IrcMsg('NOTICE {0} :{1} has requested you take your current conversation to #powder-social.'.format(user, msg.nick)))
         expires = time.time() + 300
 
         def f():
-            irc.queueMsg(ircmsgs.IrcMsg('MODE #powder -b {}$#powder-social'.format(irc.state.nickToHostmask(user))))
+            irc.queueMsg(ircmsgs.IrcMsg('MODE #powder -b {0}$#powder-social'.format(irc.state.nickToHostmask(user))))
 
         schedule.addEvent(f, expires)
-
-#       irc.queueMsg(ircmsgs.IrcMsg('MODE #powder -b {}$#powder-social'.format(irc.state.nickToHostmask(user))))
 
     social = wrap(social, ['op', ('haveOp', 'Evict a user to #powder-social'), 'nickInChannel', optional('anything')])
 
@@ -103,7 +101,7 @@ class CustOps(callbacks.Plugin):
 
         hmask = irc.state.nickToHostmask(user)
         hostmask = ircutils.joinHostmask('*', '*', ircutils.hostFromHostmask(hmask))
-        irc.queueMsg(ircmsgs.IrcMsg('MODE {} -q {}'.format(channel, hostmask)))
+        irc.queueMsg(ircmsgs.IrcMsg('MODE {0} -q {1}'.format(channel, hostmask)))
 
     unstab = wrap(unstab, ['op', ('haveOp', 'Set user modes'), 'nickInChannel'])
 
