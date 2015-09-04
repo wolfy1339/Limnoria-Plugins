@@ -48,10 +48,10 @@ class UserInfo(callbacks.Plugin):
         """<memberName>
 
         Returns user information from their record"""
-        self._getMemberInfo(self, irc, user)
+        self._getMemberInfo(self, irc, msg, auser)
     profile = wrap(profile,['somethingWithoutSpaces'])
 
-    def UserInfoSnarfer(self, irc, msg, match):
+    def UserInfoSnarfer(self, irc, msg, args, match):
         r"http://brilliant-minds.tk/members.html\?([a-zA-Z0-9_])|@([a-zA-Z0-9_])"
         Name = match.group(1) or match.group(2)
 
@@ -66,7 +66,7 @@ class UserInfo(callbacks.Plugin):
     UserInfoSnarfer = urlSnarfer(UserInfoSnarfer)
 
     def members(self, irc, msg, args):
-        """
+        """No arguments
 
         Returns the current members list"""
         data = json.loads(utils.web.getUrl("http://brilliant-minds.tk/members.json"))
