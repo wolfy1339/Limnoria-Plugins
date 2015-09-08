@@ -48,7 +48,7 @@ class UserInfo(callbacks.Plugin):
         """<memberName>
 
         Returns user information from their record"""
-        self._getMemberInfo(self, irc, user)
+        self._getMemberInfo(irc, user)
     profile = wrap(profile,['somethingWithoutSpaces'])
 
     def UserInfoSnarfer(self, irc, msg, args, match):
@@ -61,7 +61,7 @@ class UserInfo(callbacks.Plugin):
         if self.registryValue('MemberSnarfer') == "False":
             return
         else:
-            self._getMemberInfo(self, irc, Name)
+            self._getMemberInfo(irc, Name)
 
     UserInfoSnarfer = urlSnarfer(UserInfoSnarfer)
 
