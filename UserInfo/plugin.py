@@ -35,28 +35,24 @@ import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 import json
 
-try:
-    from supybot.i18n import PluginInternationalization
-    _ = PluginInternationalization('UserInfo')
-except ImportError:
-    _ = lambda x:x
 
 class UserInfo(callbacks.Plugin):
     """A plugin that fetches member information from the BMN website"""
     threaded = True
+
     def profile(self, irc, msg, args, user):
         """<memberName>
 
         Returns user information from their record"""
         self._getMemberInfo(irc, user)
-    profile = wrap(profile,['somethingWithoutSpaces'])
+    profile = wrap(profile, ['somethingWithoutSpaces'])
 
     def UserInfoSnarfer(self, irc, msg, args, match):
-        r"http://brilliant-minds.tk/members.html\?([a-zA-Z0-9_])|@([a-zA-Z0-9_])"
+        r"http://brilliant-minds.tk/members.html\?(\W)|@(\W)"
         Name = match.group(1) or match.group(2)
 
         if msg.args[1].startswith("Member is:"):
-            return  # Don't respond to member info from other bots with this plugin
+            return  # Don't respond to other bots with this plugin loaded
 
         if self.registryValue('MemberSnarfer') == "False":
             return
@@ -69,15 +65,17 @@ class UserInfo(callbacks.Plugin):
         """No arguments
 
         Returns the current members list"""
-        Data = json.loads(utils.web.getUrl("http://brilliant-minds.tk/members.json"))
+
+        jsonUrl = "http://brilliant-minds.tk/members.json"
+        Data = json.loads(utils.web.getUrl(jsonUrl))
         officers = Data["officers"]
         enlisted = Data["enlisted"]
         preofficers = Data["preofficers"]
- 
+
         for member, rank in officers:
             Officers = []
             Officers.append("{0} {1}".format(rank, member))
- 
+
         for members, rank in enlisted:
             Enlisted = []
             Enlisted.append("{0} {1}".format(rank, member))
@@ -85,9 +83,9 @@ class UserInfo(callbacks.Plugin):
         for members, rank in preofficers:
             Preofficers = []
             Preofficers.append("{0} {1}".format(rank, member))
-       
+
         if irc.channel != "#BMN":
-            irc.queueMsg(ircmsgs.privmsg(msg.nick, "{0}".format(data))
+            irc.queueMsg(ircmsgs.privmsg(msg.nick, "{0}".format(data)))
         else:
             irc.reply("{0}".format(data), nickPrefix=false)
     members = wrap(members)
@@ -96,15 +94,18 @@ class UserInfo(callbacks.Plugin):
         """<username>
 
         returns a link to a user's profile and some information"""
+
         try:
-            if not user.startswith("http://") and not user.startswith("https://"):
+            if (not user.startswith("http://") and
+                    not user.startswith("https://")):
                 userName = user
             else:
                 if user.startswith("https://"):
                     user = user.split("https://")[0]
                 userName = user.split("members.html?")[1]
 
-            userData = json.loads(utils.web.getUrl("http://brilliant-minds.tk/members/{0}.json".format(userName)))
+            url = "http://brilliant-minds.tk/members/{0}.json".format(userName)
+            userData = json.loads(utils.web.getUrl(url))
             Awards = []
             awards = userData["awards"]
             Rank = userData["rank"]
@@ -126,7 +127,7 @@ class UserInfo(callbacks.Plugin):
                     Value = "Diamond"
                 Awards.append("{0}: {1}".format(key, Value))
 
-            for key, value in userData["links"]:
+            for key, value in list(userData["links"].items()):
                 Links.append("{0}: {1}".format(key, value))
             Links = ", ".join(Links)
             Awards = ", ".join(Awards)
@@ -136,17 +137,21 @@ class UserInfo(callbacks.Plugin):
                 if userData["safe"] == 1:
                     Status += " and is safe for the next IMC/IRC"
                 elif userData["safe"] == 2:
-                    Status += " and is autosafe";
+                    Status += " and is autosafe"
             else:
                 if userData["safe"] == 1:
                     Status += "This member is safe for the next IMC/IRC"
                 elif userData["safe"] == 2:
-                    Status += "This member is absolutely necessary to keep the group going and thus is autosafe"
-	
-            irc.reply("Member is: {0} {1} | {2} | http://brilliant-minds.tk/members.html?{3} | Awards {4} | {5}".format(Rank, userName, Safe, userName, Awards, Links), prefixNick=False)
+                    Status += " ".join(["This member is absolutely necessary",
+                            "to keep the group going and thus is autosafe")
+
+            irc.reply(" ".join(["Member is: {0} {1} | {2} |",
+                "http://brilliant-minds.tk/members.html?{3} | Awards {4} | ",
+                "{5}".format(Rank, userName, Safe, userName, Awards, Links)],
+                prefixNick=False)
             self.log.info("UserInfo: Member {0} found".format(userName))
         except Exception:
-            irc.reply("User {0} doesn't have any record in my database, sorry.".format(userName))
+            irc.reply("User {0} isn't in my database, sorry.".format(Name))
             self.log.error("UserInfo: Member {0} not found".format(userName))
         finally:
             return None
