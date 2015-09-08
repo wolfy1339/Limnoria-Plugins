@@ -69,20 +69,23 @@ class UserInfo(callbacks.Plugin):
         """No arguments
 
         Returns the current members list"""
-        data = json.loads(utils.web.getUrl("http://brilliant-minds.tk/members.json"))
-        officers = data["officers"]
-        enlisted = data["enlisted"]
-        preofficers = data["preofficers"]
+        Data = json.loads(utils.web.getUrl("http://brilliant-minds.tk/members.json"))
+        officers = Data["officers"]
+        enlisted = Data["enlisted"]
+        preofficers = Data["preofficers"]
  
         for member, rank in officers:
             Officers = []
             Officers.append("{0} {1}".format(rank, member))
+ 
         for members, rank in enlisted:
             Enlisted = []
             Enlisted.append("{0} {1}".format(rank, member))
+
         for members, rank in preofficers:
             Preofficers = []
             Preofficers.append("{0} {1}".format(rank, member))
+       
         if irc.channel != "#BMN":
             irc.queueMsg(ircmsgs.privmsg(msg.nick, "{0}".format(data))
         else:
