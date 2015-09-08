@@ -40,11 +40,6 @@ import supybot.ircmsgs as ircmsgs
 import json
 import random
 import re
-import sys
-if sys.version_info >= (3, 0, 0):
-    import urllib.request, urllib.parse, urllib.error
-else:
-    import urllib
 
 
 class Powder(callbacks.PluginRegexp):
