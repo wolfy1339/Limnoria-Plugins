@@ -64,7 +64,7 @@ class UserInfo(callbacks.Plugin):
     def members(self, irc, msg, args):
         """No arguments
 
-        Returns the current members list"""
+        Returns the current members list in a private message"""
 
         jsonUrl = "http://brilliant-minds.tk/members.json"
         Data = json.loads(utils.web.getUrl(jsonUrl))
@@ -75,17 +75,21 @@ class UserInfo(callbacks.Plugin):
         for member, rank in officers:
             Officers = []
             Officers.append("{0} {1}".format(rank, member))
+            Officers = "\n".join(Officers)
 
         for members, rank in enlisted:
             Enlisted = []
             Enlisted.append("{0} {1}".format(rank, member))
+            Enlisted = "\n".join(Enlisted)
 
         for members, rank in preofficers:
             Preofficers = []
             Preofficers.append("{0} {1}".format(rank, member))
+            Preofficers = "\n".join(Preofficers)
 
         if irc.channel != "#BMN":
-            irc.queueMsg(ircmsgs.privmsg(msg.nick, "{0}".format(data)))
+            ircmsgs.privmsg(msg.nick, "\n".join([
+                Officers, Enlisted, Preofficers]))
         else:
             irc.reply("{0}".format(data), nickPrefix=false)
     members = wrap(members)
