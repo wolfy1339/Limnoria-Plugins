@@ -50,7 +50,10 @@ class Powder(callbacks.PluginRegexp):
     def git(self, irc, msg, args, user, project, branch):
         """<username> [project] [branch]
 
-        Returns information about a user GitHub Repo. Project and branch arguments are optional. Defaults to Brilliant-Minds.github.io/master if no arguments are given. Arguments are CaSe-SeNsItIvE"""
+        Returns information about a user GitHub Repo.
+        Project and branch arguments are optional.
+        Defaults to Brilliant-Minds.github.io/master if no arguments are given.
+        Arguments are CaSe-SeNsItIvE"""
 
         if not branch:
             branch = "master"
@@ -62,18 +65,20 @@ class Powder(callbacks.PluginRegexp):
             user = "simtr"
         if user == "doxin":
             user = "dikzak"
-        giturl = "https://api.github.com/repos/{0}/{1}/branches/{2}".format(user, project, branch)
+        giturl = "https://api.github.com/repos/%s/%s/branches/%s" % (
+            user, project, branch)
         try:
             data = json.loads(utils.web.getUrl(giturl))
         except:
             try:
                 branch = project
                 project = "BMNBot-Plugins"
-                giturl = "https://api.github.com/repos/{0}/{1}/branches/{2}".format(user, project, branch)
+                giturl = "https://api.github.com/repos/%s/%s/branches/%s" % (
+                    user, project, branch)
                 data = json.loads(utils.web.getUrl(giturl))
             except:
                 irc.error("HTTP 404. Please check and try again.", prefixNick=False)
-                self.log.error("GIT: Returned 404 on %s:%s"%(user, branch))
+                self.log.error("GIT: Returned 404 on %s:%s" % (user, branch))
                 return
         data = data['commit']['commit']
 
@@ -81,10 +86,10 @@ class Powder(callbacks.PluginRegexp):
         data["message"] = data["message"].replace("\n", " ")
         data["message"] = data["message"].replace(" ", " ")
 
-        self.log.info("GIT: user:%s project:%s branch:%s called by %s sucessfully."%(user, project, branch, msg.nick))
-        irc.reply("Last commit to %s's %s repo, %s branch, was by %s on %s at %s. Commit message was \"%s\" - https://github.com/%s/%s/tree/%s"%
-            (user, project, branch, data["committer"]["name"], data["committer"]["date"][0], data["committer"]["date"][1], data["message"], user, project, branch), prefixNick=False)
-
+        self.log.info("GIT: user:%s project:%s branch:%s called by %s sucessfully." % (user, project, branch, msg.nick))
+        irc.reply("Last commit to %s's %s repo, %s branch, was by %s on %s at %s. Commit message was \"%s\" - https://github.com/%s/%s/tree/%s" %
+            (user, project, branch, data["committer"]["name"], data["committer"]["date"][0], data["committer"]["date"][1],
+            data["message"], user, project, branch), prefixNick=False)
 
     git = wrap(git, ['somethingWithoutSpaces', optional('somethingWithoutSpaces'), optional('somethingwithoutspaces')])
 
@@ -106,7 +111,7 @@ class Powder(callbacks.PluginRegexp):
         if self.registryValue('powderSnarfer') == "False":
             return
         else:
-            if match.group(0)[0]=="~":
+            if match.group(0)[0] == "~":
                 self._getSaveInfo(irc, ID, 0)
             else:
                 self._getSaveInfo(irc, ID, 1)
@@ -160,13 +165,13 @@ class Powder(callbacks.PluginRegexp):
     forumSnarfer = urlSnarfer(forumSnarfer)
 
     def _getPostDetails(self, irc, msg, threadNum):
-        data = json.loads(utils.web.getUrl("http://powdertoy.co.uk/Discussions/Thread/View.json?Thread=%s"%(threadNum)))
+        data = json.loads(utils.web.getUrl("http://powdertoy.co.uk/Discussions/Thread/View.json?Thread=%s" % (threadNum)))
         cg = data["Info"]["Category"]
         tp = data["Info"]["Topic"]
 
         irc.reply("Forum post is \"%s\" in the %s section, posted by %s and has %s replies. Last post was by %s at %s"%
             (tp["Title"], cg["Name"], tp["Author"], tp["PostCount"]-1, tp["LastPoster"], tp["Date"]), prefixNick=False)
-        self.log.info("FORUMSNARF: Thread %s found. %s in the %s section"%(threadNum, tp["Title"], cg["Name"]))
+        self.log.info("FORUMSNARF: Thread %s found. %s in the %s section" % (threadNum, tp["Title"], cg["Name"]))
 
     def profile(self, irc, msg, args, user):
         """<username|ID>
@@ -210,7 +215,8 @@ class Powder(callbacks.PluginRegexp):
         Returns a random save from powdertoy.co.uk"""
         found = False
         while found is False:
-            saveID = str(json.loads(utils.web.getUrl("http://powdertoythings.co.uk/Powder/Saves/Random.json?Count=1"))['Saves'][0]['ID'])
+            url = "http://powdertoythings.co.uk/Powder/Saves/Random.json?Count=1"
+            saveID = str(json.loads(utils.web.getUrl(url))['Saves'][0]['ID'])
             page = json.loads(utils.web.getUrl("http://powdertoy.co.uk/Browse/View.json?ID="+saveID))
             if page["Username"] != "FourOhFour":
                 found = True
