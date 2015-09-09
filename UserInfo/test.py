@@ -38,7 +38,7 @@ class UserInfoTestCase(PluginTestCase):
         self.assertNotError('userinfo profile wolfy1339')
 
     def testUserSnarfer(self):
-        self.assertResponse('http://brilliant-minds.tk/members.html?wolfy1339')
-        self.assertResponse('@wolfy1339')
+        self.assertNotError('http://brilliant-minds.tk/members.html?wolfy1339')
+        self.assertNotError('@wolfy1339')
 
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:
