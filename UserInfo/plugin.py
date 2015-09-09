@@ -140,14 +140,14 @@ class UserInfo(callbacks.Plugin):
                     Status += " and is autosafe"
             else:
                 if userData["safe"] == 1:
-                    Status += "This member is safe for the next IMC/IRC"
+                    Status = "This member is safe for the next IMC/IRC"
                 elif userData["safe"] == 2:
-                    Status += " ".join(["This member is absolutely necessary",
-                            "to keep the group going and thus is autosafe")
+                    Status = " ".join(["This member is absolutely necessary",
+                            "to keep the group going and thus is autosafe"])
 
             irc.reply(" ".join(["Member is: {0} {1} | {2} |",
                 "http://brilliant-minds.tk/members.html?{3} | Awards {4} | ",
-                "{5}".format(Rank, userName, Safe, userName, Awards, Links)],
+                "{5}".format(Rank, userName, Safe, userName, Awards, Links)]),
                 prefixNick=False)
             self.log.info("UserInfo: Member {0} found".format(userName))
         except Exception:
