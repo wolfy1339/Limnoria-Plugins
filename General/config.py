@@ -23,18 +23,12 @@ conf.registerGlobalValue(General, 'public',
     registry.Boolean(True, """Determines whether this plugin is publicly
 visible."""))
 
-conf.registerGlobalValue(General, 'youtubeSnarfer',
-    registry.Boolean(True, """Determines if this plugin will snarf ~<saveid>,
-with the save's name and information"""))
 conf.registerChannelValue(General, 'youtubeSnarfer',
-    registry.Boolean(True, """Determines if this plugin will snarf ~<saveid>, 
+    registry.Boolean(False, """Determines if this plugin will snarf ~<saveid>, 
 with the save's name and information"""))
 
-conf.registerGlobalValue(General, 'pasteSnarfer',
-    registry.Boolean(True, """Determines if this plugin will snarf pastebin links,
-with the paste's name,owner,syntax"""))
 conf.registerChannelValue(General, 'pasteSnarfer',
-    registry.Boolean(True, """Determines if this plugin will snarf pastebin links,
+    registry.Boolean(False, """Determines if this plugin will snarf pastebin links,
 with the paste's name,owner,syntax"""))
 
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:
