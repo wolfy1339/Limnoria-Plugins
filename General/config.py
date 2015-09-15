@@ -19,10 +19,6 @@ def configure(advanced):
 
 General = conf.registerPlugin('General')
 
-conf.registerGlobalValue(General, 'public',
-    registry.Boolean(True, """Determines whether this plugin is publicly
-visible."""))
-
 conf.registerChannelValue(General, 'youtubeSnarfer',
     registry.Boolean(False, """Determines if this plugin will snarf ~<saveid>, 
 with the save's name and information"""))

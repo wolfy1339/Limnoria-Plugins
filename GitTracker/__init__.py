@@ -47,12 +47,14 @@ __author__ = supybot.authors.progval
 __contributors__ = {}
 
 # This is a url where the most recent plugin package can be downloaded.
-__url__ = '' # 'http://github.com/wolfy1339/BigWolfy1339/blob/master/GitTracker'
+__url__ = '' # 'http://supybot.com/Members/yourname/GitTracker/download'
 
 from . import config
 from . import plugin
 from imp import reload
-reload(plugin) # In case we're being reloaded.
+# In case we're being reloaded.
+reload(config)
+reload(plugin)
 # Add more reloads here if you add third-party modules and want them to be
 # reloaded when this plugin is reloaded.  Don't forget to import them as well!
 

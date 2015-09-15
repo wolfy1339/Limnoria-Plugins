@@ -36,7 +36,7 @@ try:
 except:
     # Placeholder that allows to run the plugin on a bot
     # without the i18n module
-    _ = lambda x:x
+    _ = lambda x: x
 
 def configure(advanced):
     # This will be called by supybot to configure this module.  advanced is
@@ -48,13 +48,8 @@ def configure(advanced):
 
 
 UserInfo = conf.registerPlugin('UserInfo')
-
-conf.registerGlobalValue(UserInfo, 'public',
-    registry.Boolean(True, """Determines whether this plugin is publicly
-visible."""))
-
 conf.registerChannelValue(UserInfo, 'MemberSnarfer',
-    registry.Boolean(True, """Determines if this plugin will snarf ~<saveid>, 
+    registry.Boolean(True, """Determines if this plugin will snarf @<username>, 
 with the user's name and information"""))
 
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:

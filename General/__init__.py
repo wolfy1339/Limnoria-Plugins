@@ -6,8 +6,7 @@
 ###
 
 """
-Add a description of the plugin (to be presented to the user inside the wizard)
-here.  This should describe *what* the plugin does.
+Some general purpose plugin for use in #powder
 """
 
 import supybot
@@ -29,8 +28,10 @@ __url__ = '' # 'http://supybot.com/Members/yourname/General/download'
 
 from . import config
 from . import plugin
+from imp import reload
+# In case we're being reloaded.
 reload(config)
-reload(plugin) # In case we're being reloaded.
+reload(plugin)
 # Add more reloads here if you add third-party modules and want them to be
 # reloaded when this plugin is reloaded.  Don't forget to import them as well!
 

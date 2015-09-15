@@ -47,7 +47,9 @@ __contributors__ = {}
 
 from . import config
 from . import plugin
-reload(plugin) # In case we're being reloaded.
+from imp import reload
+# In case we're being reloaded.
+reload(plugin)
 
 if world.testing:
     from . import test

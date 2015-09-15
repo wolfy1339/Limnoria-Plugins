@@ -6,8 +6,7 @@
 ###
 
 """
-Add a description of the plugin (to be presented to the user inside the wizard)
-here.  This should describe *what* the plugin does.
+Custom Op commands
 """
 
 import supybot
@@ -29,7 +28,9 @@ __url__ = '' #
 
 from . import config
 from . import plugin
-reload(plugin) # In case we're being reloaded.
+from imp import reload
+# In case we're being reloaded.
+reload(plugin)
 # Add more reloads here if you add third-party modules and want them to be
 # reloaded when this plugin is reloaded.  Don't forget to import them as well!
 

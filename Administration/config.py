@@ -35,7 +35,7 @@ try:
 except:
     # Placeholder that allows to run the plugin on a bot
     # without the i18n module
-    _ = lambda x:x
+    _ = lambda x: x
 
 def configure(advanced):
     # This will be called by supybot to configure this module.  advanced is
@@ -47,9 +47,6 @@ def configure(advanced):
 
 
 Administration = conf.registerPlugin('Administration')
-conf.registerGlobalValue(Administration, 'public',
-    registry.Boolean(True, """Determines whether this plugin is publicly
-    visible."""))
 conf.registerGlobalValue(Administration, 'quitMsg',
     registry.String('', """Determines what quit message will be used by default.
     If the quit command is called without a quit message, this will be used.  If
