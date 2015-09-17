@@ -34,12 +34,20 @@ import supybot.plugins as plugins
 import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 import json
+try:
+    from supybot.i18n import PluginInternationalization
+    from supybot.i18n import internationalizeDocstring
+    _ = PluginInternationalization('UserInfo')
+except ImportError:
+    _ = lambda x: x
+    internationalizeDocstring = lambda x: x
 
-
+@internatianolizeDocstring
 class UserInfo(callbacks.Plugin):
     """A plugin that fetches member information from the BMN website"""
     threaded = True
 
+    @internationalizeDocstring
     def profile(self, irc, msg, args, user):
         """<memberName>
 
@@ -61,6 +69,7 @@ class UserInfo(callbacks.Plugin):
 
     UserInfoSnarfer = urlSnarfer(UserInfoSnarfer)
 
+    @internationalizeDocstring
     def members(self, irc, msg, args):
         """No arguments
 
