@@ -42,7 +42,8 @@ except ImportError:
     _ = lambda x: x
     internationalizeDocstring = lambda x: x
 
-@internatianolizeDocstring
+
+@internationalizeDocstring
 class UserInfo(callbacks.Plugin):
     """A plugin that fetches member information from the BMN website"""
     threaded = True
@@ -104,10 +105,6 @@ class UserInfo(callbacks.Plugin):
     members = wrap(members)
 
     def _getMemberInfo(self, irc, user):
-        """<username>
-
-        returns a link to a user's profile and some information"""
-
         try:
             if (not user.startswith("http://") and
                     not user.startswith("https://")):
