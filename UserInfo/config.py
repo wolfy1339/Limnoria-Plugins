@@ -49,7 +49,7 @@ def configure(advanced):
 
 UserInfo = conf.registerPlugin('UserInfo')
 conf.registerChannelValue(UserInfo, 'MemberSnarfer',
-    registry.Boolean(True, """Determines if this plugin will snarf @<username>, 
+    registry.Boolean(False, """Determines if this plugin will snarf @<username>, 
 with the user's name and information"""))
 
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:
