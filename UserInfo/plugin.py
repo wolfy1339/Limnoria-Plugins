@@ -163,7 +163,7 @@ class UserInfo(callbacks.Plugin):
                 prefixNick=False)
             self.log.info('UserInfo: Member {0} found'.format(userName))
         except Exception:
-            irc.error(_('User {0} isn't in my database, sorry.'.format(Name)), Raise=True)
+            irc.error(_('User {0} isn\'t in my database, sorry.'.format(Name)), Raise=True)
         finally:
             return None
 
