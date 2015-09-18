@@ -108,7 +108,7 @@ class Powder(callbacks.PluginRegexp):
             return  # Don't respond to save info from other bots with this plugin
 
         self.log.info("powderSnarfer - save URL Found "+match.group(0))
-        if self.registryValue('powderSnarfer') == "False":
+        if not self.registryValue('powderSnarfer'):
             return
         else:
             if match.group(0)[0] == "~":
@@ -158,7 +158,7 @@ class Powder(callbacks.PluginRegexp):
     def forumSnarfer(self, irc, msg, match):
         r"http://powdertoy[.]co[.]uk/Discussions/Thread/View[.]html[?]Thread=([0-9]+)|http://tpt.io/:([0-9]+)"
         threadNum = match.group(1) or match.group(2)
-        if self.registryValue('forumSnarfer') == "False":
+        if not self.registryValue('forumSnarfer'):
             return
         else:
             self._getPostDetails(irc, msg, threadNum)
@@ -185,7 +185,7 @@ class Powder(callbacks.PluginRegexp):
             uDu = userData['User']
             irc.reply('http://powdertoy.co.uk/@{0} | ID {1} | Has {2} saves - Average score {3} - Highest score {4} | Posted {5} topics -  {6} posts - Has {7} reputation.'.format(user, userID, uDu['Saves']['Count'], uDu['Saves']['AverageScore'], uDu['Saves']['HighestScore'], uDu['Forum']['Topics'], uDu['Forum']['Replies'], uDu['Forum']['Reputation']), prefixNick=False)
 
-        except Exception as e:
+        except Exception:
             try:
                 userPage = utils.web.getUrl("http://powdertoy.co.uk/User.html?ID="+user)
                 userName = userPage.split("<h1 class=\"SubmenuTitle\">")[1].split("</h1>")[0]
