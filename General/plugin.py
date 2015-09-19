@@ -406,7 +406,10 @@ class General(callbacks.PluginRegexp):
             colors = utils.iter.cycle([4, 7, 8, 3, 2, 12, 6])
             L = [self._color(c, fg=colors.next()) for c in
                  str(ircutils.stripColor(text), "utf-8")]
-            irc.reply("".join(L).encode("utf-8") + "\x03", prefixNick=False)
+            if self.registryValue('enableMooReply'):
+                irc.reply("".join(L).encode("utf-8") + "\x03", prefixNick=False)
+            else:
+                return
 
     mooReply = urlSnarfer(mooReply)
 
@@ -420,15 +423,22 @@ class General(callbacks.PluginRegexp):
         else:
             hail = match.group(0).split(" ")[0]
         self.log.info("Responding to %s with %s" % (msg.nick, hail))
-        irc.reply("%s, %s" % (hail, msg.nick), prefixNick=False)
+
+        if self.registryValue('enableGreeter'):
+            irc.reply("%s, %s" % (hail, msg.nick), prefixNick=False)
+        else:
+            return
 
     greeter = urlSnarfer(greeter)
 
     def awayMsgKicker(self, irc, msg, match):
         r"""(is now (set as )?away [-:(] Reason|is no longer away [:-] Gone for|is away:)"""
 
-        self.log.info("KICKING %s for away announce" % msg.nick)
-        self._sendMsg(irc, ircmsgs.kick(msg.args[0], msg.nick, "Autokick: Spam (Away/Back Announce)"))
+        if self.registryValue('enableAwayMsgKicker'):
+            self.log.info("KICKING %s for away announce" % msg.nick)
+            self._sendMsg(irc, ircmsgs.kick(msg.args[0], msg.nick, "Autokick: Spam (Away/Back Announce)"))
+        else:
+           return
 
     awayMsgKicker = urlSnarfer(awayMsgKicker)
 
@@ -470,12 +480,8 @@ class General(callbacks.PluginRegexp):
             data = data[:-len(ending)]
         data = data.strip()
 
-        data = data.replace("&quot;", "\"").replace("&#39;", "'").replace("&amp;", "&")
-
-        if self.registryValue("youtubeSnarfer") == "False":
-            return
-        else:
-            irc.reply("Youtube video is '%s'" % data, prefixNick=nickPrefix)
+        data = data.replace("&quot;", "\"").replace("&#39;", "'").
+        irc.reply("Youtube video is '%s'" % data, prefixNick=nickPrefix)
 
     def youtube(self, irc, msg, args, url):
         """<url>
@@ -489,9 +495,12 @@ class General(callbacks.PluginRegexp):
     def ytSnarfer(self, irc, msg, match):
         r""".*(youtube[.]com/.+v=[0-9A-z\-_]{11}).*"""
 
-        if "Tribot200" in irc.state.channels[msg.args[0]].users:
-            return
-        self._ytinfo(irc, match.group(1), False)
+        if self.registryValue('youtubeSnarfer'):
+            if "Tribot200" in irc.state.channels[msg.args[0]].users:
+                return
+            self._ytinfo(irc, match.group(1), False)
+        else:
+              return
 
     ytSnarfer = urlSnarfer(ytSnarfer)
 
@@ -567,7 +576,7 @@ class General(callbacks.PluginRegexp):
         if "None" in paste["syntax"]:
             paste["syntax"] = "Plain Text"
 
-        if self.registryValue("pasteSnarfer") == "False":
+        if not self.registryValue("pasteSnarfer"):
             return
         else:
             irc.reply("Pastebin is {0} by {1} posted on {2} and is written in {3}. The paste is {4} and expires {5}".format(paste["name"], paste["by"], paste["date"], paste["syntax"], paste["size"], paste["expires"]), prefixNick=False)
@@ -606,7 +615,7 @@ class General(callbacks.PluginRegexp):
         for each in self.buffer[channel]:
             if msg.nick in each[0]:
                 output = each[1]
-                x = 1
+                x = 1j
                 while x + 1 < len(data):
                     output = output.replace(data[x], data[x + 1])
                     output = output[0:min(len(output), 4096)]
@@ -665,8 +674,11 @@ class General(callbacks.PluginRegexp):
                     output = output[0:min(len(output), 4096)]
                     x += 2
 
-                self.log.info("Changing {0} to {1}".format(each[1], output))
-                irc.reply("<{0}> {1}".format(each[0], output), prefixNick=False)
+                if self.registryValue('enableUserCorrect'):
+                    self.log.info("Changing {0} to {1}".format(each[1], output))
+                    irc.reply("<{0}> {1}".format(each[0], output), prefixNick=False)
+                else:
+                    return
 
                 return 0
 
