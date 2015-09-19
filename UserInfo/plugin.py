@@ -121,7 +121,9 @@ class UserInfo(callbacks.Plugin):
             userData = json.loads(utils.web.getUrl(url))
             Awards = []
             awards = userData['awards']
-            Rank = userData['rank']
+            Rank = []
+            Rank['rank'] = userData['rank']
+            Rank['comment'] = userData['rank_comment']
             Links = []
 
             for award, value in list(awards.items()):
@@ -157,9 +159,9 @@ class UserInfo(callbacks.Plugin):
                     Status = ' '.join(['This member is absolutely necessary',
                             'to keep the group going and thus is autosafe'])
 
-            irc.reply(' '.join(['Member is: {0} {1} | {2} | ',
-                'http://brilliant-minds.tk/members.html?{3} | Awards {4} | ',
-                "{5}".format(Rank, userName, Safe, userName, Awards, Links)]),
+            irc.reply(' '.join(['Member {0}: {1} {2} | {3} | ',
+                'http://brilliant-minds.tk/members.html?{4} | Awards {5} | ',
+                "{5}".format(userName, Rank['rank'], Rank['comment'], Safe, userName, Awards, Links)]),
                 prefixNick=False)
             self.log.info('UserInfo: Member {0} found'.format(userName))
         except Exception:
