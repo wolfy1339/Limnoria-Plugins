@@ -1,5 +1,6 @@
 ###
 # Copyright (c) 2011, Anthony Boot
+# Copyright (c) 2015, wolfy1339
 # All rights reserved.
 #
 #
@@ -20,8 +21,8 @@ def configure(advanced):
 General = conf.registerPlugin('General')
 
 conf.registerChannelValue(General, 'youtubeSnarfer',
-    registry.Boolean(False, """Determines if this plugin will snarf ~<saveid>, 
-with the save's name and information"""))
+    registry.Boolean(False, """Determines if this plugin will snarf youtube links, 
+with the video's name and information"""))
 
 conf.registerChannelValue(General, 'pasteSnarfer',
     registry.Boolean(False, """Determines if this plugin will snarf pastebin links,
