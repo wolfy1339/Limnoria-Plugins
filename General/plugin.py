@@ -480,7 +480,7 @@ class General(callbacks.PluginRegexp):
             data = data[:-len(ending)]
         data = data.strip()
 
-        data = data.replace("&quot;", "\"").replace("&#39;", "'").
+        data = data.replace("&quot;", "\"").replace("&#39;", "'").replace("&amp;", "&")
         irc.reply("Youtube video is '%s'" % data, prefixNick=nickPrefix)
 
     def youtube(self, irc, msg, args, url):
