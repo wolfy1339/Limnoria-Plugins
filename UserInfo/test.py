@@ -34,9 +34,9 @@ class UserInfoTestCase(PluginTestCase):
     plugins = ('UserInfo',)
 
     def testUserInfo(self):
-        self.assertError('userinfo profile asdf')
-        self.assertNotError('userinfo profile wolfy1339')
-        self.asertNotError('userinfo profile http://brilliant-minds.tk/members.html?wolfy1339')
+        self.assertError('userinfo records asdf')
+        self.assertNotError('userinfo records wolfy1339')
+        self.asertNotError('userinfo records http://brilliant-minds.tk/members.html?wolfy1339')
 
     #def testUserSnarfer(self):
     #    self.assertNotError('http://brilliant-minds.tk/members.html?wolfy1339')
