@@ -615,7 +615,7 @@ class General(callbacks.PluginRegexp):
         for each in self.buffer[channel]:
             if msg.nick in each[0]:
                 output = each[1]
-                x = 1j
+                x = 1
                 while x + 1 < len(data):
                     output = output.replace(data[x], data[x + 1])
                     output = output[0:min(len(output), 4096)]
