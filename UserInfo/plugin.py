@@ -57,7 +57,7 @@ class UserInfo(callbacks.Plugin):
     profile = wrap(profile, ['somethingWithoutSpaces'])
 
     def UserInfoSnarfer(self, irc, msg, args, match):
-        r"http://brilliant-minds.tk/members.html\?([A-Za-z0-9_-]+)|@([A-Za-z0-9_-]+)"
+        r"http://brilliant-minds.tk/members.html\?(\w-]+)|@([\w-]+)"
         Name = match.group(1) or match.group(2)
 
         if msg.args[1].startswith('Member {0}:'.format(Name)):
