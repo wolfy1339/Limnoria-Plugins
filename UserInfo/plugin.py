@@ -159,7 +159,7 @@ class UserInfo(callbacks.Plugin):
                     Status = ' '.join(['This member is absolutely necessary',
                             'to keep the group going and thus is autosafe'])
 
-            irc.reply(' '.join(['Member {0}: {1} {2} | {3} | ',
+            irc.reply(' '.join(['Member {0}: {1}, {2} | {3} | ',
                 'http://brilliant-minds.tk/members.html?{4} | Awards {5} | ',
                 "{5}".format(userName, Rank['rank'], Rank['comment'], Safe, userName, Awards, Links)]),
                 prefixNick=False)
