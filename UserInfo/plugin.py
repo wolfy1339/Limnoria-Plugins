@@ -49,12 +49,12 @@ class UserInfo(callbacks.Plugin):
     threaded = True
 
     @internationalizeDocstring
-    def profile(self, irc, msg, args, user):
+    def records(self, irc, msg, args, user):
         """<memberName>
 
         Returns user information from their record"""
         self._getMemberInfo(irc, user)
-    profile = wrap(profile, ['somethingWithoutSpaces'])
+    records = wrap(records, ['somethingWithoutSpaces'])
 
     def UserInfoSnarfer(self, irc, msg, args, match):
         r"http://brilliant-minds.tk/members.html\?(\w-]+)|@([\w-]+)"
