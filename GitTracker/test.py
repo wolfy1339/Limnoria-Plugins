@@ -42,7 +42,7 @@ class GitTrackerTestCase(ChannelPluginTestCase):
                 usePrefixChar=False)
         self.assertNoResponse('This does %%not exist', usePrefixChar=False)
 
-        self.assertResponse('Hi, see %%commit#a234b0e at the Git repo.',
+        self.assertResponse('Hi, see %%commit#93af1e8 at the Git repo.',
                 'https://github.com/Brilliant-Minds/BMN-Powder-Toy/commit/93af1e8',
                 usePrefixChar=False)
 
