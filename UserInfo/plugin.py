@@ -57,7 +57,7 @@ class UserInfo(callbacks.Plugin):
     records = wrap(records, ['somethingWithoutSpaces'])
 
     def UserInfoSnarfer(self, irc, msg, args, match):
-        r"http://brilliant-minds.tk/members.html\?(\w-]+)|@([\w-]+)"
+        r"http://brilliant-minds.tk/members.html\?([\w-]+)|@([\w-]+)"
         Name = match.group(1) or match.group(2)
 
         if msg.args[1].startswith('Member {0}:'.format(Name)):
@@ -81,8 +81,8 @@ class UserInfo(callbacks.Plugin):
 
         jsonUrl = 'http://brilliant-minds.tk/members.json'
         Data = json.loads(utils.web.getUrl(jsonUrl))
-        officers = Data['officers']
-        enlisted = Data['enlisted']
+        officers = Data['officers'].items()
+        enlisted = Data['enlisted'].items()
         preofficers = Data['preofficers']
 
         for member, rank in officers:
@@ -100,7 +100,7 @@ class UserInfo(callbacks.Plugin):
             Preofficers.append('{0} {1}'.format(rank, member))
             Preofficers = '\n'.join(Preofficers)
 
-        data = '\n'.join(Officers, Enlisted, Preofficers)
+        data = '\n'.join((Officers, Enlisted, Preofficers))
         if irc.channel != '#BMN':
             ircmsgs.privmsg(msg.nick, data)
         else:
