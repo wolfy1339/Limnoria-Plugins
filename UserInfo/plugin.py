@@ -92,7 +92,7 @@ class UserInfo(callbacks.Plugin):
             Enlisted = '\n'.join(['{0} {1}'.format(rank, member)])
 
         for member, rank in preofficers
-            Preofficers = '\n'.join(Preofficers)
+            Preofficers = '\n'.join(['{0} {1}'.format(rank, member)])
 
         data = '\n'.join((Officers, Enlisted, Preofficers))
         if irc.channel != '#BMN':
