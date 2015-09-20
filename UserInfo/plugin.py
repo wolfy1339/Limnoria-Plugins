@@ -91,7 +91,7 @@ class UserInfo(callbacks.Plugin):
         for member, rank in enlisted:
             Enlisted = '\n'.join(['{0} {1}'.format(rank, member)])
 
-        for member, rank in preofficers
+        for member, rank in preofficers:
             Preofficers = '\n'.join(['{0} {1}'.format(rank, member)])
 
         data = '\n'.join((Officers, Enlisted, Preofficers))
