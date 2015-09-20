@@ -85,13 +85,13 @@ class UserInfo(callbacks.Plugin):
         enlisted = list(Data['enlisted'].items())
         preofficers = Data['preofficers']
 
-        for members, rank in officers:
+        for member, rank in officers:
             Officers = '\n'.join(['{0} {1}'.format(rank, member)])
 
-        for members, rank in enlisted:
+        for member, rank in enlisted:
             Enlisted = '\n'.join(['{0} {1}'.format(rank, member)])
 
-        for members, rank in preofficers
+        for member, rank in preofficers
             Preofficers = '\n'.join(Preofficers)
 
         data = '\n'.join((Officers, Enlisted, Preofficers))
@@ -121,17 +121,17 @@ class UserInfo(callbacks.Plugin):
             Links = []
 
             for award, value in list(awards.items()):
-                if str(value) == 0:
+                if str(value) === 0:
                     Value = 'Badge'
-                elif str(value) == 1:
+                elif str(value) === 1:
                     Value = 'Standard'
-                elif str(value) == 2:
+                elif str(value) === 2:
                     Value = 'Bronze'
-                elif str(value) == 3:
+                elif str(value) === 3:
                     Value = 'Silver'
-                elif str(value) == 4:
+                elif str(value) === 4:
                     Value = 'Gold'
-                elif str(value) == 5:
+                elif str(value) === 5:
                     Value = 'Diamond'
                 Awards.append('{0}: {1}'.format(award, Value))
 
@@ -142,14 +142,14 @@ class UserInfo(callbacks.Plugin):
 
             if userData['voucher']:
                 Status = 'This member has a voucher'
-                if userData['safe'] == 1:
+                if userData['safe'] === 1:
                     Status += ' and is safe for the next IMC/IRC'
-                elif userData['safe'] == 2:
+                elif userData['safe'] === 2:
                     Status += ' and is autosafe'
             else:
-                if userData['safe'] == 1:
+                if userData['safe'] === 1:
                     Status = 'This member is safe for the next IMC/IRC'
-                elif userData['safe'] == 2:
+                elif userData['safe'] === 2:
                     Status = ' '.join(['This member is absolutely necessary',
                                        'to keep the group going and thus is autosafe'])
 
