@@ -90,7 +90,7 @@ class Rpg(callbacks.Plugin):
                 seed = random.random()
                 random.seed(seed)
                 terrain = []
-                terrain + =  "#####:~..............................................."
+                terrain +=  "#####:~..............................................."
                 #          # is wall  : is boss  ~ is item  . is nothing.
                 rand = {}
                 terrainmap = ""
@@ -100,29 +100,29 @@ class Rpg(callbacks.Plugin):
                 x = -1
                 while x < width:
                     terrainline = ""
-                    x + = 1
+                    x += 1
                     y = -1
                     while y < height:
-                        y + = 1
+                        y += 1
                         if x is 0 or x is width or y is 0 or y is height:
-                            terrainline + = terrain[0]
+                            terrainline += terrain[0]
                             continue
                         if x is int(width / 2) and y is int(height / 2):
-                            terrainline + = "@"
-                            y + = 1
+                            terrainline += "@"
+                            y += 1
                         rand[1] = int(random.random() * (len(terrain) - 1))
                         rand[2] = int(random.random() * (len(terrain) - 1))
                         rand[3] = int(random.random() * (len(terrain) - 1))
                         rand[4] = int(random.random() * (len(terrain) - 1))
                         if rand[1] is rand[2] and rand[1] is rand[3]:
-                            terrainline + = terrain[rand[1]]
+                            terrainline += terrain[rand[1]]
                         elif rand[1] is rand[2] or rand[1] is rand[3]:
-                            terrainline + = terrain[rand[1]]
+                            terrainline += terrain[rand[1]]
                         elif rand[2] is rand[3]:
-                            terrainline + = terrain[rand[2]]
+                            terrainline += terrain[rand[2]]
                         else:
-                            terrainline + = terrain[rand[4]]
-                    terrainmap + = terrainline + "\n"
+                            terrainline += terrain[rand[4]]
+                    terrainmap += terrainline + "\n"
 
                 data = {"width": width,
                         "height": height,
@@ -243,14 +243,14 @@ rating is %i. You have died %i times.\
             mapInfo = self.mapInfo
 
             area = []
-            area + =  mapData[location - (mapInfo["width"] + 3)]
-            area + =  mapData[location - (mapInfo["width"] + 2)]
-            area + =  mapData[location - (mapInfo["width"] + 1)]
-            area + =  mapData[location - 1]
-            area + =  mapData[location + 1]
-            area + =  mapData[location + (mapInfo["width"] + 1)]
-            area + =  mapData[location + (mapInfo["width"] + 2)]
-            area + =  mapData[location + (mapInfo["width"] + 3)]
+            area +=  mapData[location - (mapInfo["width"] + 3)]
+            area +=  mapData[location - (mapInfo["width"] + 2)]
+            area +=  mapData[location - (mapInfo["width"] + 1)]
+            area +=  mapData[location - 1]
+            area +=  mapData[location + 1]
+            area +=  mapData[location + (mapInfo["width"] + 1)]
+            area +=  mapData[location + (mapInfo["width"] + 2)]
+            area +=  mapData[location + (mapInfo["width"] + 3)]
 
             for x in area:
                 line = area.index(x)
@@ -295,58 +295,58 @@ rating is %i. You have died %i times.\
                 number = int(number)
             except:
                 number = 1
-            if number = =  0:
+            if number ==  0:
                 number = 1
 
             x = 0
             while x < number:
-                if direction = =  "NW":
+                if direction ==  "NW":
                     if mapData[playerData[player]["Loc"] -
                                (mapInfo["width"] + 3)] is "#":
                         irc.error("You can't move there.")
                         return
                     else:
-                        playerData[player]["Loc"] - = (mapInfo["width"] + 3)
+                        playerData[player]["Loc"] -= (mapInfo["width"] + 3)
                         self._savePlayerData(playerData)
-                elif direction = =  "N":
+                elif direction ==  "N":
                     if mapData[playerData[player]["Loc"] -
                                (mapInfo["width"] + 2)] is "#":
                         irc.error("You can't move there.")
                         return
                     else:
-                        playerData[player]["Loc"] - = (mapInfo["width"] + 2)
+                        playerData[player]["Loc"] -= (mapInfo["width"] + 2)
                         self._savePlayerData(playerData)
-                elif direction = =  "NE":
+                elif direction ==  "NE":
                     if mapData[playerData[player]["Loc"] -
                                (mapInfo["width"] + 1)] is "#":
                         irc.error("You can't move there.")
                         return
                     else:
-                        playerData[player]["Loc"] - = (mapInfo["width"] + 1)
+                        playerData[player]["Loc"] -= (mapInfo["width"] + 1)
                         self._savePlayerData(playerData)
                 elif direction = =  "W":
                     if mapData[playerData[player]["Loc"] - 1] is "#":
                         irc.error("You can't move there.")
                         return
                     else:
-                        playerData[player]["Loc"] - = 1
+                        playerData[player]["Loc"] -= 1
                         self._savePlayerData(playerData)
-                elif direction = =  "E":
+                elif direction ==  "E":
                     if mapData[playerData[player]["Loc"] + 1] is "#":
                         irc.error("You can't move there.")
                         return
                     else:
-                        playerData[player]["Loc"] + = 1
+                        playerData[player]["Loc"] += 1
                         self._savePlayerData(playerData)
-                elif direction = =  "SW":
+                elif direction == "SW":
                     if mapData[playerData[player]["Loc"] +
                                (mapInfo["width"] + 1)] is "#":
                         irc.error("You can't move there.")
                         return
                     else:
-                        playerData[player]["Loc"] + = (mapInfo["width"] + 1)
+                        playerData[player]["Loc"] += (mapInfo["width"] + 1)
                         self._savePlayerData(playerData)
-                elif direction = =  "S":
+                elif direction ==  "S":
                     if mapData[playerData[player]["Loc"] +
                                (mapInfo["width"] + 2)] is "#":
                         irc.error("You can't move there.")
@@ -354,7 +354,7 @@ rating is %i. You have died %i times.\
                     else:
                         playerData[player]["Loc"] + = (mapInfo["width"] + 2)
                         self._savePlayerData(playerData)
-                elif direction = =  "SE":
+                elif direction ==  "SE":
                     if mapData[playerData[player]["Loc"] +
                                (mapInfo["width"] + 3)] is "#":
                         irc.error("You can't move there.")
@@ -393,7 +393,7 @@ rating is %i. You have died %i times.\
                             "NOTICE {0} :Your health has been restored.".format(
                                 msg.nick)))
                     self._savePlayerData(playerData)
-                x + = 1
+                x += 1
 
         move = wrap(rpgmove, ["somethingWithoutSpaces", optional("int")])
 
@@ -486,29 +486,29 @@ rating is %i. You have died %i times.\
             def _doMonster():
                 if (random.random() * 100 <
                         playerData[player]["Item"]["rArm"]["Power"]):
-                    battleData["player"]["blocks"] + = 1
+                    battleData["player"]["blocks"] += 1
                 else:
                     battleData["monster"]["atks"] + = 1
                     atkValue = int(random.random() * (monster["Atk"])) + 2
                     if (random.random() * 100 < 2):
                         atkValue * = 2
-                        battleData["monster"]["crits"] + = 1
-                    playerData[player]["HP"] - = (atkValue - (playerData[player]["Def"] * playerData[player]["Item"]["Torso"]["Power"]))
-                    if playerData[player]["HP"] < =  0:
+                        battleData["monster"]["crits"] += 1
+                    playerData[player]["HP"] -= (atkValue - (playerData[player]["Def"] * playerData[player]["Item"]["Torso"]["Power"]))
+                    if playerData[player]["HP"] <=  0:
                         return monster["Name"]
 
             def _doPlayer():
                 if(random.random() * 100 < 10):
                     battleData["monster"]["evades"] + = 1
                 else:
-                    battleData["player"]["atks"] + = 1
+                    battleData["player"]["atks"] += 1
                     playerAtk = int(random.random(
                     ) * (playerData[player]["Atk"] + playerData[player]["Item"]["lArm"]["Power"])) + 2
                     if(random.random() * 100 < playerData[player]["Luc"]):
-                        playerAtk * = 2
+                        playerAtk *= 2
                         battleData["player"]["crits"] + = 1
-                    monster["HP"] - = playerAtk
-                    if monster["HP"] < = 0:
+                    monster["HP"] -= playerAtk
+                    if monster["HP"] <= 0:
                         return player
 
             winner = None
@@ -691,10 +691,10 @@ rating is %i. You have died %i times.\
             playerData = self.playerData
             nLvl = self._getNextLevelXp(player)
             playerData[player]["Exp"] + = xp
-            if playerData[player]["Exp"] > =  nLvl:
-                playerData[player]["MHP"] + = int(random.random() * 7)
-                playerData[player]["Atk"] + = int(random.random() * 7)
-                playerData[player]["Def"] + = int(random.random() * 7)
+            if playerData[player]["Exp"] >=  nLvl:
+                playerData[player]["MHP"] += int(random.random() * 7)
+                playerData[player]["Atk"] += int(random.random() * 7)
+                playerData[player]["Def"] += int(random.random() * 7)
                 playerData[player]["Spd"] += int(random.random() * 7)
                 playerData[player]["Luc"] += int(random.random() * 4)
                 playerData[player]["Lvl"] += 1
