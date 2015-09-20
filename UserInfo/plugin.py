@@ -81,8 +81,8 @@ class UserInfo(callbacks.Plugin):
 
         jsonUrl = 'http://brilliant-minds.tk/members.json'
         Data = json.loads(utils.web.getUrl(jsonUrl))
-        officers = Data['officers'].items()
-        enlisted = Data['enlisted'].items()
+        officers = list(Data['officers'].items())
+        enlisted = list(Data['enlisted'].items())
         preofficers = Data['preofficers']
 
         for member, rank in officers:
@@ -122,8 +122,8 @@ class UserInfo(callbacks.Plugin):
             Awards = []
             awards = userData['awards']
             Rank = []
-            Rank['rank'] = userData['rank']
-            Rank['comment'] = userData['rank_comment']
+            Rank[0] = userData['rank']
+            Rank[1] = userData['rank_comment']
             Links = []
 
             for award, value in list(awards.items()):
@@ -161,7 +161,7 @@ class UserInfo(callbacks.Plugin):
 
             irc.reply(' '.join(['Member {0}: {1}, {2} | {3} | ',
                                 'http://brilliant-minds.tk/members.html?{4} | Awards {5} | ',
-                                "{5}".format(userName, Rank['rank'], Rank['comment'], Safe, userName, Awards, Links)]),
+                                "{6}".format(userName, Rank[0], Rank[1], Safe, userName, Awards, Links)]),
                       prefixNick=False)
             self.log.info('UserInfo: Member {0} found'.format(userName))
         except Exception:
