@@ -77,7 +77,9 @@ class Powder(callbacks.PluginRegexp):
                     user, project, branch)
                 data = json.loads(utils.web.getUrl(giturl))
             except:
-                irc.error("HTTP 404. Please check and try again.", prefixNick=False)
+                irc.error(
+                    "HTTP 404. Please check and try again.",
+                    prefixNick=False)
                 self.log.error("GIT: Returned 404 on %s:%s" % (user, branch))
                 return
         data = data['commit']['commit']
@@ -86,12 +88,15 @@ class Powder(callbacks.PluginRegexp):
         data["message"] = data["message"].replace("\n", " ")
         data["message"] = data["message"].replace(" ", " ")
 
-        self.log.info("GIT: user:%s project:%s branch:%s called by %s sucessfully." % (user, project, branch, msg.nick))
+        self.log.info(
+            "GIT: user:%s project:%s branch:%s called by %s sucessfully." %
+            (user, project, branch, msg.nick))
         irc.reply("Last commit to %s's %s repo, %s branch, was by %s on %s at %s. Commit message was \"%s\" - https://github.com/%s/%s/tree/%s" %
-            (user, project, branch, data["committer"]["name"], data["committer"]["date"][0], data["committer"]["date"][1],
-            data["message"], user, project, branch), prefixNick=False)
+                  (user, project, branch, data["committer"]["name"], data["committer"]["date"][0], data["committer"]["date"][1],
+                   data["message"], user, project, branch), prefixNick=False)
 
-    git = wrap(git, ['somethingWithoutSpaces', optional('somethingWithoutSpaces'), optional('somethingwithoutspaces')])
+    git = wrap(git, ['somethingWithoutSpaces', optional(
+        'somethingWithoutSpaces'), optional('somethingwithoutspaces')])
 
     def browse(self, irc, msg, args, ID, blurb):
         """<SaveID>
@@ -102,12 +107,13 @@ class Powder(callbacks.PluginRegexp):
 
     def powderSnarfer(self, irc, msg, match):
         r"http://powdertoy.co.uk/Browse/View.html\?ID=([0-9]+)|^[~]([0-9]+)|http://tpt.io/~([0-9]+)|http://powdertoy.co.uk/~([0-9]+)"
-        ID = match.group(1) or match.group(2) or match.group(3) or match.group(4)
+        ID = match.group(1) or match.group(
+            2) or match.group(3) or match.group(4)
 
-        if msg.args[1].startswith("Save "+ID+" is"):
+        if msg.args[1].startswith("Save " + ID + " is"):
             return  # Don't respond to save info from other bots with this plugin
 
-        self.log.info("powderSnarfer - save URL Found "+match.group(0))
+        self.log.info("powderSnarfer - save URL Found " + match.group(0))
         if not self.registryValue('powderSnarfer'):
             return
         else:
@@ -120,27 +126,33 @@ class Powder(callbacks.PluginRegexp):
 
     def _getSaveInfo(self, irc, ID, urlGiven):
         ID = str(int(ID))
-        data = json.loads(utils.web.getUrl("http://powdertoy.co.uk/Browse/View.json?ID="+ID))
+        data = json.loads(
+            utils.web.getUrl(
+                "http://powdertoy.co.uk/Browse/View.json?ID=" +
+                ID))
         if data["Username"] == "FourOhFour":
-            saveMsg = "Save "+ID+" doesn't exist."
+            saveMsg = "Save " + ID + " doesn't exist."
         else:
-            saveMsg = "Save "+ID+" is "+data["Name"].replace('&#039;', '\'').replace('&gt;', '>')+" by "+data["Username"]+". Score: "+str(data["Score"])+"."
+            saveMsg = "Save " + ID + " is " + data["Name"].replace('&#039;', '\'').replace(
+                '&gt;', '>') + " by " + data["Username"] + ". Score: " + str(data["Score"]) + "."
             if not urlGiven:
-                saveMsg += " http://tpt.io/~"+ID
+                saveMsg += " http://tpt.io/~" + ID
         irc.reply(saveMsg, prefixNick=False)
 
     def frontpage(self, irc, msg, args):
         """
 
         Returns the front page of saves via notices - abuse will not be tolerated."""
-        data = json.loads(utils.web.getUrl('http://powdertoy.co.uk/Browse.json'))['Saves']
+        data = json.loads(utils.web.getUrl(
+            'http://powdertoy.co.uk/Browse.json'))['Saves']
 
         outMsg = ''
-        x=0
+        x = 0
         for each in data:
-            outMsg='{0}\x02Save:\x02 {1:<24} - \x02By:\x02 {2:<14} - \x02ID: \x02{3:<6} - \x02Votes:\x02 {4:<4}'.format(outMsg, each['Name'].replace('&#039;', '\''), each['Username'], str(each['ID']), str(each['Score']))
-            x+=1
-            if x%2 is 0:
+            outMsg = '{0}\x02Save:\x02 {1:<24} - \x02By:\x02 {2:<14} - \x02ID: \x02{3:<6} - \x02Votes:\x02 {4:<4}'.format(
+                outMsg, each['Name'].replace('&#039;', '\''), each['Username'], str(each['ID']), str(each['Score']))
+            x += 1
+            if x % 2 is 0:
                 irc.queueMsg(ircmsgs.privmsg(msg.nick, outMsg))
                 outMsg = ''
                 continue
@@ -165,13 +177,18 @@ class Powder(callbacks.PluginRegexp):
     forumSnarfer = urlSnarfer(forumSnarfer)
 
     def _getPostDetails(self, irc, msg, threadNum):
-        data = json.loads(utils.web.getUrl("http://powdertoy.co.uk/Discussions/Thread/View.json?Thread=%s" % (threadNum)))
+        data = json.loads(
+            utils.web.getUrl(
+                "http://powdertoy.co.uk/Discussions/Thread/View.json?Thread=%s" %
+                (threadNum)))
         cg = data["Info"]["Category"]
         tp = data["Info"]["Topic"]
 
-        irc.reply("Forum post is \"%s\" in the %s section, posted by %s and has %s replies. Last post was by %s at %s"%
-            (tp["Title"], cg["Name"], tp["Author"], tp["PostCount"]-1, tp["LastPoster"], tp["Date"]), prefixNick=False)
-        self.log.info("FORUMSNARF: Thread %s found. %s in the %s section" % (threadNum, tp["Title"], cg["Name"]))
+        irc.reply("Forum post is \"%s\" in the %s section, posted by %s and has %s replies. Last post was by %s at %s" %
+                  (tp["Title"], cg["Name"], tp["Author"], tp["PostCount"] - 1, tp["LastPoster"], tp["Date"]), prefixNick=False)
+        self.log.info(
+            "FORUMSNARF: Thread %s found. %s in the %s section" %
+            (threadNum, tp["Title"], cg["Name"]))
 
     def profile(self, irc, msg, args, user):
         """<username|ID>
@@ -179,22 +196,53 @@ class Powder(callbacks.PluginRegexp):
           returns a link to the users profile and some brief information"""
 
         try:
-            userPage = utils.web.getUrl("http://powdertoy.co.uk/User.html?Name="+user)
-            userID = userPage.split("<a href=\"/User.html?ID=")[1].split("\"")[0]
-            userData = json.loads(utils.web.getUrl("http://powdertoy.co.uk/User.json?Name="+user))
+            userPage = utils.web.getUrl(
+                "http://powdertoy.co.uk/User.html?Name=" + user)
+            userID = userPage.split(
+                "<a href=\"/User.html?ID=")[1].split("\"")[0]
+            userData = json.loads(
+                utils.web.getUrl(
+                    "http://powdertoy.co.uk/User.json?Name=" +
+                    user))
             uDu = userData['User']
-            irc.reply('http://powdertoy.co.uk/@{0} | ID {1} | Has {2} saves - Average score {3} - Highest score {4} | Posted {5} topics -  {6} posts - Has {7} reputation.'.format(user, userID, uDu['Saves']['Count'], uDu['Saves']['AverageScore'], uDu['Saves']['HighestScore'], uDu['Forum']['Topics'], uDu['Forum']['Replies'], uDu['Forum']['Reputation']), prefixNick=False)
+            irc.reply(
+                'http://powdertoy.co.uk/@{0} | ID {1} | Has {2} saves - Average score {3} - Highest score {4} | Posted {5} topics -  {6} posts - Has {7} reputation.'.format(
+                    user,
+                    userID,
+                    uDu['Saves']['Count'],
+                    uDu['Saves']['AverageScore'],
+                    uDu['Saves']['HighestScore'],
+                    uDu['Forum']['Topics'],
+                    uDu['Forum']['Replies'],
+                    uDu['Forum']['Reputation']),
+                prefixNick=False)
 
         except Exception:
             try:
-                userPage = utils.web.getUrl("http://powdertoy.co.uk/User.html?ID="+user)
-                userName = userPage.split("<h1 class=\"SubmenuTitle\">")[1].split("</h1>")[0]
-                userData = json.loads(utils.web.getUrl("http://powdertoy.co.uk/User.json?ID="+user))
+                userPage = utils.web.getUrl(
+                    "http://powdertoy.co.uk/User.html?ID=" + user)
+                userName = userPage.split("<h1 class=\"SubmenuTitle\">")[
+                    1].split("</h1>")[0]
+                userData = json.loads(
+                    utils.web.getUrl(
+                        "http://powdertoy.co.uk/User.json?ID=" +
+                        user))
                 uDu = userData['User']
-                irc.reply('http://powdertoy.co.uk/@{1} | ID {0} | Has {2} saves - Average score {3} - Highest score {4} | Posted {5} topics -  {6} posts - Has {7} reputation.'.format(user, userName, uDu['Saves']['Count'], uDu['Saves']['AverageScore'], uDu['Saves']['HighestScore'], uDu['Forum']['Topics'], uDu['Forum']['Replies'], uDu['Forum']['Reputation']), prefixNick=False)
+                irc.reply(
+                    'http://powdertoy.co.uk/@{1} | ID {0} | Has {2} saves - Average score {3} - Highest score {4} | Posted {5} topics -  {6} posts - Has {7} reputation.'.format(
+                        user,
+                        userName,
+                        uDu['Saves']['Count'],
+                        uDu['Saves']['AverageScore'],
+                        uDu['Saves']['HighestScore'],
+                        uDu['Forum']['Topics'],
+                        uDu['Forum']['Replies'],
+                        uDu['Forum']['Reputation']),
+                    prefixNick=False)
 
             except Exception as e:
-                irc.reply("User or ID doesn't exist - or Xeno screwed it again... {0}".format(e))
+                irc.reply(
+                    "User or ID doesn't exist - or Xeno screwed it again... {0}".format(e))
 
         finally:
             return None
@@ -217,7 +265,10 @@ class Powder(callbacks.PluginRegexp):
         while found is False:
             url = "http://powdertoythings.co.uk/Powder/Saves/Random.json?Count=1"
             saveID = str(json.loads(utils.web.getUrl(url))['Saves'][0]['ID'])
-            page = json.loads(utils.web.getUrl("http://powdertoy.co.uk/Browse/View.json?ID="+saveID))
+            page = json.loads(
+                utils.web.getUrl(
+                    "http://powdertoy.co.uk/Browse/View.json?ID=" +
+                    saveID))
             if page["Username"] != "FourOhFour":
                 found = True
 
@@ -235,13 +286,18 @@ class Powder(callbacks.PluginRegexp):
                 irc.error("Could not access comics website")
                 return
             match = None
-            for match in re.finditer(r" href=\"http://superdoxin.com/static/cate/files/(([0-9]+)([^\"]+))\"", data):
+            for match in re.finditer(
+                    r" href=\"http://superdoxin.com/static/cate/files/(([0-9]+)([^\"]+))\"", data):
                 pass
             filename = match.group(1)
             num = match.group(2)
             name = match.group(3)
 
-            irc.reply("Latest comic id is {0} and is titled {1} - http://www.superdoxin.com/static/cate/files/{2}".format(num, name, filename))
+            irc.reply(
+                "Latest comic id is {0} and is titled {1} - http://www.superdoxin.com/static/cate/files/{2}".format(
+                    num,
+                    name,
+                    filename))
         except:
             irc.error("Comic checker is broken, use $bug comic")
     comic = wrap(comic)

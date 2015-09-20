@@ -46,26 +46,27 @@ _ = PluginInternationalization('GitTracker')
 WEB_REPO = 'https://github.com/Brilliant-Minds/BMN-Powder-Toy'
 PLUGINS_WEB_REPO = 'https://github.com/Brilliant-Minds/BMNBot-Plugins'
 staticFactoids = {
-        'git':          WEB_REPO + '.git',
-        'git-pl':       PLUGINS_WEB_REPO + '.git',
-        'gh':           WEB_REPO,
-        'gh-pl':        PLUGINS_WEB_REPO,
-        'wiki':         WEB_REPO + '/wiki',
-        'issues':       WEB_REPO + '/issues',
-        'issues-pl':    PLUGINS_WEB_REPO + '/issues',
-        'supybook':     'http://supybook.fealdia.org/',
-        }
+    'git': WEB_REPO + '.git',
+    'git-pl': PLUGINS_WEB_REPO + '.git',
+    'gh': WEB_REPO,
+    'gh-pl': PLUGINS_WEB_REPO,
+    'wiki': WEB_REPO + '/wiki',
+    'issues': WEB_REPO + '/issues',
+    'issues-pl': PLUGINS_WEB_REPO + '/issues',
+    'supybook': 'http://supybook.fealdia.org/',
+}
 dynamicFactoids = {
-        'gh':           WEB_REPO + '/tree/master/%s',
-        'gh-pl':        PLUGINS_WEB_REPO + '/tree/master/%s',
-        'file':         WEB_REPO + '/blob/master/%s',
-        'file-pl':      PLUGINS_WEB_REPO + '/blob/master/%s',
-        'commit':       WEB_REPO + '/commit/%s',
-        'commit-pl':    PLUGINS_WEB_REPO + '/commit/%s',
-        'wiki':         WEB_REPO + '/wiki/%s',
-        'issue':        WEB_REPO + '/issues/%s',
-        'issue-pl':     PLUGINS_WEB_REPO + '/issues/%s',
-        }
+    'gh': WEB_REPO + '/tree/master/%s',
+    'gh-pl': PLUGINS_WEB_REPO + '/tree/master/%s',
+    'file': WEB_REPO + '/blob/master/%s',
+    'file-pl': PLUGINS_WEB_REPO + '/blob/master/%s',
+    'commit': WEB_REPO + '/commit/%s',
+    'commit-pl': PLUGINS_WEB_REPO + '/commit/%s',
+    'wiki': WEB_REPO + '/wiki/%s',
+    'issue': WEB_REPO + '/issues/%s',
+    'issue-pl': PLUGINS_WEB_REPO + '/issues/%s',
+}
+
 
 @internationalizeDocstring
 class GitTracker(callbacks.Plugin):
@@ -76,7 +77,8 @@ class GitTracker(callbacks.Plugin):
         """<title>
 
         Opens an issue on BMN Powder Toy bugtracker called <title>."""
-        self._issue(irc, msg, args, user, title, 'Brilliant-Minds/BMN-Powder-Toy')
+        self._issue(irc, msg, args, user, title,
+                    'Brilliant-Minds/BMN-Powder-Toy')
     issue = wrap(issue, ['user', 'text'])
 
     def issuepl(self, irc, msg, args, user, title):
@@ -84,7 +86,8 @@ class GitTracker(callbacks.Plugin):
 
         Opens an issue on Brilliant-Minds/BMNBot-Plugins bugtracker called <title>.
         """
-        self._issue(irc, msg, args, user, title, 'Brilliant-Minds/BMNBot-Plugins')
+        self._issue(irc, msg, args, user, title,
+                    'Brilliant-Minds/BMNBot-Plugins')
     issuepl = wrap(issuepl, ['user', 'text'])
 
     def _issue(self, irc, msg, args, user, title, repoName):
@@ -92,10 +95,11 @@ class GitTracker(callbacks.Plugin):
                 msg.args[0] not in ('#BMN'):
             irc.error('This command can be run only on #BMN on Freenode.')
         body = 'Issue sent from %s at %s by %s (registered as %s)' % \
-                (msg.args[0], irc.network, msg.nick, user.name)
+            (msg.args[0], irc.network, msg.nick, user.name)
         login = self.registryValue('login')
         token = self.registryValue('token')
-        data='title=%s&body=%s&login=%s&token=%s' % (title, body, login, token)
+        data = 'title=%s&body=%s&login=%s&token=%s' % (
+            title, body, login, token)
         url = 'https://api.github.com/repos/' + repoName + '/issues'
         response = json.loads(urllib.urlopen(url, data=data).read())
         id = response['number']
@@ -104,6 +108,7 @@ class GitTracker(callbacks.Plugin):
     _addressed = re.compile('^([^ :]+):')
     _factoid = re.compile('%%([^ ]+)')
     _dynamicFactoid = re.compile('^(?P<name>[^#]+)#(?P<arg>.*)$')
+
     def doPrivmsg(self, irc, msg):
         if not world.testing and \
                 msg.args[0] not in ('#BMN'):
@@ -117,6 +122,7 @@ class GitTracker(callbacks.Plugin):
             prefix = ''
         else:
             prefix = match.group(1) + ': '
+
         def reply(string):
             irc.reply(prefix + string, prefixNick=False)
 

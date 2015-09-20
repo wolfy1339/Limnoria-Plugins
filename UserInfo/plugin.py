@@ -157,16 +157,18 @@ class UserInfo(callbacks.Plugin):
                     Status = 'This member is safe for the next IMC/IRC'
                 elif userData['safe'] == 2:
                     Status = ' '.join(['This member is absolutely necessary',
-                            'to keep the group going and thus is autosafe'])
+                                       'to keep the group going and thus is autosafe'])
 
             irc.reply(' '.join(['Member {0}: {1}, {2} | {3} | ',
-                'http://brilliant-minds.tk/members.html?{4} | Awards {5} | ',
-                "{5}".format(userName, Rank['rank'], Rank['comment'], Safe, userName, Awards, Links)]),
-                prefixNick=False)
+                                'http://brilliant-minds.tk/members.html?{4} | Awards {5} | ',
+                                "{5}".format(userName, Rank['rank'], Rank['comment'], Safe, userName, Awards, Links)]),
+                      prefixNick=False)
             self.log.info('UserInfo: Member {0} found'.format(userName))
         except Exception:
-            irc.error(_('User {0} isn\'t in my database, sorry.'.format(Name)), Raise=True)
-            raise ValueError('User {0} isn\'t in my database, sorry.'.format(Name))
+            irc.error(
+                _('User {0} isn\'t in my database, sorry.'.format(Name)), Raise=True)
+            raise ValueError(
+                'User {0} isn\'t in my database, sorry.'.format(Name))
         finally:
             return None
 

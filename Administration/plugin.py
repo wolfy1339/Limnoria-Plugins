@@ -43,7 +43,8 @@ try:
     from supybot.i18n import PluginInternationalization
     _ = PluginInternationalization('Administration')
 except:
-    _ = lambda x:x
+    _ = lambda x: x
+
 
 def registerDefaultPlugin(command, plugin):
     command = callbacks.canonicalName(command)
@@ -55,6 +56,7 @@ def registerDefaultPlugin(command, plugin):
 registerDefaultPlugin('reload', 'Administration')
 registerDefaultPlugin('enable', 'Administration')
 registerDefaultPlugin('disable', 'Administration')
+
 
 class Administration(callbacks.Plugin):
     """Clone of the stock Owner plugin on Limnoria that works for Admin level too"""
@@ -84,15 +86,17 @@ class Administration(callbacks.Plugin):
             return
         except ImportError as e:
             if str(e).endswith(name):
-                irc.error('No plugin named %s exists.' % utils.str.dqrepr(name))
+                irc.error(
+                    'No plugin named %s exists.' %
+                    utils.str.dqrepr(name))
             elif "No module named 'config'" in str(e):
-                 irc.error('This plugin may be incompatible with your current Python '
-                           'version. Try running 2to3 on it.')
+                irc.error('This plugin may be incompatible with your current Python '
+                          'version. Try running 2to3 on it.')
             else:
                 irc.error(str(e))
             return
         cb = plugin.loadPluginClass(irc, module)
-        name = cb.name() # Let's normalize this.
+        name = cb.name()  # Let's normalize this.
         conf.registerPlugin(name, True)
         irc.replySuccess()
     load = wrap(load, [getopts({'deprecated': ''}), 'something'])
@@ -119,7 +123,7 @@ class Administration(callbacks.Plugin):
                 for callback in callbacks:
                     callback.die()
                     del callback
-                gc.collect() # This makes sure the callback is collected.
+                gc.collect()  # This makes sure the callback is collected.
                 callback = plugin.loadPluginClass(irc, module)
                 irc.replySuccess()
             except ImportError:
@@ -181,7 +185,8 @@ class Administration(callbacks.Plugin):
                             # This is just an error message.
                             log.warning(str(e))
                         except plugins.NoSuitableDatabase as e:
-                            s = 'Failed to load %s: no suitable database(%s).' % (name, e)
+                            s = 'Failed to load %s: no suitable database(%s).' % (
+                                name, e)
                             log.warning(s)
                         except ImportError as e:
                             e = str(e)
@@ -190,11 +195,12 @@ class Administration(callbacks.Plugin):
                                     utils.str.dqrepr(name))
                             elif "No module named 'config'" in e:
                                 s = ("Failed to load %s: This plugin may be incompatible "
-                                "with your current Python version. If this error is appearing "
-                                "with stock Supybot plugins, remove the stock plugins directory "
-                                "(usually ~/Limnoria/plugins) from 'config directories.plugins'." % name)
+                                     "with your current Python version. If this error is appearing "
+                                     "with stock Supybot plugins, remove the stock plugins directory "
+                                     "(usually ~/Limnoria/plugins) from 'config directories.plugins'." % name)
                             else:
-                                s = 'Failed to load %s: import error (%s).' % (name, e)
+                                s = 'Failed to load %s: import error (%s).' % (
+                                    name, e)
                             log.warning(s)
                         except Exception as e:
                             log.exception('Failed to load %s:', name)
@@ -277,7 +283,7 @@ class Administration(callbacks.Plugin):
             conf.supybot.commands.renames.unregister(plugin.name())
         except registry.NonExistentRegistryEntry:
             irc.errorInvalid('plugin', plugin.name())
-        self.reload(irc, msg, [plugin.name()]) # This makes the replySuccess.
+        self.reload(irc, msg, [plugin.name()])  # This makes the replySuccess.
     unrename = wrap(unrename, ['plugin'])
 Class = Administration
 
