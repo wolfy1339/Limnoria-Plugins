@@ -129,7 +129,7 @@ class UserInfo(callbacks.Plugin):
                     Value = 'Bronze'
                 elif str(value) == 3:
                     Value = 'Silver'
-                elif str(value) === 4:
+                elif str(value) == 4:
                     Value = 'Gold'
                 elif str(value) == 5:
                     Value = 'Diamond'
