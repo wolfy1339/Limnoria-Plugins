@@ -85,19 +85,13 @@ class UserInfo(callbacks.Plugin):
         enlisted = list(Data['enlisted'].items())
         preofficers = Data['preofficers']
 
-        for member, rank in officers:
-            Officers = []
-            Officers.append('{0} {1}'.format(rank, member))
-            Officers = '\n'.join(Officers)
+        for members, rank in officers:
+            Officers = '\n'.join(['{0} {1}'.format(rank, member)])
 
         for members, rank in enlisted:
-            Enlisted = []
-            Enlisted.append('{0} {1}'.format(rank, member))
-            Enlisted = '\n'.join(Enlisted)
+            Enlisted = '\n'.join(['{0} {1}'.format(rank, member)])
 
-        for members, rank in preofficers:
-            Preofficers = []
-            Preofficers.append('{0} {1}'.format(rank, member))
+        for members, rank in preofficers
             Preofficers = '\n'.join(Preofficers)
 
         data = '\n'.join((Officers, Enlisted, Preofficers))
