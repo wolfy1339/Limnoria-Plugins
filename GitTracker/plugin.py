@@ -44,7 +44,7 @@ from supybot.i18n import PluginInternationalization, internationalizeDocstring
 _ = PluginInternationalization('GitTracker')
 
 WEB_REPO = 'https://github.com/Brilliant-Minds/BMN-Powder-Toy'
-PLUGINS_WEB_REPO = 'https://github.com/Brilliant-Minds/BMNBooot-Plugins'
+PLUGINS_WEB_REPO = 'https://github.com/Brilliant-Minds/BMNBot-Plugins'
 staticFactoids = {
         'git':          WEB_REPO + '.git',
         'git-pl':       PLUGINS_WEB_REPO + '.git',
