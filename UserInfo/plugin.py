@@ -97,7 +97,7 @@ class UserInfo(callbacks.Plugin):
         Preofficers += '------------\n'
         Preofficers += '\n'.join(i[1] + ' ' + i[0] for i in preofficers)
 
-        data = '\n'.join((Officers, Enlisted, Preofficers))
+        data = '\n\n'.join((Officers, Enlisted, Preofficers))
         if irc.channel != '#BMN':
             ircmsgs.privmsg(msg.nick, data)
         else:
