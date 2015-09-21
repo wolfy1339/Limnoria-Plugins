@@ -81,8 +81,8 @@ class UserInfo(callbacks.Plugin):
 
         jsonUrl = 'http://brilliant-minds.tk/members.json'
         Data = json.loads(utils.web.getUrl(jsonUrl))
-        officers = list(Data['officers'].items())
-        enlisted = list(Data['enlisted'].items())
+        officers = Data['officers']
+        enlisted = Data['enlisted']
         preofficers = Data['preofficers']
 
         for member, rank in officers:
