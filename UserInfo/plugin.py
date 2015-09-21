@@ -74,10 +74,10 @@ class UserInfo(callbacks.Plugin):
     UserInfoSnarfer = urlSnarfer(UserInfoSnarfer)
 
     @internationalizeDocstring
-    def members(self, irc, msg, args):
+    def members(self, irc, msg, args, channel):
         """No arguments
 
-        Returns the current members list in a private message"""
+        Returns the current members list in a private message if not in #BMN"""
 
         jsonUrl = 'http://brilliant-minds.tk/members.json'
         Data = json.loads(utils.web.getUrl(jsonUrl))
@@ -98,8 +98,8 @@ class UserInfo(callbacks.Plugin):
         Preofficers += '\n'.join(i[1] + ' ' + i[0] for i in preofficers)
 
         data = '\n\n'.join((Officers, Enlisted, Preofficers))
-        if irc.channel != '#BMN':
-            ircmsgs.privmsg(msg.nick, data)
+        if channel != '#BMN':
+            irc.reply(data, private=True)
         else:
             irc.reply(data, nickPrefix=false)
     members = wrap(members)
