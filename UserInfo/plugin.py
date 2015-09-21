@@ -85,14 +85,17 @@ class UserInfo(callbacks.Plugin):
         enlisted = Data['enlisted']
         preofficers = Data['preofficers']
 
-        for member, rank in officers:
-            Officers = '\n'.join(['{0} {1}'.format(rank, member)])
+        Officers = 'Officers\n'
+        Officers += '------------\n'
+        Officers += '\n'.join(i[1] + ' ' + i[0] for i in officers)
 
-        for member, rank in enlisted:
-            Enlisted = '\n'.join(['{0} {1}'.format(rank, member)])
+        Enlisted = 'Enlisted\n'
+        Enlisted += '------------\n'
+        Enlisted += '\n'.join(i[1] + ' ' + i[0] for i in enlisted)
 
-        for member, rank in preofficers:
-            Preofficers = '\n'.join(['{0} {1}'.format(rank, member)])
+        Preofficers = 'Preofficers\n'
+        Preofficers += '------------\n'
+        Preofficers += '\n'.join(i[1] + ' ' + i[0] for i in preofficers)
 
         data = '\n'.join((Officers, Enlisted, Preofficers))
         if irc.channel != '#BMN':
