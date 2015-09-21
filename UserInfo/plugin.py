@@ -74,7 +74,7 @@ class UserInfo(callbacks.Plugin):
     UserInfoSnarfer = urlSnarfer(UserInfoSnarfer)
 
     @internationalizeDocstring
-    def members(self, irc, msg, args, channel):
+    def members(self, irc, msg, args):
         """No arguments
 
         Returns the current members list in a private message if not in #BMN"""
@@ -98,7 +98,7 @@ class UserInfo(callbacks.Plugin):
         Preofficers += '\n'.join(i[1] + ' ' + i[0] for i in preofficers)
 
         data = '\n\n'.join((Officers, Enlisted, Preofficers))
-        if channel != '#BMN':
+        if not self.registryValue('enableMembersListInChannel'):
             irc.reply(data, private=True)
         else:
             irc.reply(data, nickPrefix=false)
