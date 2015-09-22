@@ -153,7 +153,7 @@ class Powder(callbacks.PluginRegexp):
                 outMsg, each['Name'].replace('&#039;', '\''), each['Username'], str(each['ID']), str(each['Score']))
             x += 1
             if x % 2 is 0:
-                irc.queueMsg(ircmsgs.privmsg(msg.nick, outMsg))
+                irc.reply(msg.nick, outMsg, private=True)
                 outMsg = ''
                 continue
             outMsg = '{0} -- '.format(outMsg)
