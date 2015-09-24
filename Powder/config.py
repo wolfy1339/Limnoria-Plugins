@@ -40,11 +40,11 @@ def configure(advanced):
 
 Powder = conf.registerPlugin('Powder')
 conf.registerChannelValue(Powder, 'powderSnarfer',
-                          registry.Boolean(False, """Determines if this plugin will snarf ~<saveid>,
+    registry.Boolean(False, """Determines if this plugin will snarf ~<saveid>,
 with the saves name and information"""))
 
 conf.registerChannelValue(Powder, 'forumSnarfer',
-                          registry.Boolean(False, """Determines if this plugin will snarf forum links,
+    registry.Boolean(False, """Determines if this plugin will snarf forum links,
 with the thread's name and information"""))
 
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:

@@ -48,10 +48,10 @@ GitTracker = conf.registerPlugin('GitTracker')
 # This is where your configuration variables (if any) should go.  For example:
 # conf.registerGlobalValue(GitTracker, 'someConfigVariableName',
 #     registry.Boolean(False, _("""Help for someConfigVariableName.""")))
-conf.registerGlobalValue(GitTracker, 'login', registry.String(
-    'BigWolfy1339', _("Login to GitHub (to post issues)")))
-conf.registerGlobalValue(GitTracker, 'token', registry.String(
-    '', _("Auth token to GitHub (to post issues)"), private=True))
-
+conf.registerGlobalValue(GitTracker, 'login',
+    registry.String('BigWolfy1339', _("Login to GitHub (to post issues)")))
+conf.registerGlobalValue(GitTracker, 'token',
+    registry.String('', _("Auth token to GitHub (to post issues)"),
+    private=True))
 
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:

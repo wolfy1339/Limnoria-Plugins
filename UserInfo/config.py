@@ -52,11 +52,8 @@ UserInfo = conf.registerPlugin('UserInfo')
 conf.registerChannelValue(UserInfo, 'MemberSnarfer',
                           registry.Boolean(False, """Determines if this plugin will snarf @<username>,
 with the user's name and information"""))
-conf.registerChannelValue(
-    UserInfo,
-    'enableMembersListInChannel',
-    registry.Boolean(
-        False,
-        """Determines if this plugin will reply with the members list in the channel"""))
+conf.registerChannelValue(UserInfo, 'enableMembersListInChannel',
+    registry.Boolean(False, """Determines if this plugin will reply with the members list
+in the channel or via privmsg"""))
 
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:
