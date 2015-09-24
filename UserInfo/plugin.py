@@ -119,8 +119,8 @@ class UserInfo(callbacks.Plugin):
             Awards = []
             awards = userData['awards']
             Rank = []
-            Rank[0] = userData['rank']
-            Rank[1] = userData['rank_comment']
+            Rank.append(userData['rank'])
+            Rank.append(userData['rank_comment'])
             Links = []
 
             for award, value in list(awards.items()):
@@ -156,19 +156,10 @@ class UserInfo(callbacks.Plugin):
                     Status = ' '.join(['This member is absolutely necessary',
                                        'to keep the group going and thus is autosafe'])
 
-            irc.reply(
-                ' '.join(
-                    [
+            irc.reply(' '.join([
                         'Member {0}: {1}, {2} | {3} | ',
-                        'http://brilliant-minds.tk/members.html?{4} | Awards {5} | ',
-                        "{6}".format(
-                            userName,
-                            Rank[0],
-                            Rank[1],
-                            Safe,
-                            userName,
-                            Awards,
-                            Links)]),
+                        'http://brilliant-minds.tk/members.html?{0} | Awards {4} | ',
+                        "{5}".format(userName, Rank[0], Rank[1], Safe, Awards, Links)]),
                 prefixNick=False)
             self.log.info('UserInfo: Member {0} found'.format(userName))
         except Exception:
