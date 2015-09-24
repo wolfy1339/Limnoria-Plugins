@@ -38,6 +38,7 @@ except:
     # without the i18n module
     _ = lambda x: x
 
+
 def configure(advanced):
     # This will be called by supybot to configure this module.  advanced is
     # a bool that specifies whether the user identified themself as an advanced
@@ -49,9 +50,13 @@ def configure(advanced):
 
 UserInfo = conf.registerPlugin('UserInfo')
 conf.registerChannelValue(UserInfo, 'MemberSnarfer',
-    registry.Boolean(False, """Determines if this plugin will snarf @<username>, 
+                          registry.Boolean(False, """Determines if this plugin will snarf @<username>,
 with the user's name and information"""))
-conf.registerChannelValue(UserInfo, 'enableMembersListInChannel',
-    registry.Boolean(False, """Determines if this plugin will reply with the members list in the channel"""))
+conf.registerChannelValue(
+    UserInfo,
+    'enableMembersListInChannel',
+    registry.Boolean(
+        False,
+        """Determines if this plugin will reply with the members list in the channel"""))
 
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:

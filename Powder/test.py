@@ -31,6 +31,7 @@
 
 from supybot.test import *
 
+
 class PowderTestCase(PluginTestCase):
     plugins = ('Powder',)
 

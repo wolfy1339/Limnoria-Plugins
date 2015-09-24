@@ -90,7 +90,7 @@ class Rpg(callbacks.Plugin):
                 seed = random.random()
                 random.seed(seed)
                 terrain = []
-                terrain +=  "#####:~..............................................."
+                terrain += "#####:~..............................................."
                 #          # is wall  : is boss  ~ is item  . is nothing.
                 rand = {}
                 terrainmap = ""
@@ -243,14 +243,14 @@ rating is %i. You have died %i times.\
             mapInfo = self.mapInfo
 
             area = []
-            area +=  mapData[location - (mapInfo["width"] + 3)]
-            area +=  mapData[location - (mapInfo["width"] + 2)]
-            area +=  mapData[location - (mapInfo["width"] + 1)]
-            area +=  mapData[location - 1]
-            area +=  mapData[location + 1]
-            area +=  mapData[location + (mapInfo["width"] + 1)]
-            area +=  mapData[location + (mapInfo["width"] + 2)]
-            area +=  mapData[location + (mapInfo["width"] + 3)]
+            area += mapData[location - (mapInfo["width"] + 3)]
+            area += mapData[location - (mapInfo["width"] + 2)]
+            area += mapData[location - (mapInfo["width"] + 1)]
+            area += mapData[location - 1]
+            area += mapData[location + 1]
+            area += mapData[location + (mapInfo["width"] + 1)]
+            area += mapData[location + (mapInfo["width"] + 2)]
+            area += mapData[location + (mapInfo["width"] + 3)]
 
             for x in area:
                 line = area.index(x)
@@ -295,12 +295,12 @@ rating is %i. You have died %i times.\
                 number = int(number)
             except:
                 number = 1
-            if number ==  0:
+            if number == 0:
                 number = 1
 
             x = 0
             while x < number:
-                if direction ==  "NW":
+                if direction == "NW":
                     if mapData[playerData[player]["Loc"] -
                                (mapInfo["width"] + 3)] is "#":
                         irc.error("You can't move there.")
@@ -308,7 +308,7 @@ rating is %i. You have died %i times.\
                     else:
                         playerData[player]["Loc"] -= (mapInfo["width"] + 3)
                         self._savePlayerData(playerData)
-                elif direction ==  "N":
+                elif direction == "N":
                     if mapData[playerData[player]["Loc"] -
                                (mapInfo["width"] + 2)] is "#":
                         irc.error("You can't move there.")
@@ -316,7 +316,7 @@ rating is %i. You have died %i times.\
                     else:
                         playerData[player]["Loc"] -= (mapInfo["width"] + 2)
                         self._savePlayerData(playerData)
-                elif direction ==  "NE":
+                elif direction == "NE":
                     if mapData[playerData[player]["Loc"] -
                                (mapInfo["width"] + 1)] is "#":
                         irc.error("You can't move there.")
@@ -331,7 +331,7 @@ rating is %i. You have died %i times.\
                     else:
                         playerData[player]["Loc"] -= 1
                         self._savePlayerData(playerData)
-                elif direction ==  "E":
+                elif direction == "E":
                     if mapData[playerData[player]["Loc"] + 1] is "#":
                         irc.error("You can't move there.")
                         return
@@ -346,7 +346,7 @@ rating is %i. You have died %i times.\
                     else:
                         playerData[player]["Loc"] += (mapInfo["width"] + 1)
                         self._savePlayerData(playerData)
-                elif direction ==  "S":
+                elif direction == "S":
                     if mapData[playerData[player]["Loc"] +
                                (mapInfo["width"] + 2)] is "#":
                         irc.error("You can't move there.")
@@ -354,7 +354,7 @@ rating is %i. You have died %i times.\
                     else:
                         playerData[player]["Loc"] + = (mapInfo["width"] + 2)
                         self._savePlayerData(playerData)
-                elif direction ==  "SE":
+                elif direction == "SE":
                     if mapData[playerData[player]["Loc"] +
                                (mapInfo["width"] + 3)] is "#":
                         irc.error("You can't move there.")
@@ -493,8 +493,10 @@ rating is %i. You have died %i times.\
                     if (random.random() * 100 < 2):
                         atkValue * = 2
                         battleData["monster"]["crits"] += 1
-                    playerData[player]["HP"] -= (atkValue - (playerData[player]["Def"] * playerData[player]["Item"]["Torso"]["Power"]))
-                    if playerData[player]["HP"] <=  0:
+                    playerData[player]["HP"] -= (atkValue -
+                                                 (playerData[player]["Def"] *
+                                                  playerData[player]["Item"]["Torso"]["Power"]))
+                    if playerData[player]["HP"] <= 0:
                         return monster["Name"]
 
             def _doPlayer():
@@ -691,15 +693,23 @@ rating is %i. You have died %i times.\
             playerData = self.playerData
             nLvl = self._getNextLevelXp(player)
             playerData[player]["Exp"] + = xp
-            if playerData[player]["Exp"] >=  nLvl:
+            if playerData[player]["Exp"] >= nLvl:
                 playerData[player]["MHP"] += int(random.random() * 7)
                 playerData[player]["Atk"] += int(random.random() * 7)
                 playerData[player]["Def"] += int(random.random() * 7)
                 playerData[player]["Spd"] += int(random.random() * 7)
                 playerData[player]["Luc"] += int(random.random() * 4)
                 playerData[player]["Lvl"] += 1
-                irc.reply("%s has leveled up,  (s)he is now level %i. New stats are Attack: %i,  Defence: %i,  Speed: %i and Luck: %i\
-                        " % (player, playerData[player]["Lvl"], playerData[player]["Atk"], playerData[player]["Def"], playerData[player]["Spd"], playerData[player]["Luc"]), prefixNick=False)
+                irc.reply(
+                    "%s has leveled up,  (s)he is now level %i. New stats are Attack: %i,  Defence: %i,  Speed: %i and Luck: %i\
+                        " %
+                    (player,
+                     playerData[player]["Lvl"],
+                        playerData[player]["Atk"],
+                        playerData[player]["Def"],
+                        playerData[player]["Spd"],
+                        playerData[player]["Luc"]),
+                    prefixNick=False)
             self._savePlayerData(playerData)
 
         def _getNextLevelXp(self, player):

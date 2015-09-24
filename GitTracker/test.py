@@ -30,29 +30,29 @@
 
 from supybot.test import *
 
+
 class GitTrackerTestCase(ChannelPluginTestCase):
     plugins = ('GitTracker',)
 
     def testFactoids(self):
-        self.assertResponse('Hi, see the %%git repo!',
-                'https://github.com/Brilliant-Minds/BMN-Powder-Toy.git',
-                usePrefixChar=False)
-        self.assertResponse('foobar: Hi, see the %%git-pl repo!',
-                'foobar: https://github.com/Brilliant-Minds/BMNBot-Plugins.git',
-                usePrefixChar=False)
+        self.assertResponse(
+            'Hi, see the %%git repo!',
+            'https://github.com/Brilliant-Minds/BMN-Powder-Toy.git',
+            usePrefixChar=False)
+        self.assertResponse(
+            'foobar: Hi, see the %%git-pl repo!',
+            'foobar: https://github.com/Brilliant-Minds/BMNBot-Plugins.git',
+            usePrefixChar=False)
         self.assertNoResponse('This does %%not exist', usePrefixChar=False)
 
-        self.assertResponse('Hi, see %%commit#93af1e8 at the Git repo.',
-                'https://github.com/Brilliant-Minds/BMN-Powder-Toy/commit/93af1e8',
-                usePrefixChar=False)
-
-
-
+        self.assertResponse(
+            'Hi, see %%commit#93af1e8 at the Git repo.',
+            'https://github.com/Brilliant-Minds/BMN-Powder-Toy/commit/93af1e8',
+            usePrefixChar=False)
 
         # test is the bot's nick
         self.assertError('test: Hi, see the %%git repo!', usePrefixChar=False)
         self.assertError('Hi, see the %%git repo!')
-
 
 
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:

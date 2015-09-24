@@ -24,7 +24,7 @@ __author__ = supybot.authors.unknown
 __contributors__ = {}
 
 # This is a url where the most recent plugin package can be downloaded.
-__url__ = '' # 
+__url__ = ''
 
 from . import config
 from . import plugin
@@ -35,7 +35,7 @@ reload(plugin)
 # reloaded when this plugin is reloaded.  Don't forget to import them as well!
 
 if world.testing:
-   from . import test
+    from . import test
 
 Class = plugin.Class
 configure = config.configure

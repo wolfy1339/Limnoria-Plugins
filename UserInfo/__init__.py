@@ -48,7 +48,7 @@ __author__ = supybot.authors.unknown
 __contributors__ = {}
 
 # This is a url where the most recent plugin package can be downloaded.
-__url__ = '' # 'http://supybot.com/Members/yourname/UserInfo/download'
+__url__ = ''  # 'http://supybot.com/Members/yourname/UserInfo/download'
 
 from . import config
 from . import plugin

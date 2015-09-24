@@ -420,8 +420,17 @@ class Timebomb(callbacks.Plugin):
             nicks.remove(irc.nick)
         eligibleNicks = []
         for victim in nicks:
-            if not (victim == self.lastBomb or string.lower(victim) in self.registryValue('randomExclusions', channel) or string.lower(
-                    victim) in self.registryValue('exclusions', channel)) and self._canBomb(irc, channel, msg.nick, victim, False):
+            if not (
+                victim == self.lastBomb or string.lower(victim) in self.registryValue(
+                    'randomExclusions',
+                    channel) or string.lower(victim) in self.registryValue(
+                    'exclusions',
+                    channel)) and self._canBomb(
+                    irc,
+                    channel,
+                    msg.nick,
+                    victim,
+                    False):
                 eligibleNicks.append(victim)
         if len(eligibleNicks) == 0:
             irc.reply('I couldn\'t find anyone suitable to randombomb. Maybe everyone here is excluded from being randombombed or has been timebombed too recently.')
@@ -494,7 +503,8 @@ class Timebomb(callbacks.Plugin):
             return
 
         # not (victim == msg.nick and victim == 'mniip') and
-        if not ircdb.checkCapability(msg.prefix, 'admin') and not self._canBomb(
+        if not ircdb.checkCapability(
+                msg.prefix, 'admin') and not self._canBomb(
                 irc, channel, msg.nick, victim, True):
             return
 
@@ -546,8 +556,11 @@ class Timebomb(callbacks.Plugin):
         try:
             if not self.bombs[channel].active:
                 return
-            if not ircutils.nickEqual(self.bombs[
-                                      channel].victim, msg.nick) and not ircdb.checkCapability(msg.prefix, 'admin'):
+            if not ircutils.nickEqual(
+                    self.bombs[channel].victim,
+                    msg.nick) and not ircdb.checkCapability(
+                    msg.prefix,
+                    'admin'):
                 irc.reply('You can\'t cut the wire on someone else\'s bomb!')
                 return
             self.bombs[channel].cutwire(irc, cutWire)
@@ -578,8 +591,14 @@ class Timebomb(callbacks.Plugin):
         channel = ircutils.toLower(channel)
         try:
             if self.bombs[channel].active:
-                if ircutils.nickEqual(self.bombs[channel].victim, msg.nick) and not (ircutils.nickEqual(
-                        self.bombs[channel].victim, self.bombs[channel].sender) or ircdb.checkCapability(msg.prefix, 'admin')):
+                if ircutils.nickEqual(
+                    self.bombs[channel].victim,
+                    msg.nick) and not (
+                    ircutils.nickEqual(
+                        self.bombs[channel].victim,
+                        self.bombs[channel].sender) or ircdb.checkCapability(
+                        msg.prefix,
+                        'admin')):
                     irc.reply(
                         'You can\'t defuse a bomb that\'s in your own pants, you\'ll just have to cut a wire and hope for the best.')
                     return

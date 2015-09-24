@@ -91,9 +91,19 @@ class Powder(callbacks.PluginRegexp):
         self.log.info(
             "GIT: user:%s project:%s branch:%s called by %s sucessfully." %
             (user, project, branch, msg.nick))
-        irc.reply("Last commit to %s's %s repo, %s branch, was by %s on %s at %s. Commit message was \"%s\" - https://github.com/%s/%s/tree/%s" %
-                  (user, project, branch, data["committer"]["name"], data["committer"]["date"][0], data["committer"]["date"][1],
-                   data["message"], user, project, branch), prefixNick=False)
+        irc.reply(
+            "Last commit to %s's %s repo, %s branch, was by %s on %s at %s. Commit message was \"%s\" - https://github.com/%s/%s/tree/%s" %
+            (user,
+             project,
+             branch,
+             data["committer"]["name"],
+                data["committer"]["date"][0],
+                data["committer"]["date"][1],
+                data["message"],
+                user,
+                project,
+                branch),
+            prefixNick=False)
 
     git = wrap(git, ['somethingWithoutSpaces', optional(
         'somethingWithoutSpaces'), optional('somethingwithoutspaces')])
@@ -184,8 +194,16 @@ class Powder(callbacks.PluginRegexp):
         cg = data["Info"]["Category"]
         tp = data["Info"]["Topic"]
 
-        irc.reply("Forum post is \"%s\" in the %s section, posted by %s and has %s replies. Last post was by %s at %s" %
-                  (tp["Title"], cg["Name"], tp["Author"], tp["PostCount"] - 1, tp["LastPoster"], tp["Date"]), prefixNick=False)
+        irc.reply(
+            "Forum post is \"%s\" in the %s section, posted by %s and has %s replies. Last post was by %s at %s" %
+            (tp["Title"],
+             cg["Name"],
+                tp["Author"],
+                tp["PostCount"] -
+                1,
+                tp["LastPoster"],
+                tp["Date"]),
+            prefixNick=False)
         self.log.info(
             "FORUMSNARF: Thread %s found. %s in the %s section" %
             (threadNum, tp["Title"], cg["Name"]))
@@ -287,7 +305,8 @@ class Powder(callbacks.PluginRegexp):
                 return
             match = None
             for match in re.finditer(
-                    r" href=\"http://superdoxin.com/static/cate/files/(([0-9]+)([^\"]+))\"", data):
+                    r" href=\"http://superdoxin.com/static/cate/files/(([0-9]+)([^\"]+))\"",
+                    data):
                 pass
             filename = match.group(1)
             num = match.group(2)

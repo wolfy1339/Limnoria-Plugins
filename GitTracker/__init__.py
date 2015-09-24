@@ -47,7 +47,7 @@ __author__ = supybot.authors.progval
 __contributors__ = {}
 
 # This is a url where the most recent plugin package can be downloaded.
-__url__ = '' # 'http://supybot.com/Members/yourname/GitTracker/download'
+__url__ = ''  # 'http://supybot.com/Members/yourname/GitTracker/download'
 
 from . import config
 from . import plugin

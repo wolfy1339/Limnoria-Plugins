@@ -30,6 +30,7 @@
 
 from supybot.test import *
 
+
 class RpgTestCase(PluginTestCase):
     plugins = ('Rpg',)
 

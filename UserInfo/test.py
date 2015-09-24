@@ -30,15 +30,17 @@
 
 from supybot.test import *
 
+
 class UserInfoTestCase(PluginTestCase):
     plugins = ('UserInfo',)
 
     def testUserInfo(self):
         #self.assertError('userinfo records asdf')
         self.assertNotError('userinfo records wolfy1339')
-        self.asertNotError('userinfo records http://brilliant-minds.tk/members.html?wolfy1339')
+        self.asertNotError(
+            'userinfo records http://brilliant-minds.tk/members.html?wolfy1339')
 
-    #def testUserSnarfer(self):
+    # def testUserSnarfer(self):
     #    self.assertNotError('http://brilliant-minds.tk/members.html?wolfy1339')
     #    self.assertNotError('@wolfy1339')
 

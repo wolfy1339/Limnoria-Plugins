@@ -34,14 +34,16 @@ if sys.version_info >= (2, 7, 0):
 else:
     # Workaround
     def skip(string):
-        return lambda x:None
+        return lambda x: None
 from supybot.test import *
 
 import supybot.conf as conf
 import supybot.plugin as plugin
 
+
 class AdministrationTestCase(PluginTestCase):
     plugins = ('Administration', 'Config', 'Misc', 'Admin')
+
     def testLoad(self):
         self.assertError('load Owner')
         self.assertError('load owner')
@@ -97,6 +99,6 @@ class AdministrationTestCase(PluginTestCase):
         self.assertNotError('unrename Admin')
         self.assertRegexp('list Admin', 'capability remove')
         self.assertNotRegexp('list Admin', 'rmcap')
- 
+
 
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:

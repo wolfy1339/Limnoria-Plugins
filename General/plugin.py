@@ -195,9 +195,8 @@ class General(callbacks.PluginRegexp):
         data = utils.web.getUrl(
             "http://infosniper.net/?ip_address=%s" %
             hostmask)
-        data = \
-            data.split(
-                "<!-- ################################################################################## -->")[5]
+        data = data.split(
+            "<!-- ################################################################################## -->")[5]
         data = re.split("<[^<>]+>|\\n| |	|   |  ", data)
 
         x = 0
@@ -230,10 +229,9 @@ class General(callbacks.PluginRegexp):
             return None
 
         if lat.lower() != "n/a" and lon.lower() != "n/a":
-            tinyurl = \
-                utils.web.getUrl(
-                    "http://tinyurl.com/api-create.php?url=http://maps.google.com/maps?q=%s,%s" %
-                    (lat, lon))
+            tinyurl = utils.web.getUrl(
+                "http://tinyurl.com/api-create.php?url=http://maps.google.com/maps?q=%s,%s" %
+                (lat, lon))
             tinyurlLink = " (%s)" % tinyurl
         else:
             tinyurlLink = ""
@@ -249,11 +247,16 @@ class General(callbacks.PluginRegexp):
 
         Use this command when the bot has a bug. It places a note in the logs and sends the owner a message."""
 
-        self.log.error("****Error in {0} reported by {1}: {2}****".format(cmd,
-                                                                          msg.nick, txt))
-        irc.queueMsg(ircmsgs.privmsg("Memoserv",
-                                     "SEND {0} Bug found in {1} by {2} ({3}).".format(self.ownerNick,
-                                                                                      cmd, msg.nick, txt)))
+        self.log.error(
+            "****Error in {0} reported by {1}: {2}****".format(cmd, msg.nick, txt))
+        irc.queueMsg(
+            ircmsgs.privmsg(
+                "Memoserv",
+                "SEND {0} Bug found in {1} by {2} ({3}).".format(
+                    self.ownerNick,
+                    cmd,
+                    msg.nick,
+                    txt)))
         irc.replySuccess("Bug reported.")
 
     bug = wrap(bug, ["something", additional("text")])
@@ -698,8 +701,11 @@ class General(callbacks.PluginRegexp):
                 != "##jacksonmj-test":
             irc.noReply()
             return
-        if not ircdb.checkCapability(msg.prefix,
-                                     ircdb.makeChannelCapability(msg.args[0], "op")):
+        if not ircdb.checkCapability(
+            msg.prefix,
+            ircdb.makeChannelCapability(
+                msg.args[0],
+                "op")):
             irc.noReply()
             return
         match = match.group(0)
@@ -774,8 +780,12 @@ class General(callbacks.PluginRegexp):
                 if each in msg.nick.lower() \
                         and not self.kickuser[channel][each]["num"] <= 0:
                     irc.queueMsg(ircmsgs.ban(msg.args[0], msg.nick))
-                    irc.queueMsg(ircmsgs.kick(msg.args[0], msg.nick,
-                                              "{}".format(self.kickuser[channel][each]["msg"].replace("#n", str(self.kickuser[channel][each]["num"])))))
+                    irc.queueMsg(
+                        ircmsgs.kick(
+                            msg.args[0], msg.nick, "{}".format(
+                                self.kickuser[channel][each]["msg"].replace(
+                                    "#n", str(
+                                        self.kickuser[channel][each]["num"])))))
                     self.kickuser[channel][each]["num"] -= 1
 
                     def un():
