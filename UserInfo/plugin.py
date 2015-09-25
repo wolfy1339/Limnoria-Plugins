@@ -123,7 +123,7 @@ class UserInfo(callbacks.Plugin):
             Rank.append(userData['rank_comment'])
             Links = []
 
-            for award, value in list(awards.items()):
+            for award, value in awards.items():
                 if str(value) == 0:
                     Value = 'Badge'
                 elif str(value) == 1:
