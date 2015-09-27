@@ -94,11 +94,11 @@ class UserInfo(callbacks.Plugin):
         preofficers += '------------\n'
         preofficers += '\n'.join(i[1] + ' ' + i[0] for i in data['preofficers'])
 
-        data = '\n\n'.join((officers, enlisted, preofficers))
+        message = '\n\n'.join((officers, enlisted, preofficers))
         if not self.registryValue('enableMembersListInChannel'):
-            irc.reply(data, private=True)
+            irc.reply(message, private=True)
         else:
-            irc.reply(data, nickPrefix=false)
+            irc.reply(message, nickPrefix=false)
     members = wrap(members)
 
     def _getMemberInfo(self, irc, user):
@@ -113,14 +113,13 @@ class UserInfo(callbacks.Plugin):
 
             url = 'http://brilliant-minds.tk/members/{0}.json'.format(userName)
             userData = json.loads(utils.web.getUrl(url))
-            Awards = []
-            awards = userData['awards']
-            Rank = []
-            Rank.append(userData['rank'])
-            Rank.append(userData['rank_comment'])
-            Links = []
+            awards = []
+            rank = []
+            rank.append(userData['rank'])
+            rank.append(userData['rank_comment'])
+            links = []
 
-            for award, value in awards.items():
+            for award, value in userData['awards'].items():
                 if value == 0:
                     Value = 'Badge'
                 elif value == 1:
@@ -133,37 +132,35 @@ class UserInfo(callbacks.Plugin):
                     Value = 'Gold'
                 elif value == 5:
                     Value = 'Diamond'
-                Awards.append('{0}: {1}'.format(award, Value))
+                awards.append('{0}: {1}'.format(award, Value))
 
             for link, value in userData['links'].items():
-                Links.append('{0}: {1}'.format(link, value))
-            Links = ', '.join(Links)
-            Awards = ', '.join(Awards)
+                links.append('{0}: {1}'.format(link, value))
+            links = ', '.join(Links)
+            awards = ', '.join(awards)
 
             if userData['voucher']:
-                Status = 'This member has a voucher'
+                status = 'This member has a voucher'
                 if userData['safe'] == 1:
-                    Status += ' and is safe for the next IMC/IRC'
+                    status += ' and is safe for the next IMC/IRC'
                 elif userData['safe'] == 2:
-                    Status += ' and is autosafe'
+                    status += ' and is autosafe'
             else:
                 if userData['safe'] == 1:
-                    Status = 'This member is safe for the next IMC/IRC'
+                    status = 'This member is safe for the next IMC/IRC'
                 elif userData['safe'] == 2:
-                    Status = ' '.join(['This member is absolutely necessary',
+                    status = ' '.join(['This member is absolutely necessary',
                                        'to keep the group going and thus is autosafe'])
 
             irc.reply(' '.join([
                         'Member {0}: {1}, {2} | {3} | ',
                         'http://brilliant-minds.tk/members.html?{0} | Awards {4} | ',
-                        "{5}".format(userName, Rank[0], Rank[1], Safe, Awards, Links)]),
+                        "{5}".format(userName, rank[0], rank[1], status, awards, Links)]),
                 prefixNick=False)
             self.log.info('UserInfo: Member {0} found'.format(userName))
         except Exception:
             irc.error(
-                _('User {0} isn\'t in my database, sorry.'.format(Name)), Raise=True)
-            raise ValueError(
-                'User {0} isn\'t in my database, sorry.'.format(Name))
+                _('User {0} isn\'t in my database, sorry.'.format(userName)), Raise=True)
         finally:
             return None
 
