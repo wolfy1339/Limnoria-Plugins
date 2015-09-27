@@ -58,16 +58,16 @@ class UserInfo(callbacks.Plugin):
 
     def UserInfoSnarfer(self, irc, msg, args, match):
         r"http://brilliant-minds.tk/members.html\?([\w-]+)|@([\w-]+)"
-        Name = match.group(1) or match.group(2)
+        name = match.group(1) or match.group(2)
 
-        if msg.args[1].startswith('Member {0}:'.format(Name)):
+        if msg.args[1].startswith('Member {0}:'.format(name)):
             return  # Don't respond to other bots with this plugin loaded
 
         if self.registryValue('MemberSnarfer'):
             if match.group(0)[0] == "@":
-                self._getMemberInfo(irc, Name, 0)
+                self._getMemberInfo(irc, name, 0)
             else:
-                self._getMemberInfo(irc, Name, 1)
+                self._getMemberInfo(irc, name, 1)
         else:
             return
 
@@ -80,24 +80,21 @@ class UserInfo(callbacks.Plugin):
         Returns the current members list in a private message if not in #BMN"""
 
         jsonUrl = 'http://brilliant-minds.tk/members.json'
-        Data = json.loads(utils.web.getUrl(jsonUrl))
-        officers = Data['officers']
-        enlisted = Data['enlisted']
-        preofficers = Data['preofficers']
+        data = json.loads(utils.web.getUrl(jsonUrl))
 
-        Officers = 'Officers\n'
-        Officers += '------------\n'
-        Officers += '\n'.join(i[1] + ' ' + i[0] for i in officers)
+        officers = 'Officers\n'
+        officers += '------------\n'
+        officers += '\n'.join(i[1] + ' ' + i[0] for i in data['officers'])
 
-        Enlisted = 'Enlisted\n'
-        Enlisted += '------------\n'
-        Enlisted += '\n'.join(i[1] + ' ' + i[0] for i in enlisted)
+        enlisted = 'Enlisted\n'
+        enlisted += '------------\n'
+        enlisted += '\n'.join(i[1] + ' ' + i[0] for i in data['enlisted'])
 
-        Preofficers = 'Preofficers\n'
-        Preofficers += '------------\n'
-        Preofficers += '\n'.join(i[1] + ' ' + i[0] for i in preofficers)
+        preofficers = 'Preofficers\n'
+        preofficers += '------------\n'
+        preofficers += '\n'.join(i[1] + ' ' + i[0] for i in data['preofficers'])
 
-        data = '\n\n'.join((Officers, Enlisted, Preofficers))
+        data = '\n\n'.join((officers, enlisted, preofficers))
         if not self.registryValue('enableMembersListInChannel'):
             irc.reply(data, private=True)
         else:
@@ -124,21 +121,21 @@ class UserInfo(callbacks.Plugin):
             Links = []
 
             for award, value in awards.items():
-                if str(value) == 0:
+                if value == 0:
                     Value = 'Badge'
-                elif str(value) == 1:
+                elif value == 1:
                     Value = 'Standard'
-                elif str(value) == 2:
+                elif value == 2:
                     Value = 'Bronze'
-                elif str(value) == 3:
+                elif value == 3:
                     Value = 'Silver'
-                elif str(value) == 4:
+                elif value == 4:
                     Value = 'Gold'
-                elif str(value) == 5:
+                elif value == 5:
                     Value = 'Diamond'
                 Awards.append('{0}: {1}'.format(award, Value))
 
-            for link, value in list(userData['links'].items()):
+            for link, value in userData['links'].items():
                 Links.append('{0}: {1}'.format(link, value))
             Links = ', '.join(Links)
             Awards = ', '.join(Awards)
