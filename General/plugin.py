@@ -84,8 +84,7 @@ class General(callbacks.PluginRegexp):
                 count += 1
             irc.reply('*!*@%s' % hostmask, prefixNick=False)
             if self.consolechannel:
-                irc.queueMsg(
-                    ircmsgs.privmsg(
+                irc.queueMsg(ircmsgs.privmsg(
                         self.consolechannel, 'BANMASK: *!*@%s returned for %s' %
                         (hostmask, msg.nick)))
 
@@ -549,8 +548,8 @@ class General(callbacks.PluginRegexp):
             data = data.strip(each)
         data = list(data)
 
-        if len(
-                data) < 15:  # Simon: Increased from 5 to 15, was making quite a few people unhappy
+        # Simon: Increased from 5 to 15, was making quite a few people unhappy
+        if len(data) < 15:
             return 0
 
         length = 0
@@ -621,20 +620,15 @@ class General(callbacks.PluginRegexp):
         paste["size"] = (page[2].split(":")[1])[1:-1].strip()
         paste["expires"] = (page[4].split(":")[1])[1:].strip()
 
-        if "None" in paste["syntax"]:
+        if 'None' in paste["syntax"]:
             paste["syntax"] = "Plain Text"
 
         if not self.registryValue("pasteSnarfer"):
             return
         else:
             irc.reply(
-                "Pastebin is {0} by {1} posted on {2} and is written in {3}. The paste is {4} and expires {5}".format(
-                    paste["name"],
-                    paste["by"],
-                    paste["date"],
-                    paste["syntax"],
-                    paste["size"],
-                    paste["expires"]),
+                'Pastebin is {0} by {1} posted on {2} and is written in {3}. The paste is {4} and expires {5}'.format(
+                    paste['name'], paste['by'], paste['date'], paste['syntax'], paste['size'], paste['expires']),
                 prefixNick=False)
 
     pasteSnarfer = urlSnarfer(pasteSnarfer)
@@ -643,17 +637,14 @@ class General(callbacks.PluginRegexp):
         r"""^s[/].*[/].*$"""
 
         match = match.group(0)
-        data = match.split("/")
-        if msg.args[0] != "##powder-bots":
-            irc.noReply()
-            return
+        data = match.split('/')
 
         newData = []
         x = 0
         while x < len(data):
-            if len(data[x]) and "\\" == data[x][-1] and x + 1 \
-                    < len(data):
-                newData += ["{0}/{1}".format((data[x])[:-1], data[x + 1])]
+            if (len(data[x]) and data[x][-1] == '\\' and
+                    x + 1 < len(data)):
+                newData += ['{0}/{1}'.format((data[x])[:-1], data[x + 1])]
                 x += 2
             else:
                 newData += [data[x]]
@@ -677,42 +668,37 @@ class General(callbacks.PluginRegexp):
                     output = output[0:min(len(output), 4096)]
                     x += 2
 
-                self.log.info("Changing {0} to {1}".format(each[1], output))
-                irc.reply(
-                    "<{0}> {1}".format(
-                        each[0],
-                        output),
-                    prefixNick=False)
+                self.log.info('Changing {0} to {1}'.format(each[1], output))
+                irc.reply('<{0}> {1}'.format(
+                        each[0], output), prefixNick=False)
                 return 0
 
-        irc.error("Not found in buffer")
+        irc.error('Not found in buffer')
 
     selfCorrect = urlSnarfer(selfCorrect)
 
     def userCorrect(self, irc, msg, match):
         r"""^u[/].*[/].*[/].*$"""
 
-        if msg.args[0] != "##powder-bots" and msg.args[0] \
-                != "##jacksonmj-test":
+        if (msg.args[0] != '##powder-bots' and
+                msg.args[0] != '##jacksonmj-test'):
             irc.noReply()
             return
         if not ircdb.checkCapability(
-            msg.prefix,
-            ircdb.makeChannelCapability(
-                msg.args[0],
-                "op")):
+                msg.prefix,
+                ircdb.makeChannelCapability(msg.args[0], 'op')):
             irc.noReply()
             return
         match = match.group(0)
-        data = match.split("/")
+        data = match.split('/')
         user = data[1]
 
         newData = []
         x = 0
         while x < len(data):
-            if len(data[x]) and "\\" == data[x][-1] and x + 1 \
-                    < len(data):
-                newData += ["{0}/{1}".format((data[x])[:-1], data[x + 1])]
+            if (len(data[x]) and data[x][-1] == '\\' and
+                    x + 1 < len(data)):
+                newData += ['{0}/{1}'.format((data[x])[:-1], data[x + 1])]
                 x += 2
             else:
                 newData += [data[x]]
@@ -742,12 +728,10 @@ class General(callbacks.PluginRegexp):
 
                 if self.registryValue('enableUserCorrect'):
                     self.log.info(
-                        "Changing {0} to {1}".format(
+                        'Changing {0} to {1}'.format(
                             each[1], output))
-                    irc.reply(
-                        "<{0}> {1}".format(
-                            each[0],
-                            output),
+                    irc.reply('<{0}> {1}'.format(
+                            each[0], output),
                         prefixNick=False)
                 else:
                     return
@@ -772,16 +756,15 @@ class General(callbacks.PluginRegexp):
 
         if channel in self.kickuser:
             for each in self.kickuser[channel]:
-                if each in msg.nick.lower() \
-                        and not self.kickuser[channel][each]["num"] <= 0:
+                if (each in msg.nick.lower() and
+                        not self.kickuser[channel][each]['num'] <= 0):
                     irc.queueMsg(ircmsgs.ban(msg.args[0], msg.nick))
-                    irc.queueMsg(
-                        ircmsgs.kick(
-                            msg.args[0], msg.nick, "{}".format(
-                                self.kickuser[channel][each]["msg"].replace(
-                                    "#n", str(
-                                        self.kickuser[channel][each]["num"])))))
-                    self.kickuser[channel][each]["num"] -= 1
+                    irc.queueMsg(ircmsgs.kick(
+                            msg.args[0], msg.nick, '{}'.format(
+                                self.kickuser[channel][each]['msg'].replace(
+                                    '#n', str(
+                                        self.kickuser[channel][each]['num'])))))
+                    self.kickuser[channel][each]['num'] -= 1
 
                     def un():
                         irc.queueMsg(ircmsgs.unban(msg.args[0], msg.nick))
@@ -800,8 +783,7 @@ class General(callbacks.PluginRegexp):
         if msg.nick.lower() in self.annoyUser:
 
             def fu():
-                irc.queueMsg(
-                    ircmsgs.IrcMsg(
+                irc.queueMsg(ircmsgs.IrcMsg(
                         "NOTICE {0} :\x02\x03{},{1}{2}".format(
                             msg.nick, random.randint(
                                 0, 15), random.randint(
@@ -823,22 +805,22 @@ class General(callbacks.PluginRegexp):
     def pop(self, irc, msg, args, text):
         """
 
-        Go pop"""
+        Go pop, moo or Bang"""
 
         # text = unicode(text, "utf-8")
 
         r = random.random()
         if r < 0.05:
-            irc.reply("goes BANG!", action=True)
+            irc.reply('goes BANG!', action=True)
         elif r < 0.1:
-            irc.reply("goes moo!", action=True)
+            irc.reply('goes moo!', action=True)
         else:
             if text is not None:
-                if text.lower() == "cherry":
+                if text.lower() == 'cherry':
                     text = msg.nick
-                irc.reply("pops {}".format(text), action=True)
+                irc.reply('pops {}'.format(text), action=True)
             else:
-                irc.reply("goes pop!", action=True)
+                irc.reply('goes pop!', action=True)
 
         # irc.queueMsg(ircmsgs.action(channel, text.encode("utf-8")))
 
