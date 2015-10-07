@@ -154,7 +154,7 @@ class UserInfo(callbacks.Plugin):
 
             irc.reply(' '.join([
                         'Member {0}: {1}, {2} | {3} | ',
-                        'http://brilliant-minds.tk/members.html?{0} | Awards {4} | ',
+                        'http://brilliant-minds.tk/members.html?{0} | Awards {4} |',
                         "{5}".format(userName, rank[0], rank[1], status, awards, links)]),
                 prefixNick=False)
             self.log.info('UserInfo: Member {0} found'.format(userName))
