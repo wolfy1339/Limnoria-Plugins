@@ -136,7 +136,7 @@ class UserInfo(callbacks.Plugin):
 
             for link, href in userData['links'].items():
                 links.append('{0}: {1}'.format(link, href))
-            links = ', '.join(Links)
+            links = ', '.join(links)
             awards = ', '.join(awards)
 
             if userData['voucher']:
@@ -155,7 +155,7 @@ class UserInfo(callbacks.Plugin):
             irc.reply(' '.join([
                         'Member {0}: {1}, {2} | {3} | ',
                         'http://brilliant-minds.tk/members.html?{0} | Awards {4} | ',
-                        "{5}".format(userName, rank[0], rank[1], status, awards, Links)]),
+                        "{5}".format(userName, rank[0], rank[1], status, awards, links)]),
                 prefixNick=False)
             self.log.info('UserInfo: Member {0} found'.format(userName))
         except Exception:
