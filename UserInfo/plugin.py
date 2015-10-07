@@ -152,10 +152,9 @@ class UserInfo(callbacks.Plugin):
                     status = ' '.join(['This member is absolutely necessary',
                                        'to keep the group going and thus is autosafe'])
 
-            irc.reply(' '.join(
-                        'Member {0}: {1}, {2} | {3} | ',
-                        'http://brilliant-minds.tk/members.html?{0} | Awards {4} |',
-                        "{5}".format(userName, rank[0], rank[1], status, awards, links)),
+            irc.reply('Member {0}: {1}, {2} | {3} | ',
+                        'http://brilliant-minds.tk/members.html?{0} | Awards {4} | ',
+                        "{5}".format(userName, rank[0], rank[1], status, awards, links),
                       prefixNick=False)
             self.log.info('UserInfo: Member {0} found'.format(userName))
         except Exception:
