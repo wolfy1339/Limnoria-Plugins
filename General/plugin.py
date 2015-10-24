@@ -328,7 +328,7 @@ class General(callbacks.PluginRegexp):
             self.annoyUser.pop(self.annoyUser.index(nick.lower()))
             self.log.info('ANNOY: No longer annoying {0}'.format(nick))
         except:
-            irc.error('That user isn't being annoyed.')
+            irc.error('That user isn\'t being annoyed.')
             return 0
 
     unannoy = wrap(unannoy, ['op', 'nick'])
