@@ -63,7 +63,7 @@ class UserInfo(callbacks.Plugin):
         if msg.args[1].startswith('Member {0}:'.format(name)):
             return  # Don't respond to other bots with this plugin loaded
 
-        if self.registryValue('MemberSnarfer'):
+        if self.registryValue('MemberSnarfer', msg.args[0]):
             if match.group(0)[0] == "@":
                 self._getMemberInfo(irc, name, 0)
             else:
@@ -95,10 +95,11 @@ class UserInfo(callbacks.Plugin):
         preofficers += '\n'.join(i[1] + ' ' + i[0] for i in data['preofficers'])
 
         message = '\n\n'.join((officers, enlisted, preofficers))
-        if not self.registryValue('enableMembersListInChannel'):
-            irc.reply(message, private=True)
-        else:
+
+        if self.registryValue('enableMembersListInChannel', msg.args[0]):
             irc.reply(message, nickPrefix=false)
+        else:
+            irc.reply(message, private=True)
     members = wrap(members)
 
     def _getMemberInfo(self, irc, user):
@@ -153,8 +154,8 @@ class UserInfo(callbacks.Plugin):
                                        'to keep the group going and thus is autosafe'])
 
             irc.reply(('Member {0}: {1}, {2} | {3} | '
-                        'http://brilliant-minds.tk/members.html?{0} | Awards {4} | '
-                        "{5}").format(userName, rank[0], rank[1], status, awards, links),
+                      'http://brilliant-minds.tk/members.html?{0} | Awards {4} | '
+                       '{5}').format(userName, rank[0], rank[1], status, awards, links),
                       prefixNick=False)
             self.log.info('UserInfo: Member {0} found'.format(userName))
         except Exception:

@@ -426,7 +426,8 @@ class General(callbacks.PluginRegexp):
             colors = utils.iter.cycle([4, 7, 8, 3, 2, 12, 6])
             L = [self._color(c, fg=colors.next()) for c in
                  str(ircutils.stripColor(text), "utf-8")]
-            if self.registryValue('enableMooReply'):
+
+            if self.registryValue('enableMooReply', msg.args[0]):
                 irc.reply(
                     "".join(L).encode("utf-8") + "\x03",
                     prefixNick=False)
@@ -446,7 +447,7 @@ class General(callbacks.PluginRegexp):
             hail = match.group(0).split(" ")[0]
         self.log.info("Responding to %s with %s" % (msg.nick, hail))
 
-        if self.registryValue('enableGreeter'):
+        if self.registryValue('enableGreeter', msg.args[0]):
             irc.reply("%s, %s" % (hail, msg.nick), prefixNick=False)
         else:
             return
@@ -456,7 +457,7 @@ class General(callbacks.PluginRegexp):
     def awayMsgKicker(self, irc, msg, match):
         r"""(is now (set as )?away [-:(] Reason|is no longer away [:-] Gone for|is away:)"""
 
-        if self.registryValue('enableAwayMsgKicker'):
+        if self.registryValue('enableAwayMsgKicker', msg.args[0]):
             self.log.info("KICKING %s for away announce" % msg.nick)
             ir.queuemsg(
                 ircmsgs.kick(
@@ -527,7 +528,7 @@ class General(callbacks.PluginRegexp):
     def ytSnarfer(self, irc, msg, match):
         r""".*(youtube[.]com/.+v=[0-9A-z\-_]{11}).*"""
 
-        if self.registryValue('youtubeSnarfer'):
+        if self.registryValue('youtubeSnarfer', msg.args[0]):
             if "Tribot200" in irc.state.channels[msg.args[0]].users:
                 return
             self._ytinfo(irc, match.group(1), False)
@@ -623,7 +624,7 @@ class General(callbacks.PluginRegexp):
         if 'None' in paste["syntax"]:
             paste["syntax"] = "Plain Text"
 
-        if not self.registryValue("pasteSnarfer"):
+        if not self.registryValue("pasteSnarfer", msg.args[0]):
             return
         else:
             irc.reply(
@@ -726,7 +727,7 @@ class General(callbacks.PluginRegexp):
                     output = output[0:min(len(output), 4096)]
                     x += 2
 
-                if self.registryValue('enableUserCorrect'):
+                if self.registryValue('enableUserCorrect', msg.args[0]):
                     self.log.info(
                         'Changing {0} to {1}'.format(
                             each[1], output))

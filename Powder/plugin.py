@@ -124,13 +124,13 @@ class Powder(callbacks.PluginRegexp):
             return  # Don't respond to save info from other bots with this plugin
 
         self.log.info("powderSnarfer - save URL Found " + match.group(0))
-        if not self.registryValue('powderSnarfer'):
-            return
-        else:
+        if self.registryValue('powderSnarfer', msg.args[0]):
             if match.group(0)[0] == "~":
                 self._getSaveInfo(irc, ID, 0)
             else:
                 self._getSaveInfo(irc, ID, 1)
+        else:
+            return
 
     powderSnarfer = urlSnarfer(powderSnarfer)
 
@@ -180,10 +180,11 @@ class Powder(callbacks.PluginRegexp):
     def forumSnarfer(self, irc, msg, match):
         r"http://powdertoy[.]co[.]uk/Discussions/Thread/View[.]html[?]Thread=([0-9]+)|http://tpt.io/:([0-9]+)"
         threadNum = match.group(1) or match.group(2)
-        if not self.registryValue('forumSnarfer'):
-            return
-        else:
+        if self.registryValue('forumSnarfer', msg.args[0]):
             self._getPostDetails(irc, msg, threadNum)
+        else:
+            return
+
     forumSnarfer = urlSnarfer(forumSnarfer)
 
     def _getPostDetails(self, irc, msg, threadNum):
