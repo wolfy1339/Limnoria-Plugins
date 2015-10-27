@@ -611,14 +611,13 @@ class General(callbacks.PluginRegexp):
             1].split("</div>")[0].strip().split("|")
 
         try:
-            paste["by"] = page[0].split("<span")[0].split("\">")[
-                1].split("</a>")[0].strip()
+            paste["by"] = page[0].split("<span")[0].split("\">")[1].split("</a>")[0].strip()
         except:
             paste["by"] = page[0].split(":")[1].split("on <")[0].strip()
         paste["date"] = page[0].split("<span title")[1].split(">")[
             1].split("<")[0].strip()
         paste["syntax"] = page[1].split(">")[1].split("<")[0].strip()
-        paste["size"] = (page[2].split(":")[1])[1:-1].strip()
+        paste["size"] = (page[2].split(":")[1])[1:-1].split("&nbsp")[0].strip()
         paste["expires"] = (page[4].split(":")[1])[1:].strip()
 
         if 'None' in paste["syntax"]:
