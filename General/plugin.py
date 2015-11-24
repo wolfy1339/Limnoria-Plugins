@@ -670,7 +670,10 @@ class General(callbacks.PluginRegexp):
                 else:
                     return
 
-        irc.error('Not found in buffer')
+        if self.registryValue('enableUserCorrect', msg.args[0]):
+            irc.error('Not found in buffer')
+        else:
+            return
 
     selfCorrect = urlSnarfer(selfCorrect)
 
@@ -735,7 +738,10 @@ class General(callbacks.PluginRegexp):
 
                 return 0
 
-        irc.error("Not found in buffer")
+        if self.registryValue('enableUserCorrect', msg.args[0]):
+            irc.error("Not found in buffer")
+        else:
+            return
 
     userCorrect = urlSnarfer(userCorrect)
 
