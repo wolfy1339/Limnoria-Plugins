@@ -49,11 +49,15 @@ class UserInfo(callbacks.Plugin):
     threaded = True
 
     @internationalizeDocstring
-    def records(self, irc, msg, args, user):
-        """<memberName>
+    def records(self, irc, msg, args, user=None):
+        """[<memberName>]
 
-        Returns user information from their record"""
-        self._getMemberInfo(irc, user)
+        Returns user information from their record.
+        Defaults to your nick, if none is specified"""
+        if user:
+            self._getMemberInfo(irc, user)
+        else:
+            self._getMemberInfo(irc, msg.args[1])
     records = wrap(records, ['somethingWithoutSpaces'])
 
     def UserInfoSnarfer(self, irc, msg, args, match):
