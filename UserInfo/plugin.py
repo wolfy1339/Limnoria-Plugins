@@ -49,11 +49,13 @@ class UserInfo(callbacks.Plugin):
     threaded = True
 
     @internationalizeDocstring
-    def records(self, irc, msg, args, user=None):
+    def records(self, irc, msg, args, user):
         """[<memberName>]
 
         Returns user information from their record.
-        Defaults to your nick, if none is specified"""
+        If <memberName> isn't given, return the
+        record of the person giving the command.
+        """
         if user:
             self._getMemberInfo(irc, user)
         else:
