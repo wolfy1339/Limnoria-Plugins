@@ -131,19 +131,8 @@ class UserInfo(callbacks.Plugin):
         links = []
 
         for award, value in userData['awards'].items():
-            if value == 0:
-                value = 'Badge'
-            elif value == 1:
-                value = 'Standard'
-            elif value == 2:
-                value = 'Bronze'
-            elif value == 3:
-                value = 'Silver'
-            elif value == 4:
-                value = 'Gold'
-            elif value == 5:
-                value = 'Diamond'
-            awards.append('{0}: {1}'.format(award, value))
+            values = ['Badge', 'Standard', 'Bronze', 'Silver', 'Gold', 'Diamond']
+            awards.append('{0}: {1}'.format(award, values[value]))
         awards = ', '.join(awards)
 
         for link, href in userData['links'].items():
