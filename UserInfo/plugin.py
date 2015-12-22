@@ -57,7 +57,7 @@ class UserInfo(callbacks.Plugin):
         if user:
             self._getMemberInfo(irc, user)
         else:
-            self._getMemberInfo(irc, msg.args[1])
+            self._getMemberInfo(irc, msg.nick)
     records = wrap(records, ['somethingWithoutSpaces'])
 
     def UserInfoSnarfer(self, irc, msg, args, match):
