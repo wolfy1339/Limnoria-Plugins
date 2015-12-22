@@ -107,66 +107,67 @@ class UserInfo(callbacks.Plugin):
     members = wrap(members)
 
     def _getMemberInfo(self, irc, user):
+        if (not user.startswith('http://') and
+                not user.startswith('https://')):
+            userName = user
+        else:
+            if user.startswith('https://'):
+                user = user.split('https://')[0]
+            userName = user.split('members.html?')[1]
+
+        url = 'http://brilliant-minds.tk/members/{0}.json'.format(userName)
         try:
-            if (not user.startswith('http://') and
-                    not user.startswith('https://')):
-                userName = user
-            else:
-                if user.startswith('https://'):
-                    user = user.split('https://')[0]
-                userName = user.split('members.html?')[1]
-
-            url = 'http://brilliant-minds.tk/members/{0}.json'.format(userName)
-            userData = json.loads(utils.web.getUrl(url))
-            awards = []
-            rank = []
-            rank.append(userData['rank'])
-            rank.append(userData['rank_comment'])
-            links = []
-
-            for award, value in userData['awards'].items():
-                if value == 0:
-                    value = 'Badge'
-                elif value == 1:
-                    value = 'Standard'
-                elif value == 2:
-                    value = 'Bronze'
-                elif value == 3:
-                    value = 'Silver'
-                elif value == 4:
-                    value = 'Gold'
-                elif value == 5:
-                    value = 'Diamond'
-                awards.append('{0}: {1}'.format(award, value))
-            awards = ', '.join(awards)
-
-            for link, href in userData['links'].items():
-                links.append('{0}: {1}'.format(link, href))
-            links = ', '.join(links)
-
-            if userData['voucher']:
-                status = 'This member has a voucher'
-                if userData['safe'] == 1:
-                    status += ' and is safe for the next IMC/IRC'
-                elif userData['safe'] == 2:
-                    status += ' and is autosafe'
-            else:
-                if userData['safe'] == 1:
-                    status = 'This member is safe for the next IMC/IRC'
-                elif userData['safe'] == 2:
-                    status = ' '.join(['This member is absolutely necessary',
-                                       'to keep the group going and thus is autosafe'])
-
-            irc.reply(('Member {0}: {1}, {2} | {3} | '
-                      'http://brilliant-minds.tk/members.html?{0} | Awards {4} | '
-                       '{5}').format(userName, rank[0], rank[1], status, awards, links),
-                      prefixNick=False)
-            self.log.info('UserInfo: Member {0} found'.format(userName))
-        except Exception:
+            json = utils.web.getUrl(url)
+        except utils.web.Error:
             irc.error(
                 _('User {0} isn\'t in my database, sorry.'.format(userName)), Raise=True)
         finally:
             return None
+        userData = json.loads(json)
+        awards = []
+        rank = []
+        rank.append(userData['rank'])
+        rank.append(userData['rank_comment'])
+        links = []
+
+        for award, value in userData['awards'].items():
+            if value == 0:
+                value = 'Badge'
+            elif value == 1:
+                value = 'Standard'
+            elif value == 2:
+                value = 'Bronze'
+            elif value == 3:
+                value = 'Silver'
+            elif value == 4:
+                value = 'Gold'
+            elif value == 5:
+                value = 'Diamond'
+            awards.append('{0}: {1}'.format(award, value))
+        awards = ', '.join(awards)
+
+        for link, href in userData['links'].items():
+            links.append('{0}: {1}'.format(link, href))
+        links = ', '.join(links)
+
+        if userData['voucher']:
+            status = 'This member has a voucher'
+            if userData['safe'] == 1:
+                status += ' and is safe for the next IMC/IRC'
+            elif userData['safe'] == 2:
+                status += ' and is autosafe'
+        else:
+            if userData['safe'] == 1:
+                status = 'This member is safe for the next IMC/IRC'
+            elif userData['safe'] == 2:
+                status = ' '.join(['This member is absolutely necessary',
+                                   'to keep the group going and thus is autosafe'])
+
+        irc.reply(('Member {0}: {1}, {2} | {3} | '
+                  'http://brilliant-minds.tk/members.html?{0} | Awards {4} | '
+                   '{5}').format(userName, rank[0], rank[1], status, awards, links),
+                   prefixNick=False)
+        self.log.info('UserInfo: Member {0} found'.format(userName))
 
 Class = UserInfo
 
