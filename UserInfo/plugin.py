@@ -96,7 +96,8 @@ class UserInfo(callbacks.Plugin):
 
         preofficers = 'Preofficers\n'
         preofficers += '------------\n'
-        preofficers += '\n'.join(i[1] + ' ' + i[0] for i in data['preofficers'])
+        preofficers += '\n'.join(i[1] + ' ' + i[0]
+                                 for i in data['preofficers'])
 
         message = '\n\n'.join((officers, enlisted, preofficers))
 
@@ -130,12 +131,13 @@ class UserInfo(callbacks.Plugin):
         rank.append(userData['rank_comment'])
         links = []
 
-        for award, value in userData['awards'].items():
-            values = ['Badge', 'Standard', 'Bronze', 'Silver', 'Gold', 'Diamond']
+        for award, value in list(userData['awards'].items()):
+            values = ['Badge', 'Standard', 'Bronze',
+                      'Silver', 'Gold', 'Diamond']
             awards.append('{0}: {1}'.format(award, values[value]))
         awards = ', '.join(awards)
 
-        for link, href in userData['links'].items():
+        for link, href in list(userData['links'].items()):
             links.append('{0}: {1}'.format(link, href))
         links = ', '.join(links)
 
@@ -153,9 +155,9 @@ class UserInfo(callbacks.Plugin):
                                    'to keep the group going and thus is autosafe'])
 
         irc.reply(('Member {0}: {1}, {2} | {3} | '
-                  'http://brilliant-minds.tk/members.html?{0} | Awards {4} | '
+                   'http://brilliant-minds.tk/members.html?{0} | Awards {4} | '
                    '{5}').format(userName, rank[0], rank[1], status, awards, links),
-                   prefixNick=False)
+                  prefixNick=False)
         self.log.info('UserInfo: Member {0} found'.format(userName))
 
 Class = UserInfo
