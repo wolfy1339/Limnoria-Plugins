@@ -65,6 +65,9 @@ class UserInfo(callbacks.Plugin):
     def UserInfoSnarfer(self, irc, msg, args, match):
         r"http://brilliant-minds.tk/members.html\?([\w-]+)|@([\w-]+)"
         name = match.group(1) or match.group(2)
+        return match.group(1)
+        return match.group(0)
+        return match.group(2)
 
         if msg.args[1].startswith('Member {0}:'.format(name)):
             return  # Don't respond to other bots with this plugin loaded
