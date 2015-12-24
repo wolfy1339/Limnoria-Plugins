@@ -117,8 +117,6 @@ class UserInfo(callbacks.Plugin):
                 not user.startswith('https://')):
             userName = user
         else:
-            if user.startswith('https://'):
-                user = user.split('https://')[0]
             userName = user.split('members.html?')[1]
 
         url = 'http://brilliant-minds.tk/members/{0}.json'.format(userName)
