@@ -65,9 +65,9 @@ class UserInfo(callbacks.Plugin):
     def UserInfoSnarfer(self, irc, msg, args, match):
         r"http://brilliant-minds.tk/members.html\?([\w-]+)|@([\w-]+)"
         name = match.group(1) or match.group(2)
-        print('Group 1' + match.group(1))
-        print('Group 2' + match.group(2))
-        print('Group 0' + match.group(0))
+        self.log.debug('UserInfo: Snarfer Group 1' + match.group(1))
+        self.log.debug('UserInfo: Snarfer Group 2' + match.group(2))
+        self.log.debug('UserInfo: Snarfer Group 0' + match.group(0))
 
         if msg.args[1].startswith('Member {0}:'.format(name)):
             return  # Don't respond to other bots with this plugin loaded
@@ -93,15 +93,15 @@ class UserInfo(callbacks.Plugin):
 
         officers = 'Officers\n'
         officers += '------------\n'
-        officers += '\n'.join(i[1] + ' ' + i[0] for i in data['officers'])
+        officers += ','.join(i[1] + ' ' + i[0] for i in data['officers'])
 
         enlisted = 'Enlisted\n'
         enlisted += '------------\n'
-        enlisted += '\n'.join(i[1] + ' ' + i[0] for i in data['enlisted'])
+        enlisted += ','.join(i[1] + ' ' + i[0] for i in data['enlisted'])
 
         preofficers = 'Preofficers\n'
         preofficers += '------------\n'
-        preofficers += '\n'.join(i[1] + ' ' + i[0]
+        preofficers += ','.join(i[1] + ' ' + i[0]
                                  for i in data['preofficers'])
 
         message = '\n\n'.join((officers, enlisted, preofficers))
@@ -121,13 +121,12 @@ class UserInfo(callbacks.Plugin):
 
         url = 'http://brilliant-minds.tk/members/{0}.json'.format(userName)
         try:
-            json = utils.web.getUrl(url)
+            userData = json.loads(utils.web.getUrl(url))
         except utils.web.Error:
             irc.error(
                 _('User {0} isn\'t in my database, sorry.'.format(userName)), Raise=True)
         finally:
             return None
-        userData = json.loads(json)
         awards = []
         rank = []
         rank.append(userData['rank'])
@@ -140,9 +139,6 @@ class UserInfo(callbacks.Plugin):
             awards.append('{0}: {1}'.format(award, values[value]))
         awards = ', '.join(awards)
 
-        for link, href in list(userData['links'].items()):
-            links.append('{0}: {1}'.format(link, href))
-        links = ', '.join(links)
 
         if userData['voucher']:
             status = 'This member has a voucher'
@@ -158,8 +154,8 @@ class UserInfo(callbacks.Plugin):
                                    'to keep the group going and thus is autosafe'])
 
         irc.reply(('Member {0}: {1}, {2} | {3} | '
-                   'http://brilliant-minds.tk/members.html?{0} | Awards {4} | '
-                   '{5}').format(userName, rank[0], rank[1], status, awards, links),
+                   'http://brilliant-minds.tk/members.html?{0} | Awards {4}'
+                   ).format(userName, rank[0], rank[1], status, awards),
                   prefixNick=False)
         self.log.info('UserInfo: Member {0} found'.format(userName))
 
