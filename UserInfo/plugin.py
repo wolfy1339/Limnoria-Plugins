@@ -125,8 +125,6 @@ class UserInfo(callbacks.Plugin):
         except utils.web.Error:
             irc.error(
                 _('User {0} isn\'t in my database, sorry.'.format(userName)), Raise=True)
-        finally:
-            return None
         awards = []
         rank = []
         rank.append(userData['rank'])
