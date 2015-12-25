@@ -64,7 +64,8 @@ class UserInfo(callbacks.Plugin):
 
     def UserInfoSnarfer(self, irc, msg, args, match):
         r"http://brilliant-minds.tk/members.html\?([\w-]+)|@([\w-]+)"
-        name = match.group(1) or match.group(2)
+        #name = match.group(1) or match.group(2)
+        name = match.group(0)
         self.log.debug('UserInfo: Snarfer Group 1' + match.group(1))
         self.log.debug('UserInfo: Snarfer Group 2' + match.group(2))
         self.log.debug('UserInfo: Snarfer Group 0' + match.group(0))
@@ -73,10 +74,10 @@ class UserInfo(callbacks.Plugin):
             return  # Don't respond to other bots with this plugin loaded
 
         if self.registryValue('MemberSnarfer', msg.args[0]):
-            if match.group(0)[0] == "@":
-                self._getMemberInfo(irc, name, 0)
-            else:
-                self._getMemberInfo(irc, name, 1)
+            #if match.group(0)[0] == "@":
+                self._getMemberInfo(irc, name)
+            #else:
+                #self._getMemberInfo(irc, name, 1)
         else:
             return
 
