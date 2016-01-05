@@ -27,6 +27,7 @@ import time
 import json
 import random
 import socket
+from bs4 import BeautifulSoup
 import supybot.ircmsgs as ircmsgs
 import supybot.schedule as schedule
 
@@ -592,26 +593,22 @@ class General(callbacks.PluginRegexp):
 
         url = match.group(0)
         self.log.info("Pastebin Found - {0}".format(url))
-        page = utils.web.getUrl(url).replace(" ", " ")
-
+        text = utils.web.getUrl(url)
+        page = BeautifulSoup(text.decode(utils.web.getEncoding(text) or 'utf8',
+                    'replace')).replace("&nbsp;", " "), "html5lib")
+        page2 = page.split("<div class=\"paste_box_line2\">")[
+            1].split("</div>")[0]
+        page3 = page.find("div", {"id":"code_buttons").split(page3.find("span", {"class":"go_right")
         paste = {}
-        paste["name"] = page.split("<h1>")[1].split("</h1>")[0]
 
-        page = page.split("<div class=\"paste_box_line2\">")[
-            1].split("</div>")[0].strip().split("|")
+        paste["name"] = page.find("h1").findAll(text=True)
+        paste["by"] = page2.findAll("a")[0].findAll(text=True)
+        paste["date"] = page2.find("span").findAll(text=True)
+        paste["syntax"] = page3.find("span", {"class":"h_640"}).findAll(text=True)
+        paste["size"] = page3.strip(page3.find("span", {"class":"h_640"}))[0].findAll(text=True).strip()
+        paste["expires"] = page2.split("<img")[3].split(">")[1].findAll(text=True).strip().lower().capitalize()
 
-        try:
-            paste["by"] = page[0].split("<span")[0].split("\">")[1].split(
-                "</a>")[0].strip()
-        except:
-            paste["by"] = page[0].split(":")[1].split("on <")[0].strip()
-        paste["date"] = page[0].split("<span title")[1].split(">")[
-            1].split("<")[0].strip()
-        paste["syntax"] = page[1].split(">")[1].split("<")[0].strip()
-        paste["size"] = (page[2].split(":")[1])[1:-1].split("&nbsp")[0].strip()
-        paste["expires"] = (page[4].split(":")[1])[1:].strip()
-
-        if 'None' in paste["syntax"]:
+        if 'text' in paste["syntax"]:
             paste["syntax"] = "Plain Text"
 
         if not self.registryValue("pasteSnarfer", msg.args[0]):
