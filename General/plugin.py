@@ -597,14 +597,14 @@ class General(callbacks.PluginRegexp):
         page = BeautifulSoup(text.decode(utils.web.getEncoding(text) or 'utf8', 'replace'), "html5lib")
         page2 = page.split("<div class=\"paste_box_line2\">")[
             1].split("</div>")[0]
-        page3 = page.find("div", {"id":"code_buttons").split(page3.find("span", {"class":"go_right")
+        page3 = page.find("div", {"id": "code_buttons"}).split(page3.find("span", {"class": "go_right"}))
         paste = {}
 
         paste["name"] = page.find("h1").findAll(text=True)
         paste["by"] = page2.findAll("a")[0].findAll(text=True)
         paste["date"] = page2.find("span").findAll(text=True)
-        paste["syntax"] = page3.find("span", {"class":"h_640"}).findAll(text=True)
-        paste["size"] = page3.strip(page3.find("span", {"class":"h_640"}))[0].findAll(text=True).strip()
+        paste["syntax"] = page3.find("span", {"class": "h_640"}).findAll(text=True)
+        paste["size"] = page3.strip(page3.find("span", {"class": "h_640"}))[0].findAll(text=True).strip()
         paste["expires"] = page2.split("<img")[3].split(">")[1].findAll(text=True).strip().lower().capitalize()
 
         if 'text' in paste["syntax"]:
