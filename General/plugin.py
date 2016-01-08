@@ -594,7 +594,7 @@ class General(callbacks.PluginRegexp):
         url = match.group(0)
         self.log.info("Pastebin Found - {0}".format(url))
         text = utils.web.getUrl(url)
-        page = BeautifulSoup(text.decode(utils.web.getEncoding(text) or 'utf8', 'replace')), "html5lib")
+        page = BeautifulSoup(text.decode(utils.web.getEncoding(text) or 'utf8', 'replace'), "html5lib")
         page2 = page.split("<div class=\"paste_box_line2\">")[
             1].split("</div>")[0]
         page3 = page.find("div", {"id":"code_buttons").split(page3.find("span", {"class":"go_right")
