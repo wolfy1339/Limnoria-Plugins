@@ -122,12 +122,12 @@ class UserInfo(callbacks.Plugin):
 
         url = 'http://brilliant-minds.tk/members/{0}.json'.format(userName)
         try:
-            json = utils.web.getUrl(url)
+            jsonFile = utils.web.getUrl(url)
         except utils.web.Error:
             irc.error(
                 _('User {0} isn\'t in my database, sorry.'.format(userName)), Raise=True)
 
-        userData = json.loads(json.decode(utils.web.getEncoding(json) or 'utf8', 'replace'))
+        userData = json.loads(jsonFile.decode(utils.web.getEncoding(jsonFile) or 'utf8', 'replace'))
         awards = []
         rank = []
         rank.append(userData['rank'])
