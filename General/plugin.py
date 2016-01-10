@@ -595,17 +595,17 @@ class General(callbacks.PluginRegexp):
         self.log.info("Pastebin Found - {0}".format(url))
         text = utils.web.getUrl(url)
         page = BeautifulSoup(text.decode(utils.web.getEncoding(text) or 'utf8', 'replace'), "html5lib")
-        page2 = page.split("<div class=\"paste_box_line2\">")[
+        page2 = page.find("div", {"class": "paste_box_info"}).split("<div class=\"paste_box_line2\">")[
             1].split("</div>")[0]
         page3 = page.find("div", {"id": "code_buttons"}).split(page3.find("span", {"class": "go_right"}))
         paste = {}
 
-        paste["name"] = page.find("h1").findAll(text=True)
-        paste["by"] = page2.findAll("a")[0].findAll(text=True)
-        paste["date"] = page2.find("span").findAll(text=True)
-        paste["syntax"] = page3.find("span", {"class": "h_640"}).findAll(text=True)
-        paste["size"] = page3.strip(page3.find("span", {"class": "h_640"}))[0].findAll(text=True).strip()
-        paste["expires"] = page2.split("<img")[3].split(">")[1].findAll(text=True).strip().lower().capitalize()
+        paste["name"] = page.find("h1").get_text()
+        paste["by"] = page2.find("a").get_text()
+        paste["date"] = page2.find("span").get_text()
+        paste["syntax"] = page3.find("span", {"class": "h_640"}).get_text()
+        paste["size"] = page3.strip(page3.find("span", {"class": "h_640"}))[0].get_text(strip=True)
+        paste["expires"] = page2.split("<img")[3].split(">")[1].get_text(strip=True).lower().capitalize()
 
         if 'text' in paste["syntax"]:
             paste["syntax"] = "Plain Text"
