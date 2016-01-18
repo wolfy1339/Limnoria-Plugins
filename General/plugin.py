@@ -680,11 +680,7 @@ class General(callbacks.PluginRegexp):
                 msg.args[0] != '##jacksonmj-test'):
             irc.noReply()
             return
-        if not ircdb.checkCapability(
-                msg.prefix,
-                ircdb.makeChannelCapability(msg.args[0], 'op')):
-            irc.noReply()
-            return
+
         match = match.group(0)
         data = match.split('/')
         user = data[1]
