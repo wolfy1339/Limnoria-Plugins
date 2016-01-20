@@ -109,27 +109,27 @@ class Rpg(callbacks.Plugin):
                 terrainline = ""
                 x += 1
                 y = -1
-                    while y < height:
+                while y < height:
+                    y += 1
+                    if x is 0 or x is width or y is 0 or y is height:
+                        terrainline += terrain[0]
+                        continue
+                    if x is int(width / 2) and y is int(height / 2):
+                        terrainline += "@"
                         y += 1
-                        if x is 0 or x is width or y is 0 or y is height:
-                            terrainline += terrain[0]
-                            continue
-                        if x is int(width / 2) and y is int(height / 2):
-                            terrainline += "@"
-                            y += 1
-                        rand[1] = int(random.random() * (len(terrain) - 1))
-                        rand[2] = int(random.random() * (len(terrain) - 1))
-                        rand[3] = int(random.random() * (len(terrain) - 1))
-                        rand[4] = int(random.random() * (len(terrain) - 1))
-                        if rand[1] is rand[2] and rand[1] is rand[3]:
-                            terrainline += terrain[rand[1]]
-                        elif rand[1] is rand[2] or rand[1] is rand[3]:
-                            terrainline += terrain[rand[1]]
-                        elif rand[2] is rand[3]:
-                            terrainline += terrain[rand[2]]
-                        else:
-                            terrainline += terrain[rand[4]]
-                    terrainmap += terrainline + "\n"
+                    rand[1] = int(random.random() * (len(terrain) - 1))
+                    rand[2] = int(random.random() * (len(terrain) - 1))
+                    rand[3] = int(random.random() * (len(terrain) - 1))
+                    rand[4] = int(random.random() * (len(terrain) - 1))
+                    if rand[1] is rand[2] and rand[1] is rand[3]:
+                        terrainline += terrain[rand[1]]
+                    elif rand[1] is rand[2] or rand[1] is rand[3]:
+                        terrainline += terrain[rand[1]]
+                    elif rand[2] is rand[3]:
+                        terrainline += terrain[rand[2]]
+                    else:
+                        terrainline += terrain[rand[4]]
+                terrainmap += terrainline + "\n"
 
                 data = {
                     "width": width,
