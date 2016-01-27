@@ -338,7 +338,7 @@ class Rpg(callbacks.Plugin):
                     else:
                         playerData[player]["Loc"] -= (mapInfo["width"] + 1)
                         self._savePlayerData(playerData)
-                elif direction = =  "W":
+                elif direction == "W":
                     if mapData[playerData[player]["Loc"] - 1] is "#":
                         irc.error("You can't move there.")
                         return
@@ -410,7 +410,6 @@ class Rpg(callbacks.Plugin):
                 x += 1
 
         move = wrap(move, ["somethingWithoutSpaces", optional("int")])
-
 
     #  Engine functions
         def _checkPlayer(self, irc, msg, new=0):
@@ -554,7 +553,7 @@ class Rpg(callbacks.Plugin):
     #        irc.reply(bDataString, prefixNick=False)
 
         def _playerDead(self, irc, player, monster, playerData):
-            #irc.reply("OOOOOOH YOU JUST GOT PWNT! - You\"ve been sent back home and fully healed. Luckily theres no penalties for dying.")
+            # irc.reply("OOOOOOH YOU JUST GOT PWNT! - You\"ve been sent back home and fully healed. Luckily theres no penalties for dying.")
             irc.queueMsg(ircmsgs.IrcMsg(
                 "NOTICE {0}: OOOOOOH YOU JUST GOT PWNT! - You\"ve been sent back home and fully healed. Luckily theres no penalties for dying.".format(msg.nick)))
             playerData[player]["HP"] = playerData[player]["MHP"]
