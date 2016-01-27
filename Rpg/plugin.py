@@ -505,7 +505,7 @@ class Rpg(callbacks.Plugin):
                     battleData["monster"]["atks"] += 1
                     atkValue = int(random.random() * (monster["Atk"])) + 2
                     if (random.random() * 100 < 2):
-                        atkValue * = 2
+                        atkValue *= 2
                         battleData["monster"]["crits"] += 1
                     playerData[player]["HP"] -= (atkValue -
                                                  (playerData[player]["Def"] *
