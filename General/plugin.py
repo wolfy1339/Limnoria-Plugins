@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ###
 # Copyright (c) 2011, Anthony Boot
-# Copyright (C) 2015, wolfy1339
+# Copyright (C) 2015-2016, wolfy1339
 # All rights reserved.
 #
 # Licenced under GPLv2

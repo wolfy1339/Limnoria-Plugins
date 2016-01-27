@@ -1,5 +1,5 @@
 ###
-# Copyright (c) 2014-2015, wolfy1339
+# Copyright (c) 2014-2016, wolfy1339
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
