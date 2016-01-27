@@ -38,10 +38,7 @@ import supybot.callbacks as callbacks
 import supybot.ircmsgs as ircmsgs
 import supybot.ircdb as ircdb
 import random
-try:
-    import simplejson
-except:
-    import json as simplejson
+import json
 
 
 class Rpg(callbacks.Plugin):
@@ -73,7 +70,7 @@ class Rpg(callbacks.Plugin):
                 self._getMapData()
                 self._getMapInfo()
                 with open(self.filepath + "monsters.txt") as f:
-                    self.monsterData = simplejson.load(f)
+                    self.monsterData = json.load(f)
                     self._getItemsFile()
                     irc.replySuccess()
         reloaddata = wrap(reloadData)
@@ -141,11 +138,12 @@ class Rpg(callbacks.Plugin):
                 }
 
                 with open(self.filepath + "mapData.txt", "w") as f:
-                    simplejson.dump(data, f)
+                    json.dump(data, f)
                 self._saveMapData(terrainmap)
                 irc.replySuccess("Map regeneration")
                 self._sendDbg(
-                    irc, "Map created and saved to map.txt, info saved to mapData.txt")
+                    irc, ("Map created and saved to map.txt,"
+                          " info saved to mapData.txt"))
 
                 playerData = self.playerData
                 for player in playerData:
@@ -155,9 +153,9 @@ class Rpg(callbacks.Plugin):
                 self._sendDbg(irc, "Players relocated successfully.")
                 irc.replySuccess("Players Relocated to Home")
 
-    #            if (self.serverUrl)
-     # submit  =  utils.web.getUrl(self.serverUrl+"?m = %s&w = %i&h = %&hm =
-     # %i&hy = %i
+#            if (self.serverUrl)
+# submit  =  utils.web.getUrl(self.serverUrl+"?m = %s&w = %i&h = %&hm =
+# %i&hy = %i
 
         genmap = wrap(genMap,
                       [optional("somethingWithoutSpaces"),
@@ -188,11 +186,14 @@ class Rpg(callbacks.Plugin):
             armour = playerData["Item"]["Torso"]["Name"]
 
             irc.reply(("{0} is at Level {1} with {2} experience; {3} is"
-                " needed for the next level. You have {4}/{5} HP. "
-                "Your base attack is %i and is boosted to {6} by your {7} Sword. Your base "
-                "defence is {8},  boosted to {9} with your {10} Helmet and {11} Armour. Your {12} "
-                "Shield gives you a {13}% chance to block attacks. Your Luck "
-                "rating is {14}. You have died {15} times.").format(player, level, exp, next, hp, mhp, baseAtk, totalAtk, weapon, baseDef, totalDef, helmet, armour, shield, block, luck, deaths))
+                       " needed for the next level. You have {4}/{5} HP. "
+                       "Your base attack is {6} and is boosted to {7} by your "
+                       "{8} Sword. Your base defence is {9},  boosted to {10} "
+                       "with your {11} Helmet and {12} Armour."
+                       "Your {13} Shield gives you a {14}% chance to block "
+                       "attacks. Your Luck rating is {15}. "
+                       "You have died {16} times."
+                       ).format(player, level, exp, next, hp, mhp, baseAtk, totalAtk, weapon, baseDef, totalDef, helmet, armour, shield, block, luck, deaths))
         stats = wrap(stats)
 
         def new(self, irc, msg, args):
@@ -245,9 +246,11 @@ class Rpg(callbacks.Plugin):
                 else:
                     break
             y = location
-            irc.reply(
-                "You are located at ({0}, {1}). Home is at ({2}, {3})".format(
-                x, y, self.mapInfo["homeX"], self.mapInfo["homeY"]))
+            homeX = self.mapInfo["homeX"]
+            homeY = self.mapInfo["homeY"]
+            irc.reply((
+                "You are located at ({0}, {1})."
+                " Home is at ({2}, {3})").format(x, y, homeX, homeY))
         loc = wrap(location)
 
         def ViewArea(self, irc, msg, args):
@@ -279,8 +282,16 @@ class Rpg(callbacks.Plugin):
                 elif x is "@":
                     area[line] = "Home"
 
-            irc.reply("NW: {0} - N: {1} - NE: {2} - W: {3} - E: {4} - SW: {5} - S: {6} - SE: {7}"
-                    .format(area[0], area[1], area[2], area[3], area[4], area[5], area[6], area[7])
+            irc.reply(("NW: {0} - N: {1} - NE: {2} - W: {3} - E: {4} - SW: {5}"
+                       "- S: {6} - SE: {7}").format(
+                           area[0],
+                           area[1],
+                           area[2],
+                           area[3],
+                           area[4],
+                           area[5],
+                           area[6],
+                           area[7])
                       )
         viewArea = wrap(viewArea)
 
@@ -288,14 +299,14 @@ class Rpg(callbacks.Plugin):
             player = self._checkPlayer(irc, msg)
             if self.playerData[player]["force"]:
                 self.playerData[player]["force"] = False
-                irc.reply(
-                    "{0} will no longer enter a battle on the next turn.".format(
-                    player.capitalize()), prefixNick=False)
+                text = "will no longer enter a battle on the next turn."
+                irc.reply("{0} {1}".format(player.capitalize(), text),
+                          prefixNick=False)
             else:
                 self.playerData[player]["force"] = True
-                irc.reply(
-                    "{0} will enter a monster battle on their next turn.".format(
-                    player.capitalize()), prefixNick=False)
+                text = "will enter a monster battle on their next turn."
+                irc.reply("{0} {1}".format(player.capitalize(), text),
+                          prefixNick=False)
         forceBattle = wrap(forceBattle)
 
         def move(self, irc, msg, args, direction, number):
@@ -378,9 +389,7 @@ class Rpg(callbacks.Plugin):
                         self._savePlayerData(playerData)
                 else:
                     irc.error(
-                        "Move failed. you gave {0} as a direction. {1}".format(
-                        direction, str(
-                            type(direction))))
+                        "Move failed. you gave {0} as a direction. {1}".format(direction, str(type(direction))))
 
                 if mapData[playerData[player]["Loc"]] is "~":
                     self._genItem(player, 2)
@@ -401,28 +410,27 @@ class Rpg(callbacks.Plugin):
 
                 elif mapData[playerData[player]["Loc"]] is "@":
                     playerData[player]["HP"] = playerData[player]["MHP"]
-    #             irc.reply("Your health has been restored.")
-                    irc.queueMsg(
-                        ircmsgs.IrcMsg(
-                            "NOTICE {0} :Your health has been restored.".format(
-                                msg.nick)))
+                    text = "Your health has been restored."
+#                   irc.reply(text)
+                    self._notice(irc, msg.nick, text)
                     self._savePlayerData(playerData)
                 x += 1
 
         move = wrap(move, ["somethingWithoutSpaces", optional("int")])
 
     #  Engine functions
+        gameChan = self.gameChannel
+
         def _checkPlayer(self, irc, msg, new=0):
             if (msg.args[0] != self.gameChannel):
-                if msg.nick in irc.state.channels[self.gameChannel].users:
-                    irc.error(
-                        "That command cannot be sent in this channel. Please try again in {0}".format(
-                        self.gameChannel))
+                if msg.nick in irc.state.channels[gameChan].users:
+                    irc.error((
+                        "That command cannot be sent in this channel. "
+                        "Please try again in {0}").format(gameChan))
                 else:
                     irc.error(
-                        "You need to join {0} and use that command there.".format(
-                        self.gameChannel))
-                    irc.queueMsg(ircmsgs.invite(msg.nick, self.gameChannel))
+                        "You need to join {0} and use that command there.".format(gameChan))
+                    irc.queueMsg(ircmsgs.invite(msg.nick, gameChan))
                 return None
 
             try:
@@ -440,11 +448,11 @@ class Rpg(callbacks.Plugin):
 
         def _getPlayerData(self):
             with open(self.filepath + "players.txt", "r") as f:
-                self.playerData = simplejson.load(f)
+                self.playerData = json.load(f)
 
         def _savePlayerData(self, data):
             with open(self.filepath + "players.txt", "w") as f:
-                simplejson.dump(data, f)
+                json.dump(data, f)
             self._getPlayerData()
 
         def _getMapData(self):
@@ -459,11 +467,11 @@ class Rpg(callbacks.Plugin):
 
         def _getMapInfo(self):
             with open(self.filepath + "mapData.txt", "r") as f:
-                self.mapInfo = simplejson.load(f)
+                self.mapInfo = json.load(f)
 
         def _getItemsFile(self):
             with open(self.filepath + "items.txt", "r") as f:
-                self.itemData = simplejson.load(f)
+                self.itemData = json.load(f)
 
         def _sendDbg(self, irc, data):
             data = "RPG: " + str(data)
@@ -499,7 +507,7 @@ class Rpg(callbacks.Plugin):
 
             def _doMonster():
                 if (random.random() * 100 <
-                        playerData[player]["Item"]["rArm"]["Power"]):
+                        playerData["Item"]["rArm"]["Power"]):
                     battleData["player"]["blocks"] += 1
                 else:
                     battleData["monster"]["atks"] += 1
@@ -508,8 +516,8 @@ class Rpg(callbacks.Plugin):
                         atkValue *= 2
                         battleData["monster"]["crits"] += 1
                     playerData[player]["HP"] -= (atkValue -
-                                                 (playerData[player]["Def"] *
-                                                  playerData[player]["Item"]["Torso"]["Power"]))
+                                                 (playerData["Def"] *
+                                                  playerData["Item"]["Torso"]["Power"]))
                     if playerData[player]["HP"] <= 0:
                         return monster["Name"]
 
@@ -519,8 +527,8 @@ class Rpg(callbacks.Plugin):
                 else:
                     battleData["player"]["atks"] += 1
                     playerAtk = int(random.random(
-                    ) * (playerData[player]["Atk"] + playerData[player]["Item"]["lArm"]["Power"])) + 2
-                    if(random.random() * 100 < playerData[player]["Luc"]):
+                    ) * (playerData[player]["Atk"] + playerData["Item"]["lArm"]["Power"])) + 2
+                    if(random.random() * 100 < playerData["Luc"]):
                         playerAtk *= 2
                         battleData["player"]["crits"] += 1
                     monster["HP"] -= playerAtk
@@ -530,7 +538,7 @@ class Rpg(callbacks.Plugin):
             winner = None
             while winner is None:
                 battleData["rounds"] += 1
-                if monster["Spd"] > playerData[player]["Spd"]:
+                if monster["Spd"] > playerData["Spd"]:
                     winner = _doMonster()
                     if winner is None:
                         winner = _doPlayer()
@@ -544,18 +552,22 @@ class Rpg(callbacks.Plugin):
             else:
                 self._playerDead(irc, player, monster, playerData)
 
-            bDataString = "Battle lasted {0} rounds,  you scored {1} hits,  {2} were critical and {3} were evaded attacks. {4} made {5} attacks,  {6} were critical and %i were blocked.".format(
-                     battleData["rounds"], battleData["player"]["atks"], battleData["player"]["crits"], battleData["monster"]["evades"], monster["Name"], battleData["monster"]["atks"], battleData["monster"]["crits"], battleData["player"]["blocks"])
-            irc.queueMsg(
-                ircmsgs.IrcMsg(
-                    "NOTICE {0} :{1}".format(
-                        nick, bDataString)))
-    #        irc.reply(bDataString, prefixNick=False)
+            bDataString = "Battle lasted {0} rounds,  you scored {1} hits, ".format(
+                     battleData["rounds"], battleData["player"]["atks"])
+            bDataString += "{0} were critical and {1} were evaded attacks. ".format(
+                     battleData["player"]["crits"], battleData["monster"]["evades"])
+            bDataString += "{0} made {1} attacks,  {2} were critical and {3}".format(
+                     monster["Name"], battleData["monster"]["atks"], battleData["monster"]["crits"], battleData["player"]["blocks"])
+            bDataString += " were blocked."
+            self._notice(irc, nick, bDataString)
+#           irc.reply(bDataString, prefixNick=False)
 
         def _playerDead(self, irc, player, monster, playerData):
-            # irc.reply("OOOOOOH YOU JUST GOT PWNT! - You\"ve been sent back home and fully healed. Luckily theres no penalties for dying.")
-            irc.queueMsg(ircmsgs.IrcMsg(
-                "NOTICE {0}: OOOOOOH YOU JUST GOT PWNT! - You\"ve been sent back home and fully healed. Luckily theres no penalties for dying.".format(msg.nick)))
+            text = "OOOOOOH YOU JUST GOT PWNT! - "
+            text += "You\"ve been sent back home and fully healed. "
+            text += "Luckily theres no penalties for dying."
+            # irc.reply(text)
+            self._notice(irc, msg.nick, text)
             playerData[player]["HP"] = playerData[player]["MHP"]
             playerData[player]["Loc"] = self.mapInfo["homeLoc"]
             playerData[player]["Deaths"] += 1
@@ -685,51 +697,59 @@ class Rpg(callbacks.Plugin):
 
         def _genBoss(self, player):
             monster = {}
-            monster["Lvl"] = self.playerData[player][
-                "Lvl"] + (int(random.random() * 5))
+            pLvl = self.playerData[player]["Lvl"]
+            boss = self.monsterData["boss"]
+            monsers = self.monsterData["monsters"]
+            monster["Lvl"] = pLvl + (int(random.random() * 5))
+            mLvl = monster["Lvl"]
             monster["Atk"] = int(
-                (random.random() * (14 * monster["Lvl"])) + 1) + 10
+                (random.random() * (14 * mLvl)) + 1) + 10
             monster["Def"] = int(
-                (random.random() * (14 * monster["Lvl"])) + 1) + 10
+                (random.random() * (14 * mLvl)) + 1) + 10
             monster["MHP"] = int(
-                (random.random() * (14 * monster["Lvl"])) + 1) + 15
+                (random.random() * (14 * mLvl)) + 1) + 15
             monster["HP"] = monster["MHP"]
-            monster["Name"] = self.monsterData["boss"]["names"][int(random.random() * len(self.monsterData["boss"][
-                                                                    "names"]))] + "\"s " + self.monsterData["monsters"][int(random.random() * len(self.monsterData["monsters"]))]
-            monster["Spd"] = int((random.random() * (7 * monster["Lvl"])) + 1)
+            monster["Name"] = boss["names"][int(random.random() * len(boss[
+                                                                    "names"]))] + "\"s " + monsters[int(random.random() * len(monsters))]
+            monster["Spd"] = int((random.random() * (7 * mLvl)) + 1)
             monster["Exp"] = int(
-                (random.random() * monster["Lvl"]) + (self.playerData[player]["Lvl"] / 2) + 1) + 5
-            monster["pen"] = self.monsterData["boss"]["pen"][
-                int(random.random() * len(self.monsterData["boss"]["pen"]))]
+                (random.random() * mLvl) + (pLvl / 2) + 1) + 5
+            monster["pen"] = boss["pen"][
+                int(random.random() * len(boss["pen"]))]
             return monster
 
         def _checkLevelUp(self, irc, player, xp):
-            playerData = self.playerData
+            data = self.playerData
+            playerData = data[player]
             nLvl = self._getNextLevelXp(player)
             playerData[player]["Exp"] += xp
-            if playerData[player]["Exp"] >= nLvl:
-                playerData[player]["MHP"] += int(random.random() * 7)
-                playerData[player]["Atk"] += int(random.random() * 7)
-                playerData[player]["Def"] += int(random.random() * 7)
-                playerData[player]["Spd"] += int(random.random() * 7)
-                playerData[player]["Luc"] += int(random.random() * 4)
-                playerData[player]["Lvl"] += 1
-                irc.reply(
-                    "{0} has leveled up,  (s)he is now level {1}. New stats are Attack: {2},  Defence: {3},  Speed: {4} and Luck: {5}".format(
+            if playerData["Exp"] >= nLvl:
+                playerData["MHP"] += int(random.random() * 7)
+                playerData["Atk"] += int(random.random() * 7)
+                playerData["Def"] += int(random.random() * 7)
+                playerData["Spd"] += int(random.random() * 7)
+                playerData["Luc"] += int(random.random() * 4)
+                playerData["Lvl"] += 1
+                irc.reply((
+                    "{0} has leveled up,  they are now level {1}. "
+                    "New stats are Attack: {2}, Defence: {3},"
+                    " Speed: {4} and Luck: {5}").format(
                         player,
-                        playerData[player]["Lvl"],
-                        playerData[player]["Atk"],
-                        playerData[player]["Def"],
-                        playerData[player]["Spd"],
-                        playerData[player]["Luc"]),
+                        playerData["Lvl"],
+                        playerData["Atk"],
+                        playerData["Def"],
+                        playerData["Spd"],
+                        playerData["Luc"]),
                     prefixNick=False)
-            self._savePlayerData(playerData)
+            self._savePlayerData(data)
 
         def _getNextLevelXp(self, player):
             levelBaseXp = 50
             pLvl = self.playerData[player]["Lvl"]
             return (levelBaseXp * pLvl) + ((levelBaseXp * pLvl) / 2)
 
+        def _notice(self, irc, user, text):
+            irc.queueMsg(ircmsgs.IrcMsg("NOTICE {0} :{1}".format(user, text)))
 Class = Rpg
 
 # vim:set shiftwidth = 4 softtabstop = 4 expandtab textwidth = 79:
