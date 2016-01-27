@@ -6,6 +6,7 @@ python:
   - "3.2"
   - "3.3"
   - "3.4"
+  - "3.5"
   - "pypy"
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:
@@ -14,5 +15,4 @@ install:
 script:
   - echo $TRAVIS_PYTHON_VERSION
   - rm -rf Administration
-  - rm -rf Rpg
   - supybot-test --plugins-dir=.
