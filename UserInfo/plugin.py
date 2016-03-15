@@ -90,8 +90,8 @@ class UserInfo(callbacks.Plugin):
         Returns the current members list in a private message if not in #BMN"""
 
         jsonUrl = 'http://brilliant-minds.tk/members.json'
-        data = json.loads(utils.web.getUrl(jsonUrl))
-
+        jsonFile = utils.web.getUrl(jsonUrl)
+        data = json.loads(jsonFile.decode(utils.web.getEncoding(jsonFile) or 'utf8', 'replace'))
         officers = 'Officers\n'
         officers += '------------\n'
         officers += ','.join(i[1] + ' ' + i[0] for i in data['officers'])
