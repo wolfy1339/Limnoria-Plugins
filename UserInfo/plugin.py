@@ -60,7 +60,7 @@ class UserInfo(callbacks.Plugin):
             self._getMemberInfo(irc, user)
         else:
             self._getMemberInfo(irc, msg.nick)
-    records = wrap(records, ['somethingWithoutSpaces'])
+    records = wrap(records, [optional('somethingWithoutSpaces')])
 
     def UserInfoSnarfer(self, irc, msg, args, match):
         r"http://brilliant-minds.tk/members.html\?([\w-]+)|@([\w-]+)"
