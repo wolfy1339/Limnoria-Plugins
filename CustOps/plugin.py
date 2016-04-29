@@ -14,7 +14,6 @@ import supybot.ircmsgs as ircmsgs
 import supybot.schedule as schedule
 import random
 import time
-import json
 
 
 class CustOps(callbacks.Plugin):
