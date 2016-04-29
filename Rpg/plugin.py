@@ -69,7 +69,7 @@ class Rpg(callbacks.Plugin):
                 self._getPlayerData()
                 self._getMapData()
                 self._getMapInfo()
-                with open(self.filepath + "monsters.txt") as f:
+                with open(self.filepath + "monsters.json") as f:
                     self.monsterData = json.load(f)
                     self._getItemsFile()
                     irc.replySuccess()
@@ -137,7 +137,7 @@ class Rpg(callbacks.Plugin):
                     "desc": "Random Generation."
                 }
 
-                with open(self.filepath + "mapData.txt", "w") as f:
+                with open(self.filepath + "mapData.json", "w") as f:
                     json.dump(data, f)
                 self._saveMapData(terrainmap)
                 irc.replySuccess("Map regeneration")
@@ -447,11 +447,11 @@ class Rpg(callbacks.Plugin):
             return player
 
         def _getPlayerData(self):
-            with open(self.filepath + "players.txt", "r") as f:
+            with open(self.filepath + "players.json", "r") as f:
                 self.playerData = json.load(f)
 
         def _savePlayerData(self, data):
-            with open(self.filepath + "players.txt", "w") as f:
+            with open(self.filepath + "players.json", "w") as f:
                 json.dump(data, f)
             self._getPlayerData()
 
@@ -466,11 +466,11 @@ class Rpg(callbacks.Plugin):
             self._getMapData()
 
         def _getMapInfo(self):
-            with open(self.filepath + "mapData.txt", "r") as f:
+            with open(self.filepath + "mapData.json", "r") as f:
                 self.mapInfo = json.load(f)
 
         def _getItemsFile(self):
-            with open(self.filepath + "items.txt", "r") as f:
+            with open(self.filepath + "items.json", "r") as f:
                 self.itemData = json.load(f)
 
         def _sendDbg(self, irc, data):
