@@ -70,7 +70,7 @@ class Powder(callbacks.PluginRegexp):
         try:
             jsonFile = utils.web.getUrl(giturl)
             jsonFileEncoding = utils.web.getEncoding(jsonFile) or 'utf8'
-            data = json.loads(jsonFile.decode(jsonFileEncding, 'replace'))
+            data = json.loads(jsonFile.decode(jsonFileEncoding, 'replace'))
         except:
             try:
                 branch = project
@@ -79,7 +79,7 @@ class Powder(callbacks.PluginRegexp):
                     user, project, branch)
                 jsonFile = utils.web.getUrl(giturl)
                 jsonFileEncoding = utils.web.getEncoding(jsonFile) or 'utf8'
-                data = json.loads(jsonFile.decode(jsonFileEncding, 'replace'))
+                data = json.loads(jsonFile.decode(jsonFileEncoding, 'replace'))
             except:
                 irc.error(
                     "HTTP 404. Please check and try again.",
@@ -140,9 +140,9 @@ class Powder(callbacks.PluginRegexp):
 
     def _getSaveInfo(self, irc, ID, urlGiven):
         ID = str(int(ID))
-        jsonFile = utils.web.getUrl(giturl)
+        jsonFile = utils.web.getUrl(urlGiven)
         jsonFileEncoding = utils.web.getEncoding(jsonFile) or 'utf8'
-        data = json.loads(jsonFile.decode(jsonFileEncding, 'replace'))
+        data = json.loads(jsonFile.decode(jsonFileEncoding, 'replace'))
         if data["Username"] == "FourOhFour":
             saveMsg = "Save " + ID + " doesn't exist."
         else:
@@ -158,7 +158,7 @@ class Powder(callbacks.PluginRegexp):
         Returns the front page of saves via notices - abuse will not be tolerated."""
         jsonFile = utils.web.getUrl('http://powdertoy.co.uk/Browse.json')
         jsonFileEncoding = utils.web.getEncoding(jsonFile) or 'utf8'
-        data = json.loads(jsonFile.decode(jsonFileEncding, 'replace'))['Saves']
+        data = json.loads(jsonFile.decode(jsonFileEncoding, 'replace'))['Saves']
 
         outMsg = ''
         x = 0
@@ -194,7 +194,7 @@ class Powder(callbacks.PluginRegexp):
     def _getPostDetails(self, irc, msg, threadNum):
         jsonFile = utils.web.getUrl('http://powdertoy.co.uk/Discussions/Thread/View.json?Thread={0}'.format(threadNum))
         jsonFileEncoding = utils.web.getEncoding(jsonFile) or 'utf8'
-        data = json.loads(jsonFile.decode(jsonFileEncding, 'replace'))
+        data = json.loads(jsonFile.decode(jsonFileEncoding, 'replace'))
         cg = data["Info"]["Category"]
         tp = data["Info"]["Topic"]
 
@@ -224,7 +224,7 @@ class Powder(callbacks.PluginRegexp):
                 "<a href=\"/User.html?ID=")[1].split("\"")[0]
             jsonFile = utils.web.getUrl('http://powdertoy.co.uk/User.json?Name={0}'.format(user))
             jsonFileEncoding = utils.web.getEncoding(jsonFile) or 'utf8'
-            userData = json.loads(jsonFile.decode(jsonFileEncding, 'replace'))
+            userData = json.loads(jsonFile.decode(jsonFileEncoding, 'replace'))
             uDu = userData['User']
             irc.reply(
                 'http://powdertoy.co.uk/@{0} | ID {1} | Has {2} saves - Average score {3} - Highest score {4} | Posted {5} topics -  {6} posts - Has {7} reputation.'.format(
@@ -246,7 +246,7 @@ class Powder(callbacks.PluginRegexp):
                     1].split("</h1>")[0]
                 jsonFile = utils.web.getUrl('http://powdertoy.co.uk/User.json?Name={0}'.format(user))
                 jsonFileEncoding = utils.web.getEncoding(jsonFile) or 'utf8'
-                userData = json.loads(jsonFile.decode(jsonFileEncding, 'replace'))
+                userData = json.loads(jsonFile.decode(jsonFileEncoding, 'replace'))
                 uDu = userData['User']
                 irc.reply(
                     'http://powdertoy.co.uk/@{1} | ID {0} | Has {2} saves - Average score {3} - Highest score {4} | Posted {5} topics -  {6} posts - Has {7} reputation.'.format(
@@ -263,9 +263,6 @@ class Powder(callbacks.PluginRegexp):
             except Exception as e:
                 irc.reply(
                     "User or ID doesn't exist - or Xeno screwed it again... {0}".format(e))
-
-        finally:
-            return None
 
     profile = wrap(profile, ['something'])
 
@@ -288,7 +285,7 @@ class Powder(callbacks.PluginRegexp):
             saveID = str(json.loads(url.decode(encoding))['Saves'][0]['ID'])
             jsonFile = utils.web.getUrl('http://powdertoy.co.uk/Browse/View.json?ID={0}'.format(saveID))
             jsonFileEncoding = utils.web.getEncoding(jsonFile) or 'utf8'
-            page = json.loads(jsonFile.decode(jsonFileEncding, 'replace'))
+            page = json.loads(jsonFile.decode(jsonFileEncoding, 'replace'))
             if page["Username"] != "FourOhFour":
                 found = True
 

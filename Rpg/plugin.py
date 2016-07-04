@@ -293,7 +293,7 @@ class Rpg(callbacks.Plugin):
                            area[6],
                            area[7])
                       )
-        viewArea = wrap(viewArea)
+        viewArea = wrap(ViewArea)
 
         def forceBattle(self, irc, msg, args):
             player = self._checkPlayer(irc, msg)
@@ -419,9 +419,9 @@ class Rpg(callbacks.Plugin):
         move = wrap(move, ["somethingWithoutSpaces", optional("int")])
 
     #  Engine functions
-        gameChan = self.gameChannel
 
         def _checkPlayer(self, irc, msg, new=0):
+            gameChan = self.gameChannel
             if (msg.args[0] != self.gameChannel):
                 if msg.nick in irc.state.channels[gameChan].users:
                     irc.error((
@@ -699,7 +699,7 @@ class Rpg(callbacks.Plugin):
             monster = {}
             pLvl = self.playerData[player]["Lvl"]
             boss = self.monsterData["boss"]
-            monsers = self.monsterData["monsters"]
+            monsters = self.monsterData["monsters"]
             monster["Lvl"] = pLvl + (int(random.random() * 5))
             mLvl = monster["Lvl"]
             monster["Atk"] = int(

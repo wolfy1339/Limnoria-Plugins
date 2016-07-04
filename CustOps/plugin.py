@@ -35,16 +35,18 @@ class CustOps(callbacks.Plugin):
         if not reason:
             reason = '{0} says GTFO.'.format(msg.nick)
 
-        irc.queueMsg(ircmsgs.IrcMsg('REMOVE {0} {1} :{2}'.format(channel, user, reason)))
+        irc.queueMsg(ircmsgs.IrcMsg('REMOVE {0} {1} :{2}'.format(channel, user,
+                                                                 reason)))
 
     ninja = wrap(ninja, ['op', ('haveOp', 'remove a user from the channel'),
-    'nickInChannel', additional('text')])
+                         'nickInChannel', additional('text')])
 
     def social(self, irc, msg, args, channel, user, junk):
         """[#powder] <user>
 
         Sets a redirection ban from #powder to #powder-social,
-        kicks the user (exploiting a users auto-rejoin to force them to #powder-social) then lifts the ban.
+        kicks the user (exploiting a users auto-rejoin
+        to force them to #powder-social) then lifts the ban.
         Also sends the user a notice informing them of what happened."""
 
         if channel not in '#powder':
@@ -55,10 +57,10 @@ class CustOps(callbacks.Plugin):
         irc.queueMsg(ircmsgs.IrcMsg(
             'KICK #powder {0} :Take it to #powder-social'.format(user)))
         irc.queueMsg(ircmsgs.invite(user, '#powder-social'))
-        irc.queueMsg(ircmsgs.IrcMsg(' '.join([
+        irc.queueMsg(ircmsgs.IrcMsg((
             'NOTICE {0} :{1} has requested you take your current conversation',
-            'to #powder-social.'.format(
-                    user, msg.nick)])))
+            'to #powder-social.').format(
+                    user, msg.nick)))
         expires = time.time() + 300
 
         def f():
@@ -68,7 +70,7 @@ class CustOps(callbacks.Plugin):
         schedule.addEvent(f, expires)
 
     social = wrap(social, ['op', ('haveOp', 'Evict a user to #powder-social'),
-    'nickInChannel', optional('anything')])
+                           'nickInChannel', optional('anything')])
 
     def stab(self, irc, msg, args, channel, user, timer, reason):
         """<user> [seconds] [reason (ignored)]
@@ -97,7 +99,7 @@ class CustOps(callbacks.Plugin):
         len['s'] = r
 
         irc.queueMsg(ircmsgs.IrcMsg(
-                'NOTICE +{0} :{1} has been quieted for {2}:{3:0>2}'.format(
+            'NOTICE +{0} :{1} has been quieted for {2}:{3:0>2}'.format(
                     channel, user,  len['m'], len['s'])))
 
         def f():
@@ -121,8 +123,8 @@ class CustOps(callbacks.Plugin):
         irc.queueMsg(ircmsgs.IrcMsg(
             'MODE {0} -q {1}'.format(channel, hostmask)))
 
-    unstab = wrap(unstab, [
-            'op', ('haveOp', 'Set user modes'), 'nickInChannel'])
+    unstab = wrap(unstab, ['op', ('haveOp', 'Set user modes'),
+                           'nickInChannel'])
 
 Class = CustOps
 

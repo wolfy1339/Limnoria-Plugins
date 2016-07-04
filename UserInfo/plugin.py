@@ -27,7 +27,6 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 ###
-
 import supybot.utils as utils
 from supybot.commands import *
 import supybot.plugins as plugins
@@ -74,10 +73,10 @@ class UserInfo(callbacks.Plugin):
             return  # Don't respond to other bots with this plugin loaded
 
         if self.registryValue('MemberSnarfer', msg.args[0]):
-            #if match.group(0)[0] == "@":
+            # if match.group(0)[0] == "@":
                 self._getMemberInfo(irc, name)
-            #else:
-                #self._getMemberInfo(irc, name, 1)
+            # else:
+                # self._getMemberInfo(irc, name, 1)
         else:
             return
 
@@ -103,12 +102,12 @@ class UserInfo(callbacks.Plugin):
         preofficers = 'Preofficers\n'
         preofficers += '------------\n'
         preofficers += ','.join(i[1] + ' ' + i[0]
-                                 for i in data['preofficers'])
+                                for i in data['preofficers'])
 
         message = '\n\n'.join((officers, enlisted, preofficers))
 
         if self.registryValue('enableMembersListInChannel', msg.args[0]):
-            irc.reply(message, nickPrefix=false)
+            irc.reply(message, nickPrefix=False)
         else:
             irc.reply(message, private=True)
     members = wrap(members)
@@ -132,14 +131,12 @@ class UserInfo(callbacks.Plugin):
         rank = []
         rank.append(userData['rank'])
         rank.append(userData['rank_comment'])
-        links = []
 
         for award, value in list(userData['awards'].items()):
             values = ['Badge', 'Standard', 'Bronze',
                       'Silver', 'Gold', 'Diamond']
             awards.append('{0}: {1}'.format(award, values[value]))
         awards = ', '.join(awards)
-
 
         if userData['voucher']:
             status = 'This member has a voucher'

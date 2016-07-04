@@ -67,7 +67,6 @@ class General(callbacks.PluginRegexp):
 
         Gets IP based hostmask for ban. """
 
-        failed = False
         ipre = \
             re.compile(r"[0-9]{1,3}[.-][0-9]{1,3}[.-][0-9]{1,3}[.-][0-9]")
         bm = ipre.search(hostmask)
@@ -84,7 +83,7 @@ class General(callbacks.PluginRegexp):
                 count += 1
             irc.reply('*!*@{0}'.format(hostmask), prefixNick=False)
             if self.consolechannel:
-                self._privMsg(self.consolechannel,
+                self._privMsg(irc, self.consolechannel,
                               'BANMASK: *!*@{0} returned for {1}'.format(
                                 hostmask, msg.nick))
 
@@ -242,7 +241,7 @@ class General(callbacks.PluginRegexp):
         error = '****Error in {0} reported by {1}: {2}****'.format(
             cmd, msg.nick, txt)
         self.log.error(error)
-        self._privMsg('Memoserv',
+        self._privMsg(irc, 'Memoserv',
                       'SEND {0} Bug found in {1} by {2} ({3})'.format(
                         self.ownerNick, cmd, msg.nick, txt))
         irc.replySuccess('Bug reported.')
@@ -450,7 +449,7 @@ class General(callbacks.PluginRegexp):
 
         if self.registryValue('enableAwayMsgKicker', msg.args[0]):
             self.log.info("KICKING {0} for away announce".format(msg.nick))
-            self._sendMsg(
+            self._sendMsg(irc,
                 ircmsgs.kick(
                     msg.args[0],
                     msg.nick,
@@ -706,7 +705,7 @@ class General(callbacks.PluginRegexp):
             self.buffer[channel] = []
 
         for each in self.buffer[channel]:
-            print (
+            print(
                 user.lower(),
                 each[0].lower(),
                 user.lower() is each[0].lower())
@@ -778,7 +777,7 @@ class General(callbacks.PluginRegexp):
         if msg.nick.lower() in self.annoyUser:
 
             def fu():
-                self._notice(msg.nick, "\x02\x03{0},{1}{2}".format(
+                self._notice(irc, msg.nick, "\x02\x03{0},{1}{2}".format(
                     random.randint(0, 15), random.randint(0, 15), line))
 
             schedule.addEvent(fu, time.time() + random.randint(2, 60))
@@ -821,11 +820,11 @@ class General(callbacks.PluginRegexp):
         irc.queueMsg(msg)
         irc.noReply()
 
-    def _privMsg(self, dest, msg):
-        self._sendMsg(ircmsgs.privmsg(dest, msg))
+    def _privMsg(self, irc, dest, msg):
+        self._sendMsg(irc, ircmsgs.privmsg(dest, msg))
 
-    def _notice(self, dest, msg):
-        self._sendMsg(ircmsgs.IrcMsg("NOTICE {0} :{1}".format(dest, msg)))
+    def _notice(self, irc, dest, msg):
+        self._sendMsg(irc, ircmsgs.IrcMsg("NOTICE {0} :{1}".format(dest, msg)))
 Class = General
 
 # vim:set shiftwidth=4 softtabstop=4 expandtab textwidth=79:
