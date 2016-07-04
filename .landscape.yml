@@ -1,0 +1,6 @@
+max-line-length: 79
+pep8:
+  full: true
+python-targets:
+  - 2
+  - 3
