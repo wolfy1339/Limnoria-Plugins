@@ -47,12 +47,12 @@ class Powder(callbacks.PluginRegexp):
     threaded = True
     unaddressedRegexps = ['powderSnarfer', 'forumSnarfer']
 
-    def browse(self, irc, msg, args, ID, blurb):
+    def browse(self, irc, msg, args, ID):
         """<SaveID>
 
             Returns information about a save."""
-        self._getSaveInfo(irc, ID, 0)
-    browse = wrap(browse, ['somethingWithoutSpaces', optional('text')])
+        self._getSaveInfo(irc, ID)
+    browse = wrap(browse, ['somethingWithoutSpaces'])
 
     def powderSnarfer(self, irc, msg, match):
         r"http://powdertoy.co.uk/Browse/View.html\?ID=([0-9]+)|^[~]([0-9]+)|http://tpt.io/~([0-9]+)|http://powdertoy.co.uk/~([0-9]+)"
@@ -64,17 +64,23 @@ class Powder(callbacks.PluginRegexp):
 
         self.log.info("powderSnarfer - save URL Found " + match.group(0))
         if self.registryValue('powderSnarfer', msg.args[0]):
-            if match.group(0)[0] == "~":
-                self._getSaveInfo(irc, ID, 0)
-            else:
-                self._getSaveInfo(irc, ID, 1)
+            self._getSaveInfo(irc, ID)
         else:
             return
 
     powderSnarfer = urlSnarfer(powderSnarfer)
 
-    def _getSaveInfo(self, irc, ID, urlGiven):
-        ID = str(int(ID))
+    def _getSaveInfo(self, irc, ID):
+        if 'http://' in ID:
+            if '~' in ID:
+                ID = ID.split('~')[1]
+            else:
+                ID = ID.split('View.html?ID=')[1]
+            urlGiven = 'http://powdertoy.co.uk/Browse/View.json?ID=' + ID
+            url = ''
+        else:
+            urlGiven = 'http://powdertoy.co.uk/Browse/View.json?ID=' + ID
+            url = 'http://tpt.io/~' + ID
         jsonFile = utils.web.getUrl(urlGiven)
         jsonFileEncoding = utils.web.getEncoding(jsonFile) or 'utf8'
         data = json.loads(jsonFile.decode(jsonFileEncoding, 'replace'))
@@ -83,8 +89,8 @@ class Powder(callbacks.PluginRegexp):
         else:
             saveMsg = "Save " + ID + " is " + data["Name"].replace('&#039;', '\'').replace(
                 '&gt;', '>') + " by " + data["Username"] + ". Score: " + str(data["Score"]) + "."
-            if not urlGiven:
-                saveMsg += " http://tpt.io/~" + ID
+            if len(url) > 0:
+                saveMsg += " " + url
         irc.reply(saveMsg, prefixNick=False)
 
     def frontpage(self, irc, msg, args):
@@ -117,8 +123,8 @@ class Powder(callbacks.PluginRegexp):
     forum = wrap(forum, ['something'])
 
     def forumSnarfer(self, irc, msg, match):
-        r"http://powdertoy[.]co[.]uk/Discussions/Thread/View[.]html[?]Thread=([0-9]+)|http://tpt.io/:([0-9]+)"
-        threadNum = match.group(1) or match.group(2)
+        r"http://powdertoy[.]co[.]uk/Discussions/Thread/View[.]html[?]Thread=([0-9]+)|http://tpt.io/:([0-9]+)|^:([0-9]+)"
+        threadNum = match.group(1) or match.group(2) or match.group(3)
         if self.registryValue('forumSnarfer', msg.args[0]):
             self._getPostDetails(irc, msg, threadNum)
         else:
