@@ -132,10 +132,13 @@ class UserInfo(callbacks.Plugin):
         rank.append(userData['rank'])
         rank.append(userData['rank_comment'])
 
-        for award, value in list(userData['awards'].items()):
-            values = ['Badge', 'Standard', 'Bronze',
+        values = ['Badge', 'Standard', 'Bronze',
                       'Silver', 'Gold', 'Diamond']
-            awards.append('{0}: {1}'.format(award, values[value]))
+        for award, value in list(userData['awards'].items()):
+            if values[value] == 'Badge':
+                awards.append('{0} {1}'.format(award, values[value]))
+            else:
+                awards.append('{0}: {1}'.format(award, values[value]))
         awards = ', '.join(awards)
 
         if userData['voucher']:
