@@ -47,71 +47,6 @@ class Powder(callbacks.PluginRegexp):
     threaded = True
     unaddressedRegexps = ['powderSnarfer', 'forumSnarfer']
 
-    def git(self, irc, msg, args, user, project, branch):
-        """<username> [project] [branch]
-
-        Returns information about a user GitHub Repo.
-        Project and branch arguments are optional.
-        Defaults to Brilliant-Minds.github.io/master if no arguments are given.
-        Arguments are CaSe-SeNsItIvE"""
-
-        if not branch:
-            branch = "master"
-        if not project:
-            project = "Brilliant-Minds.github.io"
-        user = user.lower()
-        branch = branch.lower()
-        if user == "simon" or user == "isimon" or user == "ximon":
-            user = "simtr"
-        if user == "doxin":
-            user = "dikzak"
-        giturl = "https://api.github.com/repos/%s/%s/branches/%s" % (
-            user, project, branch)
-        try:
-            jsonFile = utils.web.getUrl(giturl)
-            jsonFileEncoding = utils.web.getEncoding(jsonFile) or 'utf8'
-            data = json.loads(jsonFile.decode(jsonFileEncoding, 'replace'))
-        except:
-            try:
-                branch = project
-                project = "BMNBot-Plugins"
-                giturl = "https://api.github.com/repos/%s/%s/branches/%s" % (
-                    user, project, branch)
-                jsonFile = utils.web.getUrl(giturl)
-                jsonFileEncoding = utils.web.getEncoding(jsonFile) or 'utf8'
-                data = json.loads(jsonFile.decode(jsonFileEncoding, 'replace'))
-            except:
-                irc.error(
-                    "HTTP 404. Please check and try again.",
-                    prefixNick=False)
-                self.log.error("GIT: Returned 404 on %s:%s" % (user, branch))
-                return
-        data = data['commit']['commit']
-
-        data["committer"]["date"] = data["committer"]["date"].split("T")
-        data["message"] = data["message"].replace("\n", " ")
-        data["message"] = data["message"].replace(" ", " ")
-
-        self.log.info(
-            "GIT: user:%s project:%s branch:%s called by %s sucessfully." %
-            (user, project, branch, msg.nick))
-        irc.reply(
-            "Last commit to %s's %s repo, %s branch, was by %s on %s at %s. Commit message was \"%s\" - https://github.com/%s/%s/tree/%s" %
-            (user,
-             project,
-             branch,
-             data["committer"]["name"],
-                data["committer"]["date"][0],
-                data["committer"]["date"][1],
-                data["message"],
-                user,
-                project,
-                branch),
-            prefixNick=False)
-
-    git = wrap(git, ['somethingWithoutSpaces', optional(
-        'somethingWithoutSpaces'), optional('somethingwithoutspaces')])
-
     def browse(self, irc, msg, args, ID, blurb):
         """<SaveID>
 
@@ -265,14 +200,6 @@ class Powder(callbacks.PluginRegexp):
                     "User or ID doesn't exist - or Xeno screwed it again... {0}".format(e))
 
     profile = wrap(profile, ['something'])
-
-    def network(self, irc, msg, args):
-        """
-
-        Replies with a link to the github network page for the Powder Toy repo
-        """
-        irc.reply("https://github.com/simtr/The-Powder-Toy/network")
-    network = wrap(network)
 
     def randomsave(self, irc, msg, args):
         """
