@@ -1,6 +1,33 @@
 max-line-length: 79
 pep8:
   full: true
+  disable:
+    - 'E402'
+    - 'E731'
+    - 'N801'
+    - 'N802'
+    - 'N803'
+    - 'N806'
 python-targets:
   - 2
   - 3
+pylint:
+  disable:
+    - redefined-builtin
+    - bare-except
+    - unused-argument
+    - unused-import
+    - logging-format-interpolation
+    - logging-not-lazy
+    - too-many-arguments
+    - too-many-locals
+    - too-many-statements
+    - protected-access
+    - unnecessary-pass
+    - 'W0614'
+pyflakes:
+  disable:
+    - 'F401'
+ignore-paths:
+  - Administration
+  - Timebomb
