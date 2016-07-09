@@ -59,10 +59,10 @@ class Powder(callbacks.PluginRegexp):
         ID = match.group(1) or match.group(
             2) or match.group(3) or match.group(4)
 
-        if msg.args[1].startswith("Save " + ID + " is"):
+        if msg.args[1].startswith('Save ' + ID + ' is'):
             return  # Don't respond to save info from other bots with this plugin
 
-        self.log.info("powderSnarfer - save URL Found " + match.group(0))
+        self.log.info('powderSnarfer - save URL Found ' + match.group(0))
         if self.registryValue('powderSnarfer', msg.args[0]):
             self._getSaveInfo(irc, ID)
         else:
@@ -84,13 +84,13 @@ class Powder(callbacks.PluginRegexp):
         jsonFile = utils.web.getUrl(urlGiven)
         jsonFileEncoding = utils.web.getEncoding(jsonFile) or 'utf8'
         data = json.loads(jsonFile.decode(jsonFileEncoding, 'replace'))
-        if data["Username"] == "FourOhFour":
-            saveMsg = "Save " + ID + " doesn't exist."
+        if data['Username'] == 'FourOhFour':
+            saveMsg = 'Save ' + ID + ' doesn\'t exist.'
         else:
-            saveMsg = "Save " + ID + " is " + data["Name"].replace('&#039;', '\'').replace(
-                '&gt;', '>') + " by " + data["Username"] + ". Score: " + str(data["Score"]) + "."
+            saveMsg = 'Save ' + ID + ' is ' + data['Name'].replace('&#039;', '\'').replace(
+                '&gt;', '>') + ' by ' + data['Username'] + '. Score: ' + str(data['Score']) + '.'
             if len(url) > 0:
-                saveMsg += " " + url
+                saveMsg += ' ' + url
         irc.reply(saveMsg, prefixNick=False)
 
     def frontpage(self, irc, msg, args):
@@ -136,22 +136,22 @@ class Powder(callbacks.PluginRegexp):
         jsonFile = utils.web.getUrl('http://powdertoy.co.uk/Discussions/Thread/View.json?Thread={0}'.format(threadNum))
         jsonFileEncoding = utils.web.getEncoding(jsonFile) or 'utf8'
         data = json.loads(jsonFile.decode(jsonFileEncoding, 'replace'))
-        cg = data["Info"]["Category"]
-        tp = data["Info"]["Topic"]
+        cg = data['Info']['Category']
+        tp = data['Info']['Topic']
 
         irc.reply(
-            "Forum post is \"%s\" in the %s section, posted by %s and has %s replies. Last post was by %s at %s" %
-            (tp["Title"],
-             cg["Name"],
-                tp["Author"],
-                tp["PostCount"] -
+            'Forum post is \'%s\' in the %s section, posted by %s and has %s replies. Last post was by %s at %s' %
+            (tp['Title'],
+             cg['Name'],
+                tp['Author'],
+                tp['PostCount'] -
                 1,
-                tp["LastPoster"],
-                tp["Date"]),
+                tp['LastPoster'],
+                tp['Date']),
             prefixNick=False)
         self.log.info(
-            "FORUMSNARF: Thread %s found. %s in the %s section" %
-            (threadNum, tp["Title"], cg["Name"]))
+            'FORUMSNARF: Thread %s found. %s in the %s section' %
+            (threadNum, tp['Title'], cg['Name']))
 
     def profile(self, irc, msg, args, user):
         """<username|ID>
@@ -160,9 +160,9 @@ class Powder(callbacks.PluginRegexp):
 
         try:
             userPage = utils.web.getUrl(
-                "http://powdertoy.co.uk/User.html?Name=" + user)
+                'http://powdertoy.co.uk/User.html?Name=' + user)
             userID = userPage.split(
-                "<a href=\"/User.html?ID=")[1].split("\"")[0]
+                '<a href=\'/User.html?ID=')[1].split('\'')[0]
             jsonFile = utils.web.getUrl('http://powdertoy.co.uk/User.json?Name={0}'.format(user))
             jsonFileEncoding = utils.web.getEncoding(jsonFile) or 'utf8'
             userData = json.loads(jsonFile.decode(jsonFileEncoding, 'replace'))
@@ -182,9 +182,9 @@ class Powder(callbacks.PluginRegexp):
         except Exception:
             try:
                 userPage = utils.web.getUrl(
-                    "http://powdertoy.co.uk/User.html?ID=" + user)
-                userName = userPage.split("<h1 class=\"SubmenuTitle\">")[
-                    1].split("</h1>")[0]
+                    'http://powdertoy.co.uk/User.html?ID=' + user)
+                userName = userPage.split('<h1 class=\'SubmenuTitle\'>')[
+                    1].split('</h1>')[0]
                 jsonFile = utils.web.getUrl('http://powdertoy.co.uk/User.json?Name={0}'.format(user))
                 jsonFileEncoding = utils.web.getEncoding(jsonFile) or 'utf8'
                 userData = json.loads(jsonFile.decode(jsonFileEncoding, 'replace'))
@@ -203,7 +203,7 @@ class Powder(callbacks.PluginRegexp):
 
             except Exception as e:
                 irc.reply(
-                    "User or ID doesn't exist - or Xeno screwed it again... {0}".format(e))
+                    'User or ID doesn\'t exist - or Xeno screwed it again... {0}'.format(e))
 
     profile = wrap(profile, ['something'])
 
@@ -213,13 +213,13 @@ class Powder(callbacks.PluginRegexp):
         Returns a random save from powdertoy.co.uk"""
         found = False
         while found is False:
-            url = utils.web.getUrl("http://powdertoythings.co.uk/Powder/Saves/Random.json?Count=1")
+            url = utils.web.getUrl('http://powdertoythings.co.uk/Powder/Saves/Random.json?Count=1')
             encoding = utils.web.getEncoding(url) or 'utf8'
             saveID = str(json.loads(url.decode(encoding))['Saves'][0]['ID'])
             jsonFile = utils.web.getUrl('http://powdertoy.co.uk/Browse/View.json?ID={0}'.format(saveID))
             jsonFileEncoding = utils.web.getEncoding(jsonFile) or 'utf8'
             page = json.loads(jsonFile.decode(jsonFileEncoding, 'replace'))
-            if page["Username"] != "FourOhFour":
+            if page['Username'] != 'FourOhFour':
                 found = True
 
         self._getSaveInfo(irc, saveID, 0)
@@ -231,13 +231,13 @@ class Powder(callbacks.PluginRegexp):
         Returns latest comic number and name."""
         try:
             try:
-                data = utils.web.getUrl("http://cate.superdoxin.com/")
+                data = utils.web.getUrl('http://cate.superdoxin.com/')
             except:
-                irc.error("Could not access comics website")
+                irc.error('Could not access comics website')
                 return
             match = None
             for match in re.finditer(
-                    r" href=\"http://superdoxin.com/static/cate/files/(([0-9]+)([^\"]+))\"",
+                    r" href=\'http://superdoxin.com/static/cate/files/(([0-9]+)([^\']+))\'",
                     data):
                 pass
             filename = match.group(1)
@@ -245,12 +245,12 @@ class Powder(callbacks.PluginRegexp):
             name = match.group(3)
 
             irc.reply(
-                "Latest comic id is {0} and is titled {1} - http://www.superdoxin.com/static/cate/files/{2}".format(
+                'Latest comic id is {0} and is titled {1} - http://www.superdoxin.com/static/cate/files/{2}'.format(
                     num,
                     name,
                     filename))
         except:
-            irc.error("Comic checker is broken, use $bug comic")
+            irc.error('Comic checker is broken, use $bug comic')
     comic = wrap(comic)
 Class = Powder
 
