@@ -596,7 +596,7 @@ class General(callbacks.PluginRegexp):
         page = BeautifulSoup(text.decode(utils.web.getEncoding(text) or 'utf8', 'replace'), "html5lib")
         page2 = page.find("div", {"class": "paste_box_info"}).split("<div class=\"paste_box_line2\">")[
             1].split("</div>")[0]
-        page3 = page.find("div", {"id": "code_buttons"}).split(page3.find("span", {"class": "go_right"}))
+        page3 = page.find("div", {"id": "code_buttons"}).split(page.find("span", {"class": "go_right"}))
         paste = {}
 
         paste["name"] = page.find("h1").get_text()
