@@ -48,6 +48,7 @@ class UserInfo(callbacks.Plugin):
     threaded = True
 
     @internationalizeDocstring
+    @wrap([optional('somethingWithoutSpaces')])
     def records(self, irc, msg, args, user):
         """[<memberName>]
 
@@ -59,8 +60,8 @@ class UserInfo(callbacks.Plugin):
             self._getMemberInfo(irc, user)
         else:
             self._getMemberInfo(irc, msg.nick)
-    records = wrap(records, [optional('somethingWithoutSpaces')])
 
+    @urlSnarfer
     def UserInfoSnarfer(self, irc, msg, args, match):
         r"http://brilliant-minds.tk/members.html\?([\w-]+)|@([\w-]+)"
         name = match.group(1) or match.group(2)
@@ -76,9 +77,8 @@ class UserInfo(callbacks.Plugin):
         else:
             return
 
-    UserInfoSnarfer = urlSnarfer(UserInfoSnarfer)
-
     @internationalizeDocstring
+    @wrap
     def members(self, irc, msg, args):
         """No arguments
 
@@ -106,7 +106,6 @@ class UserInfo(callbacks.Plugin):
             irc.reply(message, nickPrefix=False)
         else:
             irc.reply(message, private=True)
-    members = wrap(members)
 
     def _getMemberInfo(self, irc, user):
         if (not user.startswith('http://') and
@@ -115,7 +114,7 @@ class UserInfo(callbacks.Plugin):
         else:
             userName = user.split('members.html?')[1]
 
-        url = 'http://brilliant-minds.tk/members/{0}.json'.format(userName)
+        url = 'http://brilliant-minds.github.io/members/{0}.json'.format(userName)
         try:
             jsonFile = utils.web.getUrl(url)
         except utils.web.Error:

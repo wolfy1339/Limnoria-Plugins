@@ -61,6 +61,7 @@ class Rpg(callbacks.Plugin):
             self.filepath = "/home/wolfy1339/BMNBot-New/plugins/Rpg/"
 
         # Game Commands
+        @wrap
         def reloadData(self, irc, msg, args):
             if not ircdb.users.getUser(msg.prefix)._checkCapability("admin"):
                 irc.error("Only people with \"Admin\" can do that.")
@@ -73,8 +74,8 @@ class Rpg(callbacks.Plugin):
                     self.monsterData = json.load(f)
                     self._getItemsFile()
                     irc.replySuccess()
-        reloaddata = wrap(reloadData)
 
+        @wrap([optional("somethingWithoutSpaces"), optional("somethingWithoutSpaces")])
         def genMap(self, irc, msg, args, width, height):
             if not ircdb.users.getUser(msg.prefix)._checkCapability("owner"):
                 irc.error("Only people with \"Admin\" can do that.")
@@ -157,10 +158,7 @@ class Rpg(callbacks.Plugin):
 # submit  =  utils.web.getUrl(self.serverUrl+"?m = %s&w = %i&h = %&hm =
 # %i&hy = %i
 
-        genmap = wrap(genMap,
-                      [optional("somethingWithoutSpaces"),
-                       optional("somethingWithoutSpaces")])
-
+        @wrap
         def stats(self, irc, msg, args):
             player = self._checkPlayer(irc, msg)
             playerData = self.playerData[player]
@@ -194,8 +192,8 @@ class Rpg(callbacks.Plugin):
                        "attacks. Your Luck rating is {15}. "
                        "You have died {16} times."
                        ).format(player, level, exp, next, hp, mhp, baseAtk, totalAtk, weapon, baseDef, totalDef, helmet, armour, shield, block, luck, deaths))
-        stats = wrap(stats)
 
+        @wrap
         def new(self, irc, msg, args):
             player = self._checkPlayer(irc, msg, 1)
             playerData = self.playerData
@@ -231,8 +229,8 @@ class Rpg(callbacks.Plugin):
             self._sendDbg(irc, player + " has been reset/created")
             self._savePlayerData(playerData)
             self.rpgStats(irc, msg, args)
-        new = wrap(new)
 
+        @wrap
         def location(self, irc, msg, args):
             player = self._checkPlayer(irc, msg)
             location = self.playerData[player]["Loc"]
@@ -251,8 +249,8 @@ class Rpg(callbacks.Plugin):
             irc.reply((
                 "You are located at ({0}, {1})."
                 " Home is at ({2}, {3})").format(x, y, homeX, homeY))
-        loc = wrap(location)
 
+        @wrap
         def ViewArea(self, irc, msg, args):
             player = self._checkPlayer(irc, msg)
             location = self.playerData[player]["Loc"]
@@ -293,8 +291,8 @@ class Rpg(callbacks.Plugin):
                            area[6],
                            area[7])
                       )
-        viewArea = wrap(ViewArea)
 
+        @wrap
         def forceBattle(self, irc, msg, args):
             player = self._checkPlayer(irc, msg)
             if self.playerData[player]["force"]:
@@ -307,8 +305,8 @@ class Rpg(callbacks.Plugin):
                 text = "will enter a monster battle on their next turn."
                 irc.reply("{0} {1}".format(player.capitalize(), text),
                           prefixNick=False)
-        forceBattle = wrap(forceBattle)
 
+        @wrap(["somethingWithoutSpaces", optional("int")])
         def move(self, irc, msg, args, direction, number):
             player = self._checkPlayer(irc, msg)
             playerData = self.playerData
@@ -415,8 +413,6 @@ class Rpg(callbacks.Plugin):
                     self._notice(irc, msg.nick, text)
                     self._savePlayerData(playerData)
                 x += 1
-
-        move = wrap(move, ["somethingWithoutSpaces", optional("int")])
 
     #  Engine functions
 

@@ -48,6 +48,7 @@ class Hash(callbacks.Plugin):
     """An assortment of hashing functions"""
     threaded = True
 
+    @wrap(['text'])
     def md5(self, irc, msg, args, text):
         """<text>
 
@@ -55,8 +56,7 @@ class Hash(callbacks.Plugin):
         """
         irc.reply(hashlib.md5(text).hexdigest())
 
-    md5 = wrap(md5, ['text'])
-
+    @wrap(['text'])
     def sha1(self, irc, msg, args, text):
         """<text>
 
@@ -64,8 +64,7 @@ class Hash(callbacks.Plugin):
         """
         irc.reply(hashlib.sha1(text).hexdigest())
 
-    sha1 = wrap(sha1, ['text'])
-
+    @wrap(['text'])
     def sha224(self, irc, msg, args, text):
         """<text>
 
@@ -73,8 +72,7 @@ class Hash(callbacks.Plugin):
         """
         irc.reply(hashlib.sha224(text).hexdigest())
 
-    sha224 = wrap(sha224, ['text'])
-
+    @wrap(['text'])
     def sha256(self, irc, msg, args, text):
         """<text>
 
@@ -82,8 +80,7 @@ class Hash(callbacks.Plugin):
         """
         irc.reply(hashlib.sha256(text).hexdigest())
 
-    sha256 = wrap(sha256, ['text'])
-
+    @wrap(['text'])
     def sha384(self, irc, msg, args, text):
         """<text>
 
@@ -91,16 +88,13 @@ class Hash(callbacks.Plugin):
         """
         irc.reply(hashlib.sha384(text).hexdigest())
 
-    sha384 = wrap(sha384, ['text'])
-
+    @wrap(['text'])
     def sha512(self, irc, msg, args, text):
         """<text>
 
         Creates a sha-512 hash on <text>
         """
         irc.reply(hashlib.sha512(text).hexdigest())
-
-    sha512 = wrap(sha512, ['text'])
 
 Class = Hash
 

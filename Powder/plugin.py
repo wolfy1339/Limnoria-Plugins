@@ -54,6 +54,7 @@ class Powder(callbacks.PluginRegexp):
         self._getSaveInfo(irc, ID)
     browse = wrap(browse, ['somethingWithoutSpaces'])
 
+    @urlSnarfer
     def powderSnarfer(self, irc, msg, match):
         r"http://powdertoy.co.uk/Browse/View.html\?ID=([0-9]+)|^[~]([0-9]+)|http://tpt.io/~([0-9]+)|http://powdertoy.co.uk/~([0-9]+)"
         ID = match.group(1) or match.group(
@@ -67,8 +68,6 @@ class Powder(callbacks.PluginRegexp):
             self._getSaveInfo(irc, ID)
         else:
             return
-
-    powderSnarfer = urlSnarfer(powderSnarfer)
 
     def _getSaveInfo(self, irc, ID):
         if 'http://' in ID:
@@ -93,6 +92,7 @@ class Powder(callbacks.PluginRegexp):
                 saveMsg += ' ' + url
         irc.reply(saveMsg, prefixNick=False)
 
+    @wrap
     def frontpage(self, irc, msg, args):
         """
 
@@ -113,15 +113,14 @@ class Powder(callbacks.PluginRegexp):
                 continue
             outMsg = '{0} -- '.format(outMsg)
 
-    frontpage = wrap(frontpage)
-
+    @wrap(['something'])
     def forum(self, irc, msg, num):
         """
 
         Returns information on a forum post."""
         self._getPostDetails(irc, msg, num)
-    forum = wrap(forum, ['something'])
 
+    @urlSnarfer
     def forumSnarfer(self, irc, msg, match):
         r"http://powdertoy[.]co[.]uk/Discussions/Thread/View[.]html[?]Thread=([0-9]+)|http://tpt.io/:([0-9]+)|^:([0-9]+)"
         threadNum = match.group(1) or match.group(2) or match.group(3)
@@ -129,8 +128,6 @@ class Powder(callbacks.PluginRegexp):
             self._getPostDetails(irc, msg, threadNum)
         else:
             return
-
-    forumSnarfer = urlSnarfer(forumSnarfer)
 
     def _getPostDetails(self, irc, msg, threadNum):
         jsonFile = utils.web.getUrl('http://powdertoy.co.uk/Discussions/Thread/View.json?Thread={0}'.format(threadNum))
@@ -153,6 +150,7 @@ class Powder(callbacks.PluginRegexp):
             'FORUMSNARF: Thread %s found. %s in the %s section' %
             (threadNum, tp['Title'], cg['Name']))
 
+    @wrap(['something'])
     def profile(self, irc, msg, args, user):
         """<username|ID>
 
@@ -205,8 +203,7 @@ class Powder(callbacks.PluginRegexp):
                 irc.reply(
                     'User or ID doesn\'t exist - or Xeno screwed it again... {0}'.format(e))
 
-    profile = wrap(profile, ['something'])
-
+    @wrap
     def randomsave(self, irc, msg, args):
         """
 
@@ -223,8 +220,8 @@ class Powder(callbacks.PluginRegexp):
                 found = True
 
         self._getSaveInfo(irc, saveID, 0)
-    randomsave = wrap(randomsave)
 
+    @wrap
     def comic(self, irc, msg, args):
         """
 
@@ -251,7 +248,7 @@ class Powder(callbacks.PluginRegexp):
                     filename))
         except:
             irc.error('Comic checker is broken, use $bug comic')
-    comic = wrap(comic)
+
 Class = Powder
 
 # vim:set shiftwidth=4 softtabstop=4 expandtab textwidth=79:

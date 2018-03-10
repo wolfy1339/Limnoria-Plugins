@@ -26,6 +26,7 @@ class CustOps(callbacks.Plugin):
         i = random.random()
     del i
 
+    @wrap(['op', ('haveOp', 'remove a user from the channel'), 'nickInChannel', additional('text')])
     def ninja(self, irc, msg, args, channel, user, reason):
         """<user> [reason]
 
@@ -38,9 +39,7 @@ class CustOps(callbacks.Plugin):
         irc.queueMsg(ircmsgs.IrcMsg('REMOVE {0} {1} :{2}'.format(channel, user,
                                                                  reason)))
 
-    ninja = wrap(ninja, ['op', ('haveOp', 'remove a user from the channel'),
-                         'nickInChannel', additional('text')])
-
+    @wrap(['op', ('haveOp', 'Evict a user to #powder-social'), 'nickInChannel', optional('anything')])
     def social(self, irc, msg, args, channel, user, junk):
         """[#powder] <user>
 
@@ -69,9 +68,7 @@ class CustOps(callbacks.Plugin):
 
         schedule.addEvent(f, expires)
 
-    social = wrap(social, ['op', ('haveOp', 'Evict a user to #powder-social'),
-                           'nickInChannel', optional('anything')])
-
+    @wrap(['op', ('haveOp', 'Quiet a user'), 'nickInChannel', optional('int'), optional('text')])
     def stab(self, irc, msg, args, channel, user, timer, reason):
         """<user> [seconds] [reason (ignored)]
 
@@ -109,9 +106,7 @@ class CustOps(callbacks.Plugin):
         schedule.addEvent(f, expires)
         irc.noReply()
 
-    stab = wrap(stab, ['op', ('haveOp', 'Quiet a user'),
-                       'nickInChannel', optional('int'), optional('text')])
-
+    @wrap(['op', ('haveOp', 'Unquiet a user'), 'nickInChannel', optional('int'), optional('text')])
     def unstab(self, irc, msg, args, channel, user):
         """<user>
 
@@ -122,9 +117,6 @@ class CustOps(callbacks.Plugin):
             '*', '*', ircutils.hostFromHostmask(hmask))
         irc.queueMsg(ircmsgs.IrcMsg(
             'MODE {0} -q {1}'.format(channel, hostmask)))
-
-    unstab = wrap(unstab, ['op', ('haveOp', 'Set user modes'),
-                           'nickInChannel'])
 
 Class = CustOps
 

@@ -62,6 +62,7 @@ class General(callbacks.PluginRegexp):
 
 # Commands
 
+    @wrap(['hostmask'])
     def banmask(self, irc, msg, args, hostmask):
         """<nick|hostmask>
 
@@ -87,8 +88,7 @@ class General(callbacks.PluginRegexp):
                               'BANMASK: *!*@{0} returned for {1}'.format(
                                 hostmask, msg.nick))
 
-    banmask = wrap(banmask, ['hostmask'])
-
+    @wrap
     def me(self, irc, msg, args):
         """<no arguments>
 
@@ -96,8 +96,7 @@ class General(callbacks.PluginRegexp):
 
         irc.reply(msg.nick)
 
-    me = wrap(me, [])
-
+    @wrap(['int', optional('int'), optional('int')])
     def rand(self, irc, msg, args, min, max, num):
         """[min] <max> [amount]
 
@@ -137,8 +136,7 @@ class General(callbacks.PluginRegexp):
             x += 1
         irc.reply(output)
 
-    rand = wrap(rand, ['int', optional('int'), optional('int')])
-
+    @wrap(['text'])
     def geoip(self, irc, msg, args, ohostmask):
         """<IPv4 Address>
 
@@ -230,8 +228,7 @@ class General(callbacks.PluginRegexp):
             'The provider is {6}').format(
                 hostmask, city, country, tinyurlLink, tz, to, provider))
 
-    geoip = wrap(geoip, ['text'])
-
+    @wrap(['something', additional('text')])
     def bug(self, irc, msg, args, cmd, txt):
         """<plugin> [details of bug]
 
@@ -246,8 +243,7 @@ class General(callbacks.PluginRegexp):
                         self.ownerNick, cmd, msg.nick, txt))
         irc.replySuccess('Bug reported.')
 
-    bug = wrap(bug, ['something', additional('text')])
-
+    @wrap([optional("nick")])
     def kicked(self, irc, msg, args, nick):
         """[user]
 
@@ -276,8 +272,7 @@ class General(callbacks.PluginRegexp):
         except:
             irc.reply('{0} hasn"t been kicked it seems.'.format(nick))
 
-    kicked = wrap(kicked, [optional("nick")])
-
+    @wrap(['op', 'nickInChannel', optional('float')])
     def annoy(self, irc, msg, args, channel, nick, mins):
         """[channel] <nick> [mins]
 
@@ -308,8 +303,7 @@ class General(callbacks.PluginRegexp):
             'ANNOY: Annoying {0} for {1} minutes'.format(nick, mins))
         self.annoyUser += [nick.lower()]
 
-    annoy = wrap(annoy, ['op', 'nickInChannel', optional('float')])
-
+    @wrap(['op', 'nick'])
     def unannoy(self, irc, msg, args, channel, nick):
         """[channel] <nick>
 
@@ -322,8 +316,7 @@ class General(callbacks.PluginRegexp):
             irc.error('That user isn\'t being annoyed.')
             return 0
 
-    unannoy = wrap(unannoy, ['op', 'nick'])
-
+    @wrap(["something"])
     def justme(self, irc, msg, args, url):
         """<url>
 
@@ -349,8 +342,7 @@ class General(callbacks.PluginRegexp):
         else:
             irc.error("Check URL and try again")
 
-    justme = wrap(justme, ["something"])
-
+    @wrap(["op", ("haveOp", "Kick a user"), "something", "something", optional("text")])
     def multikick(self, irc, msg, args, channel, nick, num, message):
         """<nick> <num> [message]
 
@@ -380,10 +372,6 @@ class General(callbacks.PluginRegexp):
         irc.reply(
                 "Kicking anyone with {0} in their nick {1} times.".format(
                     nick, num), private=True)
-
-    multikick = wrap(multikick, [
-            "op", ("haveOp", "Kick a user"), "something", "something",
-            optional("text")])
 
 # RegExps
 
@@ -506,6 +494,7 @@ class General(callbacks.PluginRegexp):
             "&")
         irc.reply("Youtube video is '{0}'".format(data), prefixNick=nickPrefix)
 
+    @wrap(["text"])
     def youtube(self, irc, msg, args, url):
         """<url>
 
@@ -513,8 +502,7 @@ class General(callbacks.PluginRegexp):
 
         self._ytinfo(irc, url, True)
 
-    youtube = wrap(youtube, ["text"])
-
+    @urlSnarfer
     def ytSnarfer(self, irc, msg, match):
         r""".*(youtube[.]com/.+v=[0-9A-z\-_]{11}).*"""
 
@@ -525,8 +513,7 @@ class General(callbacks.PluginRegexp):
         else:
             return
 
-    ytSnarfer = urlSnarfer(ytSnarfer)
-
+    @urlSnarfer
     def capsKick(self, irc, msg, match):
         r""".+"""
 
@@ -585,8 +572,7 @@ class General(callbacks.PluginRegexp):
             del kd
             irc.queueMsg(ircmsgs.kick(msg.args[0], msg.nick, reason))
 
-    capsKick = urlSnarfer(capsKick)
-
+    @urlSnarfer
     def pasteSnarfer(self, irc, msg, match):
         r"""http://pastebin[.]com/[A-Za-z0-9]{8}"""
 
@@ -619,8 +605,7 @@ class General(callbacks.PluginRegexp):
                     paste['size'], paste['expires']),
                 prefixNick=False)
 
-    pasteSnarfer = urlSnarfer(pasteSnarfer)
-
+    @urlSnarfer
     def selfCorrect(self, irc, msg, match):
         r"""^s[/].*[/].*$"""
 
@@ -670,8 +655,7 @@ class General(callbacks.PluginRegexp):
         else:
             return
 
-    selfCorrect = urlSnarfer(selfCorrect)
-
+    @urlSnarfer
     def userCorrect(self, irc, msg, match):
         r"""^u[/].*[/].*[/].*$"""
 
@@ -734,8 +718,7 @@ class General(callbacks.PluginRegexp):
         else:
             return
 
-    userCorrect = urlSnarfer(userCorrect)
-
+    @urlSnarfer
     def saveLast(self, irc, msg, match):
         r""".+"""
 
@@ -791,8 +774,7 @@ class General(callbacks.PluginRegexp):
             self.buffer[channel].pop(self.buffsize)
         return 1
 
-    saveLast = urlSnarfer(saveLast)
-
+    @wrap([optional("text")])
     def pop(self, irc, msg, args, text):
         """
 
@@ -812,8 +794,6 @@ class General(callbacks.PluginRegexp):
                 irc.reply('pops {}'.format(text), action=True)
             else:
                 irc.reply('goes pop!', action=True)
-
-    pop = wrap(pop, [optional("text")])
 
 # Utilities
     def _sendMsg(self, irc, msg):
