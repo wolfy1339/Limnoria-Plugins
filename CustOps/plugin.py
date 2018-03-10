@@ -84,7 +84,7 @@ class CustOps(callbacks.Plugin):
             'MODE {0} +q {1}'.format(channel, hostmask)))
 
         t = time.time()
-        r = timer
+        r = timer or 0
         if not r > 0:
             r = random.randint(30, 600)
         expires = t + r
