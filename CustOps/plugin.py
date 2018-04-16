@@ -106,7 +106,7 @@ class CustOps(callbacks.Plugin):
         schedule.addEvent(f, expires)
         irc.noReply()
 
-    @wrap(['op', ('haveOp', 'Unquiet a user'), 'nickInChannel', optional('int'), optional('text')])
+    @wrap(['op', ('haveOp', 'Unquiet a user'), 'nickInChannel'])
     def unstab(self, irc, msg, args, channel, user):
         """<user>
 
