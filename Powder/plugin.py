@@ -157,18 +157,14 @@ class Powder(callbacks.PluginRegexp):
           returns a link to the users profile and some brief information"""
 
         try:
-            userPage = utils.web.getUrl(
-                'http://powdertoy.co.uk/User.html?Name=' + user)
-            userID = userPage.split(
-                '<a href=\'/User.html?ID=')[1].split('\'')[0]
             jsonFile = utils.web.getUrl('http://powdertoy.co.uk/User.json?Name={0}'.format(user))
             jsonFileEncoding = utils.web.getEncoding(jsonFile) or 'utf8'
             userData = json.loads(jsonFile.decode(jsonFileEncoding, 'replace'))
             uDu = userData['User']
             irc.reply(
-                'http://powdertoy.co.uk/@{0} | ID {1} | Has {2} saves - Average score {3} - Highest score {4} | Posted {5} topics -  {6} posts - Has {7} reputation.'.format(
+                'http://tpt.io/@{0} | ID {1} | Has {2} saves - Average score {3} - Highest score {4} | Posted {5} topics -  {6} posts - Has {7} reputation.'.format(
                     user,
-                    userID,
+                    uDu['ID'],
                     uDu['Saves']['Count'],
                     uDu['Saves']['AverageScore'],
                     uDu['Saves']['HighestScore'],
@@ -176,32 +172,8 @@ class Powder(callbacks.PluginRegexp):
                     uDu['Forum']['Replies'],
                     uDu['Forum']['Reputation']),
                 prefixNick=False)
-
-        except Exception:
-            try:
-                userPage = utils.web.getUrl(
-                    'http://powdertoy.co.uk/User.html?ID=' + user)
-                userName = userPage.split('<h1 class=\'SubmenuTitle\'>')[
-                    1].split('</h1>')[0]
-                jsonFile = utils.web.getUrl('http://powdertoy.co.uk/User.json?Name={0}'.format(user))
-                jsonFileEncoding = utils.web.getEncoding(jsonFile) or 'utf8'
-                userData = json.loads(jsonFile.decode(jsonFileEncoding, 'replace'))
-                uDu = userData['User']
-                irc.reply(
-                    'http://powdertoy.co.uk/@{1} | ID {0} | Has {2} saves - Average score {3} - Highest score {4} | Posted {5} topics -  {6} posts - Has {7} reputation.'.format(
-                        user,
-                        userName,
-                        uDu['Saves']['Count'],
-                        uDu['Saves']['AverageScore'],
-                        uDu['Saves']['HighestScore'],
-                        uDu['Forum']['Topics'],
-                        uDu['Forum']['Replies'],
-                        uDu['Forum']['Reputation']),
-                    prefixNick=False)
-
-            except Exception as e:
-                irc.reply(
-                    'User or ID doesn\'t exist - or Xeno screwed it again... {0}'.format(e))
+        except Exception as e:
+            irc.error('User or ID doesn\'t exist - or something went wrong.. {0}'.format(e))
 
     @wrap
     def randomsave(self, irc, msg, args):
@@ -229,7 +201,7 @@ class Powder(callbacks.PluginRegexp):
         try:
             try:
                 data = utils.web.getUrl('http://cate.superdoxin.com/')
-            except:
+            except Exception:
                 irc.error('Could not access comics website')
                 return
             match = None
@@ -246,7 +218,7 @@ class Powder(callbacks.PluginRegexp):
                     num,
                     name,
                     filename))
-        except:
+        except Exception:
             irc.error('Comic checker is broken, use $bug comic')
 
 Class = Powder
