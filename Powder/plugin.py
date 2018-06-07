@@ -133,6 +133,8 @@ class Powder(callbacks.PluginRegexp):
         jsonFile = utils.web.getUrl('http://powdertoy.co.uk/Discussions/Thread/View.json?Thread={0}'.format(threadNum))
         jsonFileEncoding = utils.web.getEncoding(jsonFile) or 'utf8'
         data = json.loads(jsonFile.decode(jsonFileEncoding, 'replace'))
+        if data.get('Status') == 0:
+            return
         cg = data['Info']['Category']
         tp = data['Info']['Topic']
 
@@ -157,18 +159,14 @@ class Powder(callbacks.PluginRegexp):
           returns a link to the users profile and some brief information"""
 
         try:
-            userPage = utils.web.getUrl(
-                'http://powdertoy.co.uk/User.html?Name=' + user)
-            userID = userPage.split(
-                '<a href=\'/User.html?ID=')[1].split('\'')[0]
             jsonFile = utils.web.getUrl('http://powdertoy.co.uk/User.json?Name={0}'.format(user))
             jsonFileEncoding = utils.web.getEncoding(jsonFile) or 'utf8'
             userData = json.loads(jsonFile.decode(jsonFileEncoding, 'replace'))
             uDu = userData['User']
             irc.reply(
-                'http://powdertoy.co.uk/@{0} | ID {1} | Has {2} saves - Average score {3} - Highest score {4} | Posted {5} topics -  {6} posts - Has {7} reputation.'.format(
+                'http://powdertoy.co.uk/@{0} | Has {2} saves - Average score {3} - Highest score {4} | Posted {5} topics -  {6} posts - Has {7} reputation.'.format(
                     user,
-                    userID,
+                    None,
                     uDu['Saves']['Count'],
                     uDu['Saves']['AverageScore'],
                     uDu['Saves']['HighestScore'],
@@ -179,17 +177,13 @@ class Powder(callbacks.PluginRegexp):
 
         except Exception:
             try:
-                userPage = utils.web.getUrl(
-                    'http://powdertoy.co.uk/User.html?ID=' + user)
-                userName = userPage.split('<h1 class=\'SubmenuTitle\'>')[
-                    1].split('</h1>')[0]
                 jsonFile = utils.web.getUrl('http://powdertoy.co.uk/User.json?Name={0}'.format(user))
                 jsonFileEncoding = utils.web.getEncoding(jsonFile) or 'utf8'
                 userData = json.loads(jsonFile.decode(jsonFileEncoding, 'replace'))
                 uDu = userData['User']
                 irc.reply(
-                    'http://powdertoy.co.uk/@{1} | ID {0} | Has {2} saves - Average score {3} - Highest score {4} | Posted {5} topics -  {6} posts - Has {7} reputation.'.format(
-                        user,
+                    'http://powdertoy.co.uk/@{1} |  Has {2} saves - Average score {3} - Highest score {4} | Posted {5} topics -  {6} posts - Has {7} reputation.'.format(
+                        None,
                         userName,
                         uDu['Saves']['Count'],
                         uDu['Saves']['AverageScore'],
