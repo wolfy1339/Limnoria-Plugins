@@ -392,6 +392,7 @@ class General(callbacks.PluginRegexp):
                 bg = str(bg).zfill(2)
                 return "\x03{0},{1}{2}".format(fg, bg, c)
 
+    @urlSnarfer
     def mooReply(self, irc, msg, match):
         r"""^((./door |!|.+:\s+)?moo+)+[\s.]*$"""
 
@@ -412,8 +413,7 @@ class General(callbacks.PluginRegexp):
             else:
                 return
 
-    mooReply = urlSnarfer(mooReply)
-
+    @urlSnarfer
     def greeter(self, irc, msg, match):
         r"""^(hello|hi|sup|hey|o?[bh]ai|wa+[sz]+(a+|u+)p?|Bye+|cya+|later[sz]?)([,. ]+(stewi?e?(griffin(sub)?)?|bot|all|there|SGS)\b|der$)"""
 
@@ -430,8 +430,7 @@ class General(callbacks.PluginRegexp):
         else:
             return
 
-    greeter = urlSnarfer(greeter)
-
+    @urlSnarfer
     def awayMsgKicker(self, irc, msg, match):
         r"""(is now (set as )?away [-:(] Reason|is no longer away [:-] Gone for|is away:)"""
 
@@ -444,8 +443,6 @@ class General(callbacks.PluginRegexp):
                     "Autokick: Spam (Away/Back Announce)"))
         else:
             return
-
-    awayMsgKicker = urlSnarfer(awayMsgKicker)
 
     def _ytinfo(self, irc, url, nickPrefix):
         code = False
