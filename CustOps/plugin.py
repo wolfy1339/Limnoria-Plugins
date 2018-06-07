@@ -80,30 +80,31 @@ class CustOps(callbacks.Plugin):
         irc.queueMsg(ircmsgs.IrcMsg(
             'MODE {0} +q {1}'.format(channel, hostmask)))
 
-        t = time.time()
-        r = timer or 0
-        if not r > 0:
-            r = random.randint(30, 600)
-        expires = t + r
+        if timer is not None:
+            t = time.time()
+            r = timer
+            if not timer > 0:
+                r = random.randint(30, 600)
+            expires = t + r
 
-        len = {}
-        len['m'] = len['s'] = 0
+            len = {}
+            len['m'] = len['s'] = 0
 
-        while r > 59:
-            len['m'] += 1
-            r -= 60
+            while r > 59:
+                len['m'] += 1
+                r -= 60
 
-        len['s'] = r
+            len['s'] = r
 
-        irc.queueMsg(ircmsgs.IrcMsg(
-            'NOTICE +{0} :{1} has been quieted for {2}:{3:0>2}'.format(
-                    channel, user,  len['m'], len['s'])))
-
-        def f():
             irc.queueMsg(ircmsgs.IrcMsg(
-                'MODE {0} -q {1}'.format(channel, hostmask)))
+                'NOTICE +{0} :{1} has been quieted for {2}:{3:0>2}'.format(
+                        channel, user,  len['m'], len['s'])))
 
-        schedule.addEvent(f, expires)
+            def f():
+                irc.queueMsg(ircmsgs.IrcMsg(
+                    'MODE {0} -q {1}'.format(channel, hostmask)))
+
+            schedule.addEvent(f, expires)
         irc.noReply()
 
     @wrap(['op', ('haveOp', 'Unquiet a user'), 'nickInChannel'])
