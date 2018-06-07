@@ -655,12 +655,6 @@ class General(callbacks.PluginRegexp):
     @urlSnarfer
     def userCorrect(self, irc, msg, match):
         r"""^u[/].*[/].*[/].*$"""
-
-        if (msg.args[0] != '##powder-bots' and
-                msg.args[0] != '##jacksonmj-test'):
-            irc.noReply()
-            return
-
         match = match.group(0)
         data = match.split('/')
         user = data[1]
