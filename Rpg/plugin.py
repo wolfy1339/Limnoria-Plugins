@@ -50,7 +50,7 @@ class Rpg(callbacks.Plugin):
     threaded = True
 
     class rpg(callbacks.Commands):
-        def __init__(self):
+        def __init__(self, irc):
             self.gameChannel = "#BMN"
             self.playerData = {}
             self.mapData = {}
@@ -653,7 +653,7 @@ class Rpg(callbacks.Plugin):
             itemType = int(random.random() * 3)
             itemToReturn = possibleItem = {}
 
-            if itemType is 0:  # Sword
+            if itemType == 0:  # Sword
                 possibleItem["item"] = "sword"
 
                 itemBase = False
