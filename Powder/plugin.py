@@ -107,7 +107,7 @@ class Powder(callbacks.PluginRegexp):
             outMsg = '{0}\x02Save:\x02 {1:<24} - \x02By:\x02 {2:<14} - \x02ID: \x02{3:<6} - \x02Votes:\x02 {4:<4}'.format(
                 outMsg, each['Name'].replace('&#039;', '\''), each['Username'], str(each['ID']), str(each['Score']))
             x += 1
-            if x % 2 is 0:
+            if x % 2 == 0:
                 irc.reply(msg.nick, outMsg, private=True)
                 outMsg = ''
                 continue

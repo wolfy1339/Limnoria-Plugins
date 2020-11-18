@@ -63,6 +63,9 @@ class Rpg(callbacks.Plugin):
         # Game Commands
         @wrap
         def reloadData(self, irc, msg, args):
+            """
+            Reload game data
+            """
             if not ircdb.users.getUser(msg.prefix)._checkCapability("admin"):
                 irc.error("Only people with \"Admin\" can do that.")
                 return
@@ -77,6 +80,9 @@ class Rpg(callbacks.Plugin):
 
         @wrap([optional("somethingWithoutSpaces"), optional("somethingWithoutSpaces")])
         def genMap(self, irc, msg, args, width, height):
+            """[width] [height]
+            Generate the game map
+            """
             if not ircdb.users.getUser(msg.prefix)._checkCapability("owner"):
                 irc.error("Only people with \"Admin\" can do that.")
                 return
@@ -109,21 +115,21 @@ class Rpg(callbacks.Plugin):
                 y = -1
                 while y < height:
                     y += 1
-                    if x is 0 or x is width or y is 0 or y is height:
+                    if x == 0 or x == width or y == 0 or y == height:
                         terrainline += terrain[0]
                         continue
-                    if x is int(width / 2) and y is int(height / 2):
+                    if x == int(width / 2) and y == int(height / 2):
                         terrainline += "@"
                         y += 1
                     rand[1] = int(random.random() * (len(terrain) - 1))
                     rand[2] = int(random.random() * (len(terrain) - 1))
                     rand[3] = int(random.random() * (len(terrain) - 1))
                     rand[4] = int(random.random() * (len(terrain) - 1))
-                    if rand[1] is rand[2] and rand[1] is rand[3]:
+                    if rand[1] == rand[2] and rand[1] == rand[3]:
                         terrainline += terrain[rand[1]]
-                    elif rand[1] is rand[2] or rand[1] is rand[3]:
+                    elif rand[1] == rand[2] or rand[1] == rand[3]:
                         terrainline += terrain[rand[1]]
-                    elif rand[2] is rand[3]:
+                    elif rand[2] == rand[3]:
                         terrainline += terrain[rand[2]]
                     else:
                         terrainline += terrain[rand[4]]
@@ -160,6 +166,9 @@ class Rpg(callbacks.Plugin):
 
         @wrap
         def stats(self, irc, msg, args):
+            """
+            Show player stats
+            """
             player = self._checkPlayer(irc, msg)
             playerData = self.playerData[player]
 
@@ -195,6 +204,9 @@ class Rpg(callbacks.Plugin):
 
         @wrap
         def new(self, irc, msg, args):
+            """
+            Add a new player
+            """
             player = self._checkPlayer(irc, msg, 1)
             playerData = self.playerData
 
@@ -232,6 +244,9 @@ class Rpg(callbacks.Plugin):
 
         @wrap
         def location(self, irc, msg, args):
+            """
+            Get player location
+            """
             player = self._checkPlayer(irc, msg)
             location = self.playerData[player]["Loc"]
             mapInfo = self.mapInfo
@@ -252,6 +267,9 @@ class Rpg(callbacks.Plugin):
 
         @wrap
         def ViewArea(self, irc, msg, args):
+            """
+            Change view area
+            """
             player = self._checkPlayer(irc, msg)
             location = self.playerData[player]["Loc"]
             mapData = self.mapData
@@ -269,15 +287,15 @@ class Rpg(callbacks.Plugin):
 
             for x in area:
                 line = area.index(x)
-                if x is ".":
+                if x == ".":
                     area[line] = "Nothing"
-                elif x is "#":
+                elif x == "#":
                     area[line] = "Wall"
-                elif x is "~":
+                elif x == "~":
                     area[line] = "Item"
-                elif x is ":":
+                elif x == ":":
                     area[line] = "Boss"
-                elif x is "@":
+                elif x == "@":
                     area[line] = "Home"
 
             irc.reply(("NW: {0} - N: {1} - NE: {2} - W: {3} - E: {4} - SW: {5}"
@@ -294,6 +312,9 @@ class Rpg(callbacks.Plugin):
 
         @wrap
         def forceBattle(self, irc, msg, args):
+            """
+            Force a battle
+            """
             player = self._checkPlayer(irc, msg)
             if self.playerData[player]["force"]:
                 self.playerData[player]["force"] = False
@@ -308,6 +329,9 @@ class Rpg(callbacks.Plugin):
 
         @wrap(["somethingWithoutSpaces", optional("int")])
         def move(self, irc, msg, args, direction, number):
+            """
+            Move your player
+            """
             player = self._checkPlayer(irc, msg)
             playerData = self.playerData
             mapData = self.mapData
@@ -325,7 +349,7 @@ class Rpg(callbacks.Plugin):
             while x < number:
                 if direction == "NW":
                     if mapData[playerData[player]["Loc"] -
-                               (mapInfo["width"] + 3)] is "#":
+                               (mapInfo["width"] + 3)] == "#":
                         irc.error("You can't move there.")
                         return
                     else:
@@ -333,7 +357,7 @@ class Rpg(callbacks.Plugin):
                         self._savePlayerData(playerData)
                 elif direction == "N":
                     if mapData[playerData[player]["Loc"] -
-                               (mapInfo["width"] + 2)] is "#":
+                               (mapInfo["width"] + 2)] == "#":
                         irc.error("You can't move there.")
                         return
                     else:
@@ -341,21 +365,21 @@ class Rpg(callbacks.Plugin):
                         self._savePlayerData(playerData)
                 elif direction == "NE":
                     if mapData[playerData[player]["Loc"] -
-                               (mapInfo["width"] + 1)] is "#":
+                               (mapInfo["width"] + 1)] == "#":
                         irc.error("You can't move there.")
                         return
                     else:
                         playerData[player]["Loc"] -= (mapInfo["width"] + 1)
                         self._savePlayerData(playerData)
                 elif direction == "W":
-                    if mapData[playerData[player]["Loc"] - 1] is "#":
+                    if mapData[playerData[player]["Loc"] - 1] == "#":
                         irc.error("You can't move there.")
                         return
                     else:
                         playerData[player]["Loc"] -= 1
                         self._savePlayerData(playerData)
                 elif direction == "E":
-                    if mapData[playerData[player]["Loc"] + 1] is "#":
+                    if mapData[playerData[player]["Loc"] + 1] == "#":
                         irc.error("You can't move there.")
                         return
                     else:
@@ -363,7 +387,7 @@ class Rpg(callbacks.Plugin):
                         self._savePlayerData(playerData)
                 elif direction == "SW":
                     if mapData[playerData[player]["Loc"] +
-                               (mapInfo["width"] + 1)] is "#":
+                               (mapInfo["width"] + 1)] == "#":
                         irc.error("You can't move there.")
                         return
                     else:
@@ -371,7 +395,7 @@ class Rpg(callbacks.Plugin):
                         self._savePlayerData(playerData)
                 elif direction == "S":
                     if mapData[playerData[player]["Loc"] +
-                               (mapInfo["width"] + 2)] is "#":
+                               (mapInfo["width"] + 2)] == "#":
                         irc.error("You can't move there.")
                         return
                     else:
@@ -379,7 +403,7 @@ class Rpg(callbacks.Plugin):
                         self._savePlayerData(playerData)
                 elif direction == "SE":
                     if mapData[playerData[player]["Loc"] +
-                               (mapInfo["width"] + 3)] is "#":
+                               (mapInfo["width"] + 3)] == "#":
                         irc.error("You can't move there.")
                         return
                     else:
@@ -389,15 +413,15 @@ class Rpg(callbacks.Plugin):
                     irc.error(
                         "Move failed. you gave {0} as a direction. {1}".format(direction, str(type(direction))))
 
-                if mapData[playerData[player]["Loc"]] is "~":
+                if mapData[playerData[player]["Loc"]] == "~":
                     self._genItem(player, 2)
     #             mapData[playerData[player]["Loc"]] = "."
                     self._saveMapData()
 
-                elif mapData[playerData[player]["Loc"]] is ":":
+                elif mapData[playerData[player]["Loc"]] == ":":
                     self._doBattle(irc, player, 2, msg.nick)
 
-                elif mapData[playerData[player]["Loc"]] is ".":
+                elif mapData[playerData[player]["Loc"]] == ".":
                     if playerData[player]["force"] is True:
                         self._sendDbg(irc, "Battle Forced")
                         playerData[player]["force"] = False
@@ -406,7 +430,7 @@ class Rpg(callbacks.Plugin):
                     elif int(random.random() * 100) < 5:
                         self._doBattle(irc, player, 1, msg.nick)
 
-                elif mapData[playerData[player]["Loc"]] is "@":
+                elif mapData[playerData[player]["Loc"]] == "@":
                     playerData[player]["HP"] = playerData[player]["MHP"]
                     text = "Your health has been restored."
 #                   irc.reply(text)
@@ -438,7 +462,7 @@ class Rpg(callbacks.Plugin):
             try:
                 test = self.playerData[player]
             except:
-                if new is 0:
+                if new == 0:
                     irc.error("Use rpg new to create an RPG character first.")
             return player
 
@@ -478,9 +502,9 @@ class Rpg(callbacks.Plugin):
         def _doBattle(self, irc, player, level=1, nick="StewieGriffin"):
             random.seed()
             playerData = self.playerData
-            if level is 1:
+            if level == 1:
                 monster = self._genMonster(player)
-            if level is 2:
+            if level == 2:
                 monster = self._genBoss(player)
 
             irc.reply("{0} has encountered Level {1} {2} and could potentially earn {3} experience!".format(
@@ -543,7 +567,7 @@ class Rpg(callbacks.Plugin):
                     if winner is None:
                         winner = _doMonster()
 
-            if winner is player:
+            if winner == player:
                 self._playerWin(irc, player, monster, playerData)
             else:
                 self._playerDead(irc, player, monster, playerData)
@@ -579,7 +603,7 @@ class Rpg(callbacks.Plugin):
                     itemWon["name"], itemWon["item"].capitalize())
                 better = False
                 oldEquip = {}
-                if itemWon["item"] is "sword":
+                if itemWon["item"] == "sword":
                     if itemWon["Power"] > playerData[
                             player]["Item"]["lArm"]["Power"]:
                         oldEquip["Name"] = playerData[player]["lArm"]["Name"]
@@ -587,7 +611,7 @@ class Rpg(callbacks.Plugin):
                         playerData[player]["lArm"]["Power"] = itemWon["power"]
                         playerData[player]["lArm"]["Name"] = itemWon["name"]
                         better = True
-                elif itemWon["item"] is "shield":
+                elif itemWon["item"] == "shield":
                     if itemWon["Power"] > playerData[
                             player]["Item"]["rArm"]["Power"]:
                         oldEquip["Name"] = playerData[player]["rArm"]["Name"]
@@ -595,7 +619,7 @@ class Rpg(callbacks.Plugin):
                         playerData[player]["rArm"]["Power"] = itemWon["power"]
                         playerData[player]["rArm"]["Name"] = itemWon["name"]
                         better = True
-                elif itemWon["item"] is "helmet":
+                elif itemWon["item"] == "helmet":
                     if itemWon["Power"] > playerData[
                             player]["Item"]["Head"]["Power"]:
                         oldEquip["Name"] = playerData[player]["Head"]["Name"]
@@ -603,7 +627,7 @@ class Rpg(callbacks.Plugin):
                         playerData[player]["Head"]["Power"] = itemWon["power"]
                         playerData[player]["Head"]["Name"] = itemWon["name"]
                         better = True
-                elif itemWon["item"] is "armour":
+                elif itemWon["item"] == "armour":
                     if itemWon["Power"] > playerData[
                             player]["Item"]["Torso"]["Power"]:
                         oldEquip["Name"] = playerData[player]["Torso"]["Name"]
@@ -642,11 +666,11 @@ class Rpg(callbacks.Plugin):
                         itemToReturn["power"] = int(
                             (random.random() * (possibleItem[2] - possibleItem[1])) + possibleItem[1])
             else:
-                if itemType is 1:  # Shield
+                if itemType == 1:  # Shield
                     possibleItem["item"] = "shield"
-                elif itemType is 2:  # Helmet
+                elif itemType == 2:  # Helmet
                     possibleItem["item"] = "helmet"
-                elif itemType is 3:  # Torso
+                elif itemType == 3:  # Torso
                     possibleItem["item"] = "armour"
 
                 itemBase = False

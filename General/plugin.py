@@ -189,7 +189,7 @@ class General(callbacks.PluginRegexp):
         x = 0
         info = []
         while x < len(data):
-            if data[x] is '' or len(data[x]) < 2 and ' ' in data[x]:
+            if data[x] == '' or len(data[x]) < 2 and ' ' in data[x]:
                 pass
             else:
                 info += [data[x]]
